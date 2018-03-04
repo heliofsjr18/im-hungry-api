@@ -6,7 +6,8 @@
 [![Downloads Stats][npm-downloads]][npm-url]
 
 API que receberá todas as requisições para o sistema I'm Hungry.
-Desenvolvida em PHP usando as seguintes tecnologias:<br/> 
+
+Desenvolvida em PHP usando as seguintes tecnologias: 
 
 1. Slim-Framework v3.0
 2. JWT - Firebase/php v5.0.0
@@ -17,7 +18,8 @@ Desenvolvida em PHP usando as seguintes tecnologias:<br/>
 
 ## Instalação e uso
 
-Bibliotecas gerenciadas através do Composer.<br/>
+Bibliotecas gerenciadas através do Composer.
+
 Terminal:
 
 ```sh
@@ -50,10 +52,14 @@ https://getcomposer.org
 
 ## Dev
 
-Dayvson – [I'm Hungry](https://www.site.com/dayvson) – dayvsondw@hotmail.com <br/>
-Hélio Junior – [I'm Hungry](https://www.site.com/helio) –  heliofsjr18@gmail.com <br/>
-Ismael Gomes – [I'm Hungry](https://www.site.com/jobs) – ismaelgomes800@gmail.com <br/>
-Rafael Eduardo – [I'm Hungry](https://www.site.com/rafael) – paracafa@gmail.com <br/>
+Dayvson – [I'm Hungry](https://www.site.com/dayvson) – dayvsondw@hotmail.com 
+
+Hélio Junior – [I'm Hungry](https://www.site.com/helio) –  heliofsjr18@gmail.com
+
+Ismael Gomes – [I'm Hungry](https://www.site.com/jobs) – ismaelgomes800@gmail.com
+ 
+Rafael Eduardo – [I'm Hungry](https://www.site.com/rafael) – paracafa@gmail.com 
+
 Rafael Freitas – [I'm Hungry](https://www.site.com/rafael) – rafael.vasconcelos@outlook.com <br/>
 
 Desenvolvido pela I'm Hungry. Consulte a ``LICENÇA`` para mais informações.
