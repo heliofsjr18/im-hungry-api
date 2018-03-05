@@ -6,7 +6,7 @@
  * Time: 07:49
  */
 
-class Usuarios
+class Usuario
 {
     private $id;
     private $nome;

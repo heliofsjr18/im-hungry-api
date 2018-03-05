@@ -27,6 +27,36 @@ $app->get('/', function(Request $request, Response $response, $args) {
 	return $response->withJson(['status' => 200, 'message' => "Api Manager I'm Hungry"]);
 });
 
+$app->post('/usuario/login', function(Request $request, Response $response, $args) {
+    $data = $request->getParsedBody();
+    require_once 'Basics/Usuario.php';
+    require_once 'Controller/UsuarioController.php';
+
+    $usuario = new Usuario();
+    $usuario->setEmail($data["email"]);
+    $usuario->setSenha($data["senha"]);
+    $usuario->setTipoId($data["tipo"]);
+
+    $usuarioController = new UsuarioController();
+    $retorno = $usuarioController->login($usuario);
+
+    if ($retorno['status'] == 500){
+        return $response->withJson($retorno, $retorno[status]);
+        die;
+    }else{
+        $jwt = setToken($retorno[0]);
+        $res = array(
+            'status' 		=> 200,
+            'message' 		=> "SUCCESS",
+            'usuario' 		=> $retorno[0],
+            'token'			=> $jwt
+        );
+
+        return $response->withJson($res, $res[status]);
+
+    }
+
+});
 
 function setToken($obj){
     //Gerar TOKEN
