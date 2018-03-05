@@ -79,7 +79,7 @@ CREATE TABLE `enderecos` (
     `empresa_long` VARCHAR(30) DEFAULT NULL,
     `empresa_numero_endereco` INT(10) DEFAULT NULL,
     `empresa_complemento_endereco` text NOT NULL,
-    `empresa_data_funcacao` DATE NOT NULL,
+    `empresa_data_fundacao` DATE NOT NULL,
     `empresa_data_cadastro` DATETIME NOT NULL,
     `empresa_foto_marca` LONGTEXT NOT NULL,
     `empresa_foto_perfil` LONGTEXT NOT NULL,
