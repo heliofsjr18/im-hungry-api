@@ -104,6 +104,8 @@ $app->post('/usuario/update', function(Request $request, Response $response, $ar
 
 });
 
+
+
 function setToken($obj){
     //Gerar TOKEN
     $tokenId    = base64_encode(mcrypt_create_iv(32));

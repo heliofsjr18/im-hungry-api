@@ -49,7 +49,7 @@ class UsuarioController
             die;
         }
         if ( empty($usuario->setTelefone()) ){
-            return array('status' => 500, 'message' => "ERROR", 'result' => 'Endereço não informado!');
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'Telefone não informado!');
             die;
         }
         if ( empty($usuario->getData()) ){
