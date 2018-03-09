@@ -58,6 +58,52 @@ $app->post('/usuario/login', function(Request $request, Response $response, $arg
 
 });
 
+$app->post('/usuario/update', function(Request $request, Response $response, $args) {
+    $data = $request->getParsedBody();
+    $auth = auth($request);
+
+    if($auth[status] != 200){
+        return $response->withJson($auth, $auth[status]);
+        die;
+    }
+    require_once 'Basics/Usuario.php';
+    require_once 'Controller/UsuarioController.php';
+
+    $usuario = new Usuario();
+    $usuario->setId($auth['token']->data->aluno_id);
+    $usuario->setNome($data["nome"]);
+    $usuario->setCpf($data["cpf"]);
+    $usuario->setEmail($data["email"]);
+    $usuario->setSenha($data["senha"]);
+    $usuario->setTelefone($data["telefone"]);
+    $usuario->setData($data["dataNasc"]);
+    //$usuario->setFotoPerfil($data["foto"]);
+
+
+    $usuarioControle = new UsuarioController();
+    $retorno = $usuarioControle->update($usuario);
+
+    if ($retorno['status'] == 500){
+        return $response->withJson($retorno, $retorno[status]);
+        die;
+    }else{
+
+        $jwt = setToken($retorno[0]);
+        $res = array(
+            'status' 		=> 200,
+            'message' 		=> "SUCCESS",
+            'result' 		=> "Usuário atualizado.",
+            'usuario' 		=> $retorno[0],
+            'token'			=> $jwt
+        );
+
+        return $response->withJson($res, $res[status]);
+
+    }
+
+
+});
+
 function setToken($obj){
     //Gerar TOKEN
     $tokenId    = base64_encode(mcrypt_create_iv(32));

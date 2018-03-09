@@ -29,4 +29,40 @@ class UsuarioController
         return $usuarioDAO->loginUsuario($usuario);
 
     }
+
+    public function update(Usuario $usuario){
+
+        if ( empty($usuario->getId()) ){
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'Id não informado!');
+            die;
+        }
+        if ( empty($usuario->getNome()) ){
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'Nome não informado!');
+            die;
+        }
+        if ( empty($usuario->getCpf()) ){
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'CPF não informado!');
+            die;
+        }
+        if ( empty($usuario->setEmail()) ){
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'E-mail não informado!');
+            die;
+        }
+        if ( empty($usuario->setTelefone()) ){
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'Endereço não informado!');
+            die;
+        }
+        if ( empty($usuario->getData()) ){
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'Data de Nascimento não informada!');
+            die;
+        }if (!preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/",$usuario->getData())) {
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'Formato de Data incorreto, espera-se YYYY-MM-DD!');
+            die;
+        }
+
+        $usuarioDAO = new UsuarioDAO();
+        return $usuarioDAO->alterUser($usuario);
+        //Enviar requisição para DAO
+
+    }
 }
