@@ -70,7 +70,7 @@ $app->post('/usuario/update', function(Request $request, Response $response, $ar
     require_once 'Controller/UsuarioController.php';
 
     $usuario = new Usuario();
-    $usuario->setId($auth['token']->data->aluno_id);
+    $usuario->setId($auth['token']->data->user_id);
     $usuario->setNome($data["nome"]);
     $usuario->setCpf($data["cpf"]);
     $usuario->setEmail($data["email"]);
@@ -104,6 +104,57 @@ $app->post('/usuario/update', function(Request $request, Response $response, $ar
 
 });
 
+$app->post('/empresa/insert', function(Request $request, Response $response, $args) {
+    $data = $request->getParsedBody();
+    $auth = auth($request);
+
+    if($auth[status] != 200){
+        return $response->withJson($auth, $auth[status]);
+        die;
+    }
+    require_once 'Basics/Empresa.php';
+    require_once 'Controller/EmpresaController.php';
+
+    $empresa = new Empresa();
+    $empresa->setNome($data["nome"]);
+    $empresa->setTelefone($data["telefone"]);
+    $empresa->setCnpj($data["cnpj"]);
+    $empresa->setCep($data["cep"]);
+    $empresa->setLatitude($data["lat"]);
+    $empresa->setLongitude(data["long"]);
+    $empresa->setNumeroEndereco($data["numero_end"]);
+    $empresa->setComplementoEndereco($data["complemento_end"]);
+    $empresa->setFotoMarca($data[""]);
+    $empresa->setDataFundacao($data["dataNasc"]);
+    $empresa->setFacebook($data["dataNasc"]);
+    $empresa->setInstagram($data["dataNasc"]);
+    $empresa->setTwitter($data["dataNasc"]);
+    $empresa->setUserId($auth['token']->data->user_id);
+
+
+    $empresaController = new EmpresaController();
+    $retorno = $empresaController->create($usuario);
+
+    if ($retorno['status'] == 500){
+        return $response->withJson($retorno, $retorno[status]);
+        die;
+    }else{
+
+        $jwt = setToken($retorno[0]);
+        $res = array(
+            'status' 		=> 200,
+            'message' 		=> "SUCCESS",
+            'result' 		=> "Usuário atualizado.",
+            'usuario' 		=> $retorno[0],
+            'token'			=> $jwt
+        );
+
+        return $response->withJson($res, $res[status]);
+
+    }
+
+
+});
 
 
 function setToken($obj){
