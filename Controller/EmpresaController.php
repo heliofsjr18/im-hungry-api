@@ -10,6 +10,17 @@ require_once 'Basics/Empresa.php';
 require_once 'DAO/EmpresaDAO.php';
 class EmpresaController
 {
+    public function listAll(Empresa $empresa){
+        if ( empty($empresa->getUserId()) ){
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'Id do usuário não informado!');
+            die;
+        }
+
+        $empresaDAO = new EmpresaDAO();
+        return $empresaDAO->listAll($empresa);
+
+    }
+
     public function insert(Empresa $empresa){
 
         if ( empty($empresa->getUserId()) ){

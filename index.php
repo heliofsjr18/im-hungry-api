@@ -108,6 +108,44 @@ $app->post('/usuario/update', function(Request $request, Response $response, $ar
 
 });
 
+$app->get('/empresa/list', function(Request $request, Response $response, $args) {
+    $data = $request->getParsedBody();
+    $auth = auth($request);
+
+    if($auth[status] != 200){
+        return $response->withJson($auth, $auth[status]);
+        die;
+    }
+    require_once 'Basics/Empresa.php';
+    require_once 'Controller/EmpresaController.php';
+
+    $empresa = new Empresa();
+    $empresa->setUserId($auth['token']->data->user_id);
+
+    $empresaController = new EmpresaController();
+    $retorno = $empresaController->listAll($empresa);
+
+    if ($retorno['status'] == 500){
+        return $response->withJson($retorno, $retorno[status]);
+        die;
+    }else{
+
+        $jwt = setToken($auth['token']->data);
+        $res = array(
+            'status' 		=> 200,
+            'message' 		=> "SUCCESS",
+            'result' 		=> "Empresas Encontradas!",
+            'empresas' 		=> $retorno,
+            'token'			=> $jwt
+        );
+
+        return $response->withJson($res, $res[status]);
+
+    }
+
+
+});
+
 $app->post('/empresa/insert', function(Request $request, Response $response, $args) {
     $data = $request->getParsedBody();
     $auth = auth($request);
