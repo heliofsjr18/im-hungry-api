@@ -8,12 +8,16 @@ use PHPMailer\PHPMailer\Exception;
 
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
+use Slim\Http\UploadedFile;
 use Firebase\JWT\JWT;
 
 define('SECRET_KEY','im-hungry-api');
 define('ALGORITHM','HS256');
 
 $app = new \Slim\App(array('templates.path' => 'templates', 'settings' => ['displayErrorDetails' => true]));
+
+$container = $app->getContainer();
+$container['upload_directory'] = __DIR__ . '/uploads';
 
 $app->add(function ($req, $res, $next) {
     $response = $next($req, $res);
@@ -115,37 +119,42 @@ $app->post('/empresa/insert', function(Request $request, Response $response, $ar
     require_once 'Basics/Empresa.php';
     require_once 'Controller/EmpresaController.php';
 
+    $global_dir = $this->get('upload_directory');
+    $files = $request->getUploadedFiles();
+    $file_brand = $files['foto'];
+    $filename = getNameFile($file_brand);
+
     $empresa = new Empresa();
     $empresa->setNome($data["nome"]);
     $empresa->setTelefone($data["telefone"]);
     $empresa->setCnpj($data["cnpj"]);
     $empresa->setCep($data["cep"]);
     $empresa->setLatitude($data["lat"]);
-    $empresa->setLongitude(data["long"]);
+    $empresa->setLongitude($data["long"]);
     $empresa->setNumeroEndereco($data["numero_end"]);
     $empresa->setComplementoEndereco($data["complemento_end"]);
-    $empresa->setFotoMarca($data[""]);
-    $empresa->setDataFundacao($data["dataNasc"]);
-    $empresa->setFacebook($data["dataNasc"]);
-    $empresa->setInstagram($data["dataNasc"]);
-    $empresa->setTwitter($data["dataNasc"]);
+    $empresa->setDataFundacao($data["dataFund"]);
+    $empresa->setFacebook($data["facebook"]);
+    $empresa->setInstagram($data["instagram"]);
+    $empresa->setTwitter($data["twitter"]);
     $empresa->setUserId($auth['token']->data->user_id);
-
+    $empresa->setFotoMarca($filename);
 
     $empresaController = new EmpresaController();
-    $retorno = $empresaController->create($usuario);
+    $retorno = $empresaController->insert($empresa);
 
     if ($retorno['status'] == 500){
         return $response->withJson($retorno, $retorno[status]);
         die;
     }else{
 
-        $jwt = setToken($retorno[0]);
+        moveUploadedFile($global_dir.DIRECTORY_SEPARATOR."empresa",$file_brand, $filename);
+
+        $jwt = setToken($auth['token']->data);
         $res = array(
             'status' 		=> 200,
             'message' 		=> "SUCCESS",
-            'result' 		=> "Usuário atualizado.",
-            'usuario' 		=> $retorno[0],
+            'result' 		=> "Empresa Cadastrada!",
             'token'			=> $jwt
         );
 
@@ -314,6 +323,21 @@ function validaCPF($cpf = null) {
     
            return true;
        }
+}
+
+function getNameFile(UploadedFile $uploadedFile){
+
+    $extension = pathinfo($uploadedFile->getClientFilename(), PATHINFO_EXTENSION);
+    $basename = bin2hex(random_bytes(8)); // see http://php.net/manual/en/function.random-bytes.php
+    $filename = sprintf('%s.%0.8s', $basename, $extension);
+
+    return $filename;
+}
+
+function moveUploadedFile($directory, UploadedFile $uploadedFile, $filename){
+
+    $uploadedFile->moveTo($directory . DIRECTORY_SEPARATOR . $filename);
+
 }
 
 $app->run();
