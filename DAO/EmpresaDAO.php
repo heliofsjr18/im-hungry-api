@@ -33,6 +33,7 @@ class EmpresaDAO
                 return array(
                     'status'    => 500,
                     'message'   => "INFO",
+                    'qtd'       => 0,
                     'result'    => 'Você não possui empresas cadastradas!'
                 );
             }

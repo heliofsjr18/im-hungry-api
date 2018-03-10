@@ -135,6 +135,7 @@ $app->get('/empresa/list', function(Request $request, Response $response, $args)
             'status' 		=> 200,
             'message' 		=> "SUCCESS",
             'result' 		=> "Empresas Encontradas!",
+            'qtd'           => count($retorno),
             'empresas' 		=> $retorno,
             'token'			=> $jwt
         );
