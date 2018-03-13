@@ -204,6 +204,96 @@ $app->post('/empresa/insert', function(Request $request, Response $response, $ar
 
 });
 
+$app->post('/mpadrao/insert', function(Request $request, Response $response, $args) {
+    $data = $request->getParsedBody();
+    $auth = auth($request);
+
+    if($auth[status] != 200){
+        return $response->withJson($auth, $auth[status]);
+        die;
+    }
+    require_once 'Basics/MenuPadrao.php';
+    require_once 'Basics/MenuPadraoItens.php';
+    require_once 'Controller/MenuPadraoController.php';
+
+    $menu = new MenuPadrao();
+    $menu->setNome($data["nome"]);
+    $menu->setEmpresaId($data["empresa_id"]);
+
+    //$array_itens = [];
+    $array_itens = new ArrayObject();
+
+    foreach ($data["item_nome"] as $key => $value){
+        $itens = new MenuPadraoItens();
+        $itens->setNome($data["item_nome"][$key]);
+        $itens->setValor($data["item_valor"][$key]);
+        $itens->setTempoMedio($data["item_tempo_medio"][$key]);
+        $itens->setPromocao($data["item_promocao"][$key]);
+        $array_itens->append($itens);
+        //array_push($array_itens, $itens);
+    }
+
+    $menuController = new MenuPadraoController();
+    $retorno = $menuController->insert($menu, $array_itens);
+
+    if ($retorno['status'] == 500){
+        return $response->withJson($retorno, $retorno[status]);
+        die;
+    }else{
+
+        $jwt = setToken($auth['token']->data);
+        $res = array(
+            'status' 		=> 200,
+            'message' 		=> "SUCCESS",
+            'result' 		=> "Menu Cadastrado!",
+            'token'			=> $jwt
+        );
+
+        return $response->withJson($res, $res[status]);
+
+    }
+
+});
+
+$app->post('/mpadrao/list', function(Request $request, Response $response, $args) {
+    $data = $request->getParsedBody();
+    $auth = auth($request);
+
+    if($auth[status] != 200){
+        return $response->withJson($auth, $auth[status]);
+        die;
+    }
+    require_once 'Basics/Empresa.php';
+    require_once 'Controller/EmpresaController.php';
+
+    $empresa = new Empresa();
+    $empresa->setUserId($auth['token']->data->user_id);
+
+    $empresaController = new EmpresaController();
+    $retorno = $empresaController->listAll($empresa);
+
+    if ($retorno['status'] == 500){
+        return $response->withJson($retorno, $retorno[status]);
+        die;
+    }else{
+
+        $jwt = setToken($auth['token']->data);
+        $res = array(
+            'status' 		=> 200,
+            'message' 		=> "SUCCESS",
+            'result' 		=> "Empresas Encontradas!",
+            'qtd'           => count($retorno),
+            'empresas' 		=> $retorno,
+            'token'			=> $jwt
+        );
+
+        return $response->withJson($res, $res[status]);
+
+    }
+
+
+});
+
 $app->post('/filial/listAll', function(Request $request, Response $response, $args) {
     $data = $request->getParsedBody();
     $auth = auth($request);
