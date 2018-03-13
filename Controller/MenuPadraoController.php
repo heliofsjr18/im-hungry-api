@@ -10,6 +10,20 @@ require_once 'Basics/MenuPadrao.php';
 require_once 'DAO/MenuPadraoDAO.php';
 class MenuPadraoController
 {
+    public function listAll(MenuPadrao $menuPadrao){
+        if ( empty($menuPadrao->getEmpresaId()) ){
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'ID da Empresa não informado!');
+            die;
+        }if ( empty($menuPadrao->getStatus()) ){
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'Informe o Status do Menu!');
+            die;
+        }
+
+        $menuPadraoDAO = new MenuPadraoDAO();
+        return $menuPadraoDAO->listAll($menuPadrao);
+
+    }
+
     public function insert(MenuPadrao $menu, ArrayObject $array_itens){
         if ( empty($menu->getNome()) ){
             return array('status' => 500, 'message' => "ERROR", 'result' => 'Nome não informado!');

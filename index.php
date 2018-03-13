@@ -255,7 +255,7 @@ $app->post('/mpadrao/insert', function(Request $request, Response $response, $ar
 
 });
 
-$app->post('/mpadrao/list', function(Request $request, Response $response, $args) {
+$app->post('/mpadrao/listAll', function(Request $request, Response $response, $args) {
     $data = $request->getParsedBody();
     $auth = auth($request);
 
@@ -263,14 +263,15 @@ $app->post('/mpadrao/list', function(Request $request, Response $response, $args
         return $response->withJson($auth, $auth[status]);
         die;
     }
-    require_once 'Basics/Empresa.php';
-    require_once 'Controller/EmpresaController.php';
+    require_once 'Basics/MenuPadrao.php';
+    require_once 'Controller/MenuPadraoController.php';
 
-    $empresa = new Empresa();
-    $empresa->setUserId($auth['token']->data->user_id);
+    $menu = new MenuPadrao();
+    $menu->setEmpresaId($data["empresa_id"]);
+    $menu->setStatus($data["status"]);
 
-    $empresaController = new EmpresaController();
-    $retorno = $empresaController->listAll($empresa);
+    $menuController = new MenuPadraoController();
+    $retorno = $menuController->listAll($menu);
 
     if ($retorno['status'] == 500){
         return $response->withJson($retorno, $retorno[status]);
@@ -281,7 +282,7 @@ $app->post('/mpadrao/list', function(Request $request, Response $response, $args
         $res = array(
             'status' 		=> 200,
             'message' 		=> "SUCCESS",
-            'result' 		=> "Empresas Encontradas!",
+            'result' 		=> "Menu Encontrado!",
             'qtd'           => count($retorno),
             'empresas' 		=> $retorno,
             'token'			=> $jwt
