@@ -108,7 +108,7 @@ $app->post('/usuario/update', function(Request $request, Response $response, $ar
 
 });
 
-$app->get('/empresa/list', function(Request $request, Response $response, $args) {
+$app->get('/empresa/listAll', function(Request $request, Response $response, $args) {
     $data = $request->getParsedBody();
     $auth = auth($request);
 
@@ -194,6 +194,90 @@ $app->post('/empresa/insert', function(Request $request, Response $response, $ar
             'status' 		=> 200,
             'message' 		=> "SUCCESS",
             'result' 		=> "Empresa Cadastrada!",
+            'token'			=> $jwt
+        );
+
+        return $response->withJson($res, $res[status]);
+
+    }
+
+
+});
+
+$app->post('/filial/listAll', function(Request $request, Response $response, $args) {
+    $data = $request->getParsedBody();
+    $auth = auth($request);
+
+    if($auth[status] != 200){
+        return $response->withJson($auth, $auth[status]);
+        die;
+    }
+    require_once 'Basics/EmpresaFilial.php';
+    require_once 'Controller/EmpresaFilialController.php';
+
+    $empresaFilial = new EmpresaFilial();
+    $empresaFilial->setEmpresaId($data['empresa_id']);
+
+    $empresaController = new EmpresaFilialController();
+    $retorno = $empresaController->listAll($empresaFilial);
+
+    if ($retorno['status'] == 500){
+        return $response->withJson($retorno, $retorno[status]);
+        die;
+    }else{
+
+        $jwt = setToken($auth['token']->data);
+        $res = array(
+            'status' 		=> 200,
+            'message' 		=> "SUCCESS",
+            'result' 		=> "Filiais Encontradas!",
+            'qtd'           => count($retorno),
+            'empresas' 		=> $retorno,
+            'token'			=> $jwt
+        );
+
+        return $response->withJson($res, $res[status]);
+
+    }
+
+
+});
+
+$app->post('/filial/insert', function(Request $request, Response $response, $args) {
+    $data = $request->getParsedBody();
+    $auth = auth($request);
+
+    if($auth[status] != 200){
+        return $response->withJson($auth, $auth[status]);
+        die;
+    }
+    require_once 'Basics/EmpresaFilial.php';
+    require_once 'Controller/EmpresaFilialController.php';
+
+    $empresa = new EmpresaFilial();
+    $empresa->setNome($data["nome"]);
+    $empresa->setTelefone($data["telefone"]);
+    $empresa->setCnpj($data["cnpj"]);
+    $empresa->setCep($data["cep"]);
+    $empresa->setLatitude($data["lat"]);
+    $empresa->setLongitude($data["long"]);
+    $empresa->setNumeroEndereco($data["numero_end"]);
+    $empresa->setComplementoEndereco($data["complemento_end"]);
+    $empresa->setEmpresaId($data['empresa_id']);
+
+    $empresaController = new EmpresaFilialController();
+    $retorno = $empresaController->insert($empresa);
+
+    if ($retorno['status'] == 500){
+        return $response->withJson($retorno, $retorno[status]);
+        die;
+    }else{
+
+        $jwt = setToken($auth['token']->data);
+        $res = array(
+            'status' 		=> 200,
+            'message' 		=> "SUCCESS",
+            'result' 		=> "Filial Cadastrada!",
             'token'			=> $jwt
         );
 
