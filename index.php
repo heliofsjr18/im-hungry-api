@@ -296,7 +296,7 @@ $app->post('/mpadrao/listAll', function(Request $request, Response $response, $a
 
 });
 
-$app->post('/filial/listAll', function(Request $request, Response $response, $args) {
+$app->get('/filial/listAll', function(Request $request, Response $response, $args) {
     $data = $request->getParsedBody();
     $auth = auth($request);
 
@@ -307,11 +307,10 @@ $app->post('/filial/listAll', function(Request $request, Response $response, $ar
     require_once 'Basics/EmpresaFilial.php';
     require_once 'Controller/EmpresaFilialController.php';
 
-    $empresaFilial = new EmpresaFilial();
-    $empresaFilial->setEmpresaId($data['empresa_id']);
+    $user_id = $auth['token']->data->user_id;
 
     $empresaController = new EmpresaFilialController();
-    $retorno = $empresaController->listAll($empresaFilial);
+    $retorno = $empresaController->listAll($user_id);
 
     if ($retorno['status'] == 500){
         return $response->withJson($retorno, $retorno[status]);
@@ -324,7 +323,7 @@ $app->post('/filial/listAll', function(Request $request, Response $response, $ar
             'message' 		=> "SUCCESS",
             'result' 		=> "Filiais Encontradas!",
             'qtd'           => count($retorno),
-            'empresas' 		=> $retorno,
+            'filiais' 		=> $retorno,
             'token'			=> $jwt
         );
 

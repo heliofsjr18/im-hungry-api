@@ -10,14 +10,14 @@ require_once 'Basics/EmpresaFilial.php';
 require_once 'DAO/EmpresaFilialDAO.php';
 class EmpresaFilialController
 {
-    public function listAll(EmpresaFilial $empresaFilial){
-        if ( empty($empresaFilial->getEmpresaId()) ){
-            return array('status' => 500, 'message' => "ERROR", 'result' => 'ID da Empresa não informado!');
+    public function listAll($user_id){
+        if ( empty($user_id)){
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'ID do Usuário não informado!');
             die;
         }
 
         $empresaFilialDAO = new EmpresaFilialDAO();
-        return $empresaFilialDAO->listAll($empresaFilial);
+        return $empresaFilialDAO->listAll($user_id);
 
     }
 
