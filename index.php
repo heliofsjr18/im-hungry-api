@@ -158,10 +158,10 @@ $app->post('/empresa/insert', function(Request $request, Response $response, $ar
     require_once 'Basics/Empresa.php';
     require_once 'Controller/EmpresaController.php';
 
-    $global_dir = $this->get('upload_directory');
-    $files = $request->getUploadedFiles();
-    $file_brand = $files['foto'];
-    $filename = getNameFile($file_brand);
+    //$global_dir = $this->get('upload_directory');
+    //$files = $request->getUploadedFiles();
+    //$file_brand = $files['foto'];
+    //$filename = getNameFile($file_brand);
 
     $empresa = new Empresa();
     $empresa->setNome($data["nome"]);
@@ -177,7 +177,8 @@ $app->post('/empresa/insert', function(Request $request, Response $response, $ar
     $empresa->setInstagram($data["instagram"]);
     $empresa->setTwitter($data["twitter"]);
     $empresa->setUserId($auth['token']->data->user_id);
-    $empresa->setFotoMarca($filename);
+    //$empresa->setFotoMarca($filename);
+    $empresa->setFotoMarca($data["foto"]);
 
     $empresaController = new EmpresaController();
     $retorno = $empresaController->insert($empresa);
@@ -187,7 +188,7 @@ $app->post('/empresa/insert', function(Request $request, Response $response, $ar
         die;
     }else{
 
-        moveUploadedFile($global_dir.DIRECTORY_SEPARATOR."empresa",$file_brand, $filename);
+        //moveUploadedFile($global_dir.DIRECTORY_SEPARATOR."empresa",$file_brand, $filename);
 
         $jwt = setToken($auth['token']->data);
         $res = array(
