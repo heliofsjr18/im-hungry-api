@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "24d07d774a831f1490961cc8668b1701",
+    "content-hash": "e8037bb080faa48988776d36c6262ba0",
     "packages": [
         {
             "name": "container-interop/container-interop",
@@ -128,6 +128,47 @@
                 "routing"
             ],
             "time": "2018-02-13T20:26:39+00:00"
+        },
+        {
+            "name": "pagseguro/pagseguro-php-sdk",
+            "version": "4.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/pagseguro/pagseguro-php-sdk.git",
+                "reference": "653f921d268bb7f7360bcc3fd79abc3b49c106ae"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/pagseguro/pagseguro-php-sdk/zipball/653f921d268bb7f7360bcc3fd79abc3b49c106ae",
+                "reference": "653f921d268bb7f7360bcc3fd79abc3b49c106ae",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "lib-curl": "*",
+                "lib-openssl": "*",
+                "php": ">=5.4.27"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^4.8"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "PagSeguro\\": "source/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "PagSeguro"
+                }
+            ],
+            "description": "Biblioteca de integração com o PagSeguro",
+            "time": "2018-03-19T13:04:02+00:00"
         },
         {
             "name": "phpmailer/phpmailer",

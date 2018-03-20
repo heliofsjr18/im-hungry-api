@@ -19,6 +19,7 @@ class ComposerStaticInitaf7cfcfb67cf42d8f45d93a5009a5f0e
         array (
             'Psr\\Http\\Message\\' => 17,
             'Psr\\Container\\' => 14,
+            'PagSeguro\\' => 10,
             'PHPMailer\\PHPMailer\\' => 20,
         ),
         'I' => 
@@ -44,6 +45,10 @@ class ComposerStaticInitaf7cfcfb67cf42d8f45d93a5009a5f0e
         'Psr\\Container\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/container/src',
+        ),
+        'PagSeguro\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/pagseguro/pagseguro-php-sdk/source',
         ),
         'PHPMailer\\PHPMailer\\' => 
         array (
