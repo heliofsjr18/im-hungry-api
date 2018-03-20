@@ -88,20 +88,22 @@ class EmpresaFilialDAO
 
         $conn = \Database::conexao();
 
-        $sql1 = "SELECT F.filial_id, F.filial_nome, F.filial_status, F.filial_numero_endereco, E.logradouro, E.bairro, E.cidade, E.uf,
-                  ( SELECT 6371 * acos( cos( radians(?) ) * cos( radians( E.latitude ) ) * cos( radians( ? ) - radians(E.longitude) ) + sin( radians(?) ) * sin( radians( E.latitude ) ) ))
+        $sql1 = "SELECT F.filial_id, F.filial_nome, F.filial_status, F.filial_numero_endereco, E.logradouro, E.bairro, E.cidade, E.uf, EM.empresa_foto_marca, 4 as avaliacao,
+                  ( SELECT 6371 * acos( cos( radians(?) ) * cos( radians( E.latitude ) ) * cos( radians( ? ) - radians(E.longitude) ) + sin( radians(?) ) * sin( radians( E.latitude ) ) )) as distancia
                  FROM empresa_filial F
 	             INNER JOIN enderecos E
 			     ON F.filial_cep = E.cep
-                 WHERE F.empresa_id <> NULL
-                 AND ('' OR F.filial_nome LIKE '%'.$search.'%')";
+			     INNER JOIN empresa EM
+			     ON F.empresa_id = EM.empresa_id
+                 WHERE F.empresa_id IS NOT NULL 
+                 AND F.filial_nome LIKE '%".$search."%'";
         $stmt1 = $conn->prepare($sql1);
 
         try {
             $stmt1->bindValue(1,$lat, PDO::PARAM_STR);
             $stmt1->bindValue(2,$long, PDO::PARAM_STR);
             $stmt1->bindValue(3,$lat, PDO::PARAM_STR);
-            $stmt1->bindValue(4,$search, PDO::PARAM_STR);
+
             $stmt1->execute();
 
             $result = $stmt1->fetchAll(PDO::FETCH_OBJ);

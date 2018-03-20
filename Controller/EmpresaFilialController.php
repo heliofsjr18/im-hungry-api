@@ -31,7 +31,7 @@ class EmpresaFilialController
         }
 
         $empresaFilialDAO = new EmpresaFilialDAO();
-        return $empresaFilialDAO->listAll($lat, $long, $search);
+        return $empresaFilialDAO->listApp($lat, $long, $search);
 
     }
 
