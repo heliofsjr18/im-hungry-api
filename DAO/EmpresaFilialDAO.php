@@ -84,6 +84,54 @@ class EmpresaFilialDAO
 
     }
 
+    public function listApp($lat, $long, $search){
+
+        $conn = \Database::conexao();
+
+        $sql1 = "SELECT F.filial_id, F.filial_nome, F.filial_status, F.filial_numero_endereco, E.logradouro, E.bairro, E.cidade, E.uf,
+                  ( SELECT 6371 * acos( cos( radians(?) ) * cos( radians( E.latitude ) ) * cos( radians( ? ) - radians(E.longitude) ) + sin( radians(?) ) * sin( radians( E.latitude ) ) ))
+                 FROM empresa_filial F
+	             INNER JOIN enderecos E
+			     ON F.filial_cep = E.cep
+                 WHERE F.empresa_id <> NULL
+                 AND ('' OR F.filial_nome LIKE '%'.$search.'%')";
+        $stmt1 = $conn->prepare($sql1);
+
+        try {
+            $stmt1->bindValue(1,$lat, PDO::PARAM_STR);
+            $stmt1->bindValue(2,$long, PDO::PARAM_STR);
+            $stmt1->bindValue(3,$lat, PDO::PARAM_STR);
+            $stmt1->bindValue(4,$search, PDO::PARAM_STR);
+            $stmt1->execute();
+
+            $result = $stmt1->fetchAll(PDO::FETCH_OBJ);
+            $count = count($result);
+
+            if ($count == 0){
+                return array(
+                    'status'    => 500,
+                    'message'   => "INFO",
+                    'qtd'       => 0,
+                    'result'    => 'Nenhuma filial encontrada!'
+                );
+            }else{
+                return $result;
+            }
+
+
+
+        } catch (PDOException $ex) {
+            return array(
+                'status'    => 500,
+                'message'   => "ERROR",
+                'result'    => 'Erro na execução da instrução!',
+                'CODE'      => $ex->getCode(),
+                'Exception' => $ex->getMessage(),
+            );
+        }
+
+    }
+
     public function insert(EmpresaFilial $empresaFilial){
 
         $conn = \Database::conexao();

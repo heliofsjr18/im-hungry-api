@@ -21,6 +21,20 @@ class EmpresaFilialController
 
     }
 
+    public function listApp($lat, $long, $search){
+        if ( empty($lat)){
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'Latitude não Informada!');
+            die;
+        }if ( empty($long)){
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'Longitude não Informada!');
+            die;
+        }
+
+        $empresaFilialDAO = new EmpresaFilialDAO();
+        return $empresaFilialDAO->listAll($lat, $long, $search);
+
+    }
+
     public function insert(EmpresaFilial $empresaFilial){
         if ( empty($empresaFilial->getNome()) ){
             return array('status' => 500, 'message' => "ERROR", 'result' => 'Nome não informado!');

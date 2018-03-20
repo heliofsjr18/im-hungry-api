@@ -379,6 +379,46 @@ $app->post('/filial/insert', function(Request $request, Response $response, $arg
 
 });
 
+// Consumo do APP
+
+$app->post('/app/filial/list', function(Request $request, Response $response, $args) {
+    $data = $request->getParsedBody();
+    $auth = auth($request);
+
+    if($auth[status] != 200){
+        return $response->withJson($auth, $auth[status]);
+        die;
+    }
+    require_once 'Controller/EmpresaFilialController.php';
+
+    $lat = $data["latitude"];
+    $long = $data["longitude"];
+    $search = $data["search"];
+
+    $empresaController = new EmpresaFilialController();
+    $retorno = $empresaController->listApp($lat, $long, $search);
+
+    if ($retorno['status'] == 500){
+        return $response->withJson($retorno, $retorno[status]);
+        die;
+    }else{
+
+        $jwt = setToken($auth['token']->data);
+        $res = array(
+            'status' 		=> 200,
+            'message' 		=> "SUCCESS",
+            'result' 		=> "Filiais Encontradas!",
+            'qtd'           => count($retorno),
+            'filiais' 		=> $retorno,
+            'token'			=> $jwt
+        );
+
+        return $response->withJson($res, $res[status]);
+
+    }
+
+
+});
 
 function setToken($obj){
     //Gerar TOKEN
