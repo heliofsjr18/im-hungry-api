@@ -420,6 +420,46 @@ $app->post('/app/filial/list', function(Request $request, Response $response, $a
 
 });
 
+$app->post('/app/menu/list', function(Request $request, Response $response, $args) {
+    $data = $request->getParsedBody();
+    $auth = auth($request);
+
+    if($auth[status] != 200){
+        return $response->withJson($auth, $auth[status]);
+        die;
+    }
+    require_once 'Basics/MenuFilialItens.php';
+    require_once 'Controller/MenuItensController.php';
+
+    $menu = new MenuFilialItens();
+    $menu->setFilialId($data["filial_id"]);
+    $menu->setNome($data["search"]);
+
+    $menuController = new MenuItensController();
+    $retorno = $menuController->listAll($menu);
+
+    if ($retorno['status'] == 500){
+        return $response->withJson($retorno, $retorno[status]);
+        die;
+    }else{
+
+        $jwt = setToken($auth['token']->data);
+        $res = array(
+            'status' 		=> 200,
+            'message' 		=> "SUCCESS",
+            'result' 		=> "Menu Encontrado!",
+            'menu'  		=> $retorno,
+            'token'			=> $jwt
+        );
+
+        return $response->withJson($res, $res[status]);
+
+    }
+
+
+});
+
+
 function setToken($obj){
     //Gerar TOKEN
     $tokenId    = base64_encode(mcrypt_create_iv(32));

@@ -14,7 +14,23 @@ class MenuFilialItens
     private $tempo_medio;
     private $status;
     private $promocao;
-    private $menu_id;
+    private $filial_id;
+
+    /**
+     * @return mixed
+     */
+    public function getFilialId()
+    {
+        return $this->filial_id;
+    }
+
+    /**
+     * @param mixed $filial_id
+     */
+    public function setFilialId($filial_id)
+    {
+        $this->filial_id = $filial_id;
+    }
 
     /**
      * @return mixed
@@ -112,21 +128,7 @@ class MenuFilialItens
         $this->promocao = $promocao;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getMenuId()
-    {
-        return $this->menu_id;
-    }
 
-    /**
-     * @param mixed $menu_id
-     */
-    public function setMenuId($menu_id)
-    {
-        $this->menu_id = $menu_id;
-    }
 
 
 }
