@@ -459,6 +459,42 @@ $app->post('/app/menu/list', function(Request $request, Response $response, $arg
 
 });
 
+$app->post('/app/checkout', function(Request $request, Response $response, $args) {
+    $data = $request->getParsedBody();
+    $auth = auth($request);
+
+    if($auth[status] != 200){
+        return $response->withJson($auth, $auth[status]);
+        die;
+    }
+
+    require_once 'Basics/CheckoutItens.php';
+    require_once 'Controller/CheckoutItensController.php';
+
+    $checkoutController = new CheckoutItensController();
+    $retorno = $checkoutController->generate($data['item_id'], $data['item_qtd']);
+
+    if ($retorno['status'] == 500){
+        return $response->withJson($retorno, $retorno[status]);
+        die;
+    }else{
+
+        $jwt = setToken($auth['token']->data);
+        $res = array(
+            'status' 		=> 200,
+            'message' 		=> "SUCCESS",
+            'result' 		=> "Compra realizada, verifique o status do pagamento!",
+            'menu'  		=> $retorno,
+            'token'			=> $jwt
+        );
+
+        return $response->withJson($res, $res[status]);
+
+    }
+
+
+});
+
 
 function setToken($obj){
     //Gerar TOKEN
