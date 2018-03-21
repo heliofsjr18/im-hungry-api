@@ -471,8 +471,10 @@ $app->post('/app/checkout', function(Request $request, Response $response, $args
     require_once 'Basics/CheckoutItens.php';
     require_once 'Controller/CheckoutItensController.php';
 
+    $user_id = $auth['token']->data->user_id;
+
     $checkoutController = new CheckoutItensController();
-    $retorno = $checkoutController->generate($data['item_id'], $data['item_qtd']);
+    $retorno = $checkoutController->generate($data['item_id'], $data['item_qtd'], $user_id);
 
     if ($retorno['status'] == 500){
         return $response->withJson($retorno, $retorno[status]);

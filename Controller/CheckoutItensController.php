@@ -8,7 +8,7 @@
 require_once 'DAO/CheckoutItensDAO.php';
 class CheckoutItensController
 {
-    public function generate($array_itens, $array_qtd){
+    public function generate($array_itens, $array_qtd, $user_id){
         if ( count($array_itens) == 0 ){
             return array('status' => 500, 'message' => "ERROR", 'result' => 'Itens não informados!');
             die;
@@ -21,7 +21,7 @@ class CheckoutItensController
         }
 
         $checkoutDAO = new CheckoutItensDAO();
-        return $checkoutDAO->generate($array_itens, $array_qtd);
+        return $checkoutDAO->generate($array_itens, $array_qtd, $user_id);
 
     }
 }
