@@ -78,7 +78,7 @@ class CheckoutItensDAO
             );
 
             // Set credit card token
-            $creditCard->setToken('2ed34e61b24d4ea8ae872c66a512525c');
+            $creditCard->setToken('c147bd085c8e495f8b89f5c28a0386a1');
 
             // Set the installment quantity and value (could be obtained using the Installments
             // service, that have an example here in \public\getInstallments.php)

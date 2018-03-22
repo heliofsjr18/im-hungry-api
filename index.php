@@ -497,6 +497,32 @@ $app->post('/app/checkout', function(Request $request, Response $response, $args
 
 });
 
+$app->get('/app/session', function(Request $request, Response $response, $args) {
+
+    $auth = auth($request);
+    if($auth["status"] != 200){
+        return $response->withJson($auth, $auth["status"]);
+        die;
+    }
+    //Carregando libs do pagSeguro
+    \PagSeguro\Library::initialize();
+    \PagSeguro\Library::cmsVersion()->setName("ImHungry")->setRelease("1.0.0");
+    \PagSeguro\Library::moduleVersion()->setName("ImHungry")->setRelease("1.0.0");
+
+    // Inicializando Session
+    try {
+        $sessionCode = \PagSeguro\Services\Session::create(
+            \PagSeguro\Configuration\Configure::getAccountCredentials()
+        );
+        return $response->withJson(['status' => 200, 'sessionId' => $sessionCode->getResult()]);
+    } catch (Exception $e) {
+        die($e->getMessage());
+        $res = array('status' => 404, 'message' => "ERROR", 'result' => 'Erro ao consultar PagSeguro!');
+        return $response->withJson($res, $res["status"]);
+    }
+
+});
+
 
 function setToken($obj){
     //Gerar TOKEN
