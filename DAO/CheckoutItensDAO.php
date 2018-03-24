@@ -116,16 +116,16 @@ class CheckoutItensDAO
 
 
 //            // Mudar por informações do banco
-//            $creditCard->setBilling()->setAddress()->withParameters(
-//                'Av. Brig. Faria Lima',
-//                '1384',
-//                'Jardim Paulistano',
-//                '01452002',
-//                'São Paulo',
-//                'SP',
-//                'BRA',
-//                'apto. 114'
-//            );
+            $creditCard->setBilling()->setAddress()->withParameters(
+                'Av. Brig. Faria Lima',
+                '1384',
+                'Jardim Paulistano',
+                '01452002',
+                'São Paulo',
+                'SP',
+                'BRA',
+                'apto. 114'
+            );
 //
 //
 //            var_dump('teste');
@@ -180,21 +180,3 @@ class CheckoutItensDAO
 
     }
 }
-
-//        \PagSeguro\Library::initialize();
-//        \PagSeguro\Library::cmsVersion()->setName("Nome")->setRelease("1.0.0");
-//        \PagSeguro\Library::moduleVersion()->setName("Nome")->setRelease("1.0.0");
-//        \PagSeguro\Configuration\Configure::setCharset('UTF-8');// UTF-8 or ISO-8859-1
-//        //\PagSeguro\Configuration\Configure::setLog(true, '/logpath/pagseguro.log');
-//
-//        \PagSeguro\Configuration\Configure::setEnvironment('sandbox');//production or sandbox
-//        \PagSeguro\Configuration\Configure::setAccountCredentials(
-//            /*E-Mail*/
-//            'pagseguro@rafafreitas.com',
-//
-//            /*sandbox*/
-//            'E6D827F59A0A46488AB467A4BDB4A43E'
-//
-//            /*Produção*/
-//            //'0C72863036CA4D8E9B7486AC70BA8DE7'
-//        );
