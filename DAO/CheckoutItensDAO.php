@@ -10,7 +10,7 @@ require_once 'Connection/Conexao.php';
 require_once "lib/vendor/autoload.php";
 class CheckoutItensDAO
 {
-    public function generate($array_itens, $array_qtd, $user_id){
+    public function generate($array_itens, $array_qtd, $token, $hash, $user_id){
 
         $conn = \Database::conexao();
         $sql = "SELECT item_id, item_nome, item_valor
@@ -18,11 +18,31 @@ class CheckoutItensDAO
                 WHERE item_id = ?;";
         $stmt = $conn->prepare($sql);
 
-        $sql2 = "SELECT user_id, user_nome, user_cpf, user_email, user_telefone,
-                        user_data, user_cadastro, user_foto_perfil, user_status, tipo_id,
-						DATE_FORMAT(user_data, '%d/%m/%Y') as dateAniversario, 
-						DATE_FORMAT(user_cadastro, '%d/%m/%Y') as dateCadastro 
-			FROM usuarios WHERE user_id = ? LIMIT 1;";
+        $sql2 = "SELECT usu.user_id, 
+                        usu.user_nome, 
+                        usu.user_cpf, 
+                        usu.user_email, 
+                        usu.user_telefone, 
+                        usu.user_data,
+                        usu.user_cadastro, 
+                        usu.user_foto_perfil, 
+                        usu.user_cep,  
+                        usu.user_endereco_numero,  
+                        usu.user_endereco_complemento,  
+                        usu.user_status, 
+                        usu.tipo_id,
+						DATE_FORMAT(usu.user_data, '%d/%m/%Y') as dateAniversario, 
+						DATE_FORMAT(usu.user_cadastro, '%d/%m/%Y') as dateCadastro, 
+						
+						ende.logradouro,
+						ende.bairro,
+						ende.cidade
+						
+			      FROM usuarios usu
+			      INNER JOIN enderecos ende
+			      ON usu.user_cep = ende.cep
+			      
+			      WHERE usu.user_id = ? LIMIT 1;";
         $stmt2 = $conn->prepare($sql2);
 
         try {
@@ -39,9 +59,11 @@ class CheckoutItensDAO
                 $stmt->execute();
                 $itemCompleto = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 $itemCompleto[0]['qtd'] = $array_qtd[$key];
-                $totalCompra += $itemCompleto[0]['item_valor'];
+                $totalCompra += ($itemCompleto[0]['item_valor'] * $array_qtd[$key]);
                 array_push($carCompleto, $itemCompleto[0]);
             }
+
+            $totalCompra = number_format($totalCompra, 2, '.', '');
 
         } catch (PDOException $ex) {
             return array(
@@ -75,7 +97,7 @@ class CheckoutItensDAO
                     $aux,
                     $value['item_nome'],
                     $value['qtd'],
-                    $value['item_valor']
+                    number_format($value['item_valor'], 2, '.', '')
                 );
             }
 
@@ -97,48 +119,36 @@ class CheckoutItensDAO
                 $userData['user_cpf']
             );
 
-            $creditCard->setSender()->setHash('76edfe9d633729d84e9ec181d85faf574e601510e5281dc3ce9e1ea134964888');
+            $creditCard->setSender()->setHash($hash);
 
             $creditCard->setSender()->setIp('127.0.0.0');
 
-            // Mudar por informações do banco
             $creditCard->setShipping()->setAddress()->withParameters(
-                'Av. Brig. Faria Lima',
-                '1384',
-                'Jardim Paulistano',
-                '01452002',
-                'São Paulo',
-                'SP',
+                $userData['logradouro'],
+                $userData['user_endereco_numero'],
+                $userData['bairro'],
+                $userData['user_cep'],
+                $userData['cidade'],
+                $userData['uf'],
                 'BRA',
-                'apto. 114'
+                $userData['user_endereco_complemento']
             );
 
-
-
-//            // Mudar por informações do banco
             $creditCard->setBilling()->setAddress()->withParameters(
-                'Av. Brig. Faria Lima',
-                '1384',
-                'Jardim Paulistano',
-                '01452002',
-                'São Paulo',
-                'SP',
+                $userData['logradouro'],
+                $userData['user_endereco_numero'],
+                $userData['bairro'],
+                $userData['user_cep'],
+                $userData['cidade'],
+                $userData['uf'],
                 'BRA',
-                'apto. 114'
+                $userData['user_endereco_complemento']
             );
-//
-//
-//            var_dump('teste');
-//            die;
 
-            // Set credit card token
-            $creditCard->setToken('221f8c3314ad47e39505a1b9a2e68a37');
+            $creditCard->setToken($token);
 
-            // Set the installment quantity and value (could be obtained using the Installments
-            // service, that have an example here in \public\getInstallments.php)
             $creditCard->setInstallment()->withParameters(1, $totalCompra);
 
-            // Set the credit card holder information
             $creditCard->setHolder()->setBirthdate($userData['dateAniversario']);
             $creditCard->setHolder()->setName($userData['user_nome']); // Equals in Credit Card
 
@@ -152,20 +162,17 @@ class CheckoutItensDAO
                 $userData['user_cpf']
             );
 
-            // Set the Payment Mode for this payment request
             $creditCard->setMode('DEFAULT');
 
-            // Set a reference code for this payment request. It is useful to identify this payment
-            // in future notifications.
-
-
             try {
-                //Get the crendentials and register the boleto payment
+
                 $result = $creditCard->register(
                     \PagSeguro\Configuration\Configure::getAccountCredentials()
                 );
-                echo "<pre>";
-                print_r($result);
+
+                var_dump($result);
+                die;
+
             } catch (Exception $e) {
                 echo "</br> <strong>";
                 die($e->getMessage());
