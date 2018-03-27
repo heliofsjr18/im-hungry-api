@@ -195,19 +195,20 @@ class CheckoutItensDAO
                 $stmt->bindValue(7,$tipo_pag, PDO::PARAM_INT);
                 $stmt->bindValue(8,$user_id, PDO::PARAM_INT);
                 $stmt->execute();
-
                 $last_id = $conn->lastInsertId();
+
 
                 foreach ($carCompleto as $key => $value) {
 
                     $sql = "INSERT INTO checkout_itens (checkout_item_qtd, checkout_item_valor, item_id, checkout_id)
-                    VALUES ( ?, ?, ?, ?);";
+                    VALUES ( ?, ?, ?, ?)";
                     $stmt = $conn->prepare($sql);
-
-                    $stmt->bindValue(1,$value['qtd'], PDO::PARAM_STR);
+                    
+                    $stmt->bindValue(1,$value['qtd'], PDO::PARAM_INT);
                     $stmt->bindValue(2,$value['item_valor'], PDO::PARAM_STR);
-                    $stmt->bindValue(3,$value['item_id'], PDO::PARAM_STR);
-                    $stmt->bindValue(4,$last_id, PDO::PARAM_STR);
+                    $stmt->bindValue(3,$value['item_id'], PDO::PARAM_INT);
+                    $stmt->bindValue(4,$last_id, PDO::PARAM_INT);
+                    $stmt->execute();
 
                 }
 
