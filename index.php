@@ -471,10 +471,14 @@ $app->post('/app/checkout', function(Request $request, Response $response, $args
     require_once 'Basics/CheckoutItens.php';
     require_once 'Controller/CheckoutItensController.php';
 
+    $array_itens = $data['item_id'];
+    $array_qtd = $data['item_qtd'];
+    $token = $data['token'];
+    $hash = $data['hash'];
     $user_id = $auth['token']->data->user_id;
 
     $checkoutController = new CheckoutItensController();
-    $retorno = $checkoutController->generate($data['item_id'], $data['item_qtd'], $user_id);
+    $retorno = $checkoutController->generate($array_itens, $array_qtd, $token, $hash, $user_id);
 
     if ($retorno['status'] == 500){
         return $response->withJson($retorno, $retorno[status]);
@@ -486,7 +490,8 @@ $app->post('/app/checkout', function(Request $request, Response $response, $args
             'status' 		=> 200,
             'message' 		=> "SUCCESS",
             'result' 		=> "Compra realizada, verifique o status do pagamento!",
-            'menu'  		=> $retorno,
+            'code'        	=> $retorno['code'],
+            'reference'  	=> $retorno['reference'],
             'token'			=> $jwt
         );
 
@@ -529,7 +534,7 @@ function setToken($obj){
     $tokenId    = base64_encode(mcrypt_create_iv(32));
     $issuedAt   = time();
     $notBefore  = $issuedAt + 10;  //Adicionado 10 segundos
-    $expire     = $notBefore + 86400; // Válido por 1 dia(Para testes) Tempo calculado em segundos
+    $expire     = $notBefore + 8640000; // Válido por 100 dias(Para testes) Tempo calculado em segundos
     $serverName = 'http://rafafreitas.com/'; /// Nome do seu domínio
     ///
     $data = [

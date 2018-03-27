@@ -36,7 +36,8 @@ class CheckoutItensDAO
 						
 						ende.logradouro,
 						ende.bairro,
-						ende.cidade
+						ende.cidade,
+						ende.uf
 						
 			      FROM usuarios usu
 			      INNER JOIN enderecos ende
@@ -170,8 +171,54 @@ class CheckoutItensDAO
                     \PagSeguro\Configuration\Configure::getAccountCredentials()
                 );
 
-                var_dump($result);
-                die;
+
+                $code =       $result->getCode();
+                $status =     $result->getStatus();
+                $bruto =      $result->getGrossAmount();
+                $liquido =    $result->getNetAmount();
+                $tipo_pag =   $result->getPaymentMethod()->getType();
+                $taxaPag    = $result->getFeeAmount();
+                $referencia = $result->getReference();
+
+                $sql = "INSERT INTO checkout (checkout_ref, checkout_code, checkout_status, checkout_date, 
+                                              checkout_last_event, checkout_valor_bruto, checkout_valor_liquido,
+                                              checkout_taxa, checkout_forma_pagamento, user_id, cartao_id)
+                VALUES ( ?, ?, ?, NOW(), NOW(), ?, ?, ?, ?, ?, 1);";
+                $stmt = $conn->prepare($sql);
+
+                $stmt->bindValue(1,$referencia, PDO::PARAM_STR);
+                $stmt->bindValue(2,$code, PDO::PARAM_STR);
+                $stmt->bindValue(3,$status, PDO::PARAM_STR);
+                $stmt->bindValue(4,$bruto, PDO::PARAM_STR);
+                $stmt->bindValue(5,$liquido, PDO::PARAM_STR);
+                $stmt->bindValue(6,$taxaPag, PDO::PARAM_STR);
+                $stmt->bindValue(7,$tipo_pag, PDO::PARAM_INT);
+                $stmt->bindValue(8,$user_id, PDO::PARAM_INT);
+                $stmt->execute();
+
+                $last_id = $conn->lastInsertId();
+
+                foreach ($carCompleto as $key => $value) {
+
+                    $sql = "INSERT INTO checkout_itens (checkout_item_qtd, checkout_item_valor, item_id, checkout_id)
+                    VALUES ( ?, ?, ?, ?);";
+                    $stmt = $conn->prepare($sql);
+
+                    $stmt->bindValue(1,$value['qtd'], PDO::PARAM_STR);
+                    $stmt->bindValue(2,$value['item_valor'], PDO::PARAM_STR);
+                    $stmt->bindValue(3,$value['item_id'], PDO::PARAM_STR);
+                    $stmt->bindValue(4,$last_id, PDO::PARAM_STR);
+
+                }
+
+                return array(
+                    'status'    => 200,
+                    'message'   => "SUCCESS",
+                    'code'      => $code,
+                    'reference' => $referencia
+                );
+
+
 
             } catch (Exception $e) {
                 echo "</br> <strong>";
