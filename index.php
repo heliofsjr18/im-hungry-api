@@ -379,6 +379,51 @@ $app->post('/filial/insert', function(Request $request, Response $response, $arg
 
 });
 
+$app->post('/cep', function(Request $request, Response $response, $args) {
+    $data = $request->getParsedBody();
+    $auth = auth($request);
+
+    if($auth[status] != 200){
+        return $response->withJson($auth, $auth[status]);
+        die;
+    }
+    require_once 'Basics/Enderecos.php';
+    require_once 'Controller/EnderecosController.php';
+
+
+    $cep = str_replace(".", "", $data['cep']);
+    $cep = str_replace("-", "", $cep);
+    $cep = mask($cep,'#####-###');
+
+    $endereco = new Enderecos();
+    $endereco->setCep($cep);
+
+    $enderecoController = new EnderecosController();
+    $retorno = $enderecoController->listCep($endereco);
+
+    if ($retorno['status'] == 500){
+        return $response->withJson($retorno, $retorno[status]);
+        die;
+    }else{
+
+        $jwt = setToken($auth['token']->data);
+        $res = array(
+            'status' 		=> 200,
+            'message' 		=> "SUCCESS",
+            'result' 		=> "CEP Encontrado!",
+            'dados' 		=> $retorno[0],
+            'token'			=> $jwt
+        );
+
+        return $response->withJson($res, $res[status]);
+
+    }
+
+
+});
+
+
+
 // Consumo do APP
 
 $app->post('/app/filial/list', function(Request $request, Response $response, $args) {
