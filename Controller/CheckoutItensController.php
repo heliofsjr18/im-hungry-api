@@ -53,4 +53,17 @@ class CheckoutItensController
         $checkoutDAO = new CheckoutItensDAO();
         return $checkoutDAO->notification($code, $status, $referencia, $disponivel, $lastEventDate);
     }
+
+    public function consult($ref, $user_id){
+
+        if ( empty($ref) ){
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'Código de referência não informado!');
+            die;
+        }if ( empty($user_id) ){
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'Id do usuário não informado!');
+            die;
+        }
+        $checkoutDAO = new CheckoutItensDAO();
+        return $checkoutDAO->consult($ref, $user_id);
+    }
 }

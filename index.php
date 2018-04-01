@@ -504,6 +504,32 @@ $app->post('/app/menu/list', function(Request $request, Response $response, $arg
 
 });
 
+$app->get('/app/session', function(Request $request, Response $response, $args) {
+
+    $auth = auth($request);
+    if($auth["status"] != 200){
+        return $response->withJson($auth, $auth["status"]);
+        die;
+    }
+    //Carregando libs do pagSeguro
+    \PagSeguro\Library::initialize();
+    \PagSeguro\Library::cmsVersion()->setName("ImHungry")->setRelease("1.0.0");
+    \PagSeguro\Library::moduleVersion()->setName("ImHungry")->setRelease("1.0.0");
+
+    // Inicializando Session
+    try {
+        $sessionCode = \PagSeguro\Services\Session::create(
+            \PagSeguro\Configuration\Configure::getAccountCredentials()
+        );
+        return $response->withJson(['status' => 200, 'sessionId' => $sessionCode->getResult()]);
+    } catch (Exception $e) {
+        die($e->getMessage());
+        $res = array('status' => 404, 'message' => "ERROR", 'result' => 'Erro ao consultar PagSeguro!');
+        return $response->withJson($res, $res["status"]);
+    }
+
+});
+
 $app->post('/app/checkout', function(Request $request, Response $response, $args) {
     $data = $request->getParsedBody();
     $auth = auth($request);
@@ -544,32 +570,6 @@ $app->post('/app/checkout', function(Request $request, Response $response, $args
 
     }
 
-
-});
-
-$app->get('/app/session', function(Request $request, Response $response, $args) {
-
-    $auth = auth($request);
-    if($auth["status"] != 200){
-        return $response->withJson($auth, $auth["status"]);
-        die;
-    }
-    //Carregando libs do pagSeguro
-    \PagSeguro\Library::initialize();
-    \PagSeguro\Library::cmsVersion()->setName("ImHungry")->setRelease("1.0.0");
-    \PagSeguro\Library::moduleVersion()->setName("ImHungry")->setRelease("1.0.0");
-
-    // Inicializando Session
-    try {
-        $sessionCode = \PagSeguro\Services\Session::create(
-            \PagSeguro\Configuration\Configure::getAccountCredentials()
-        );
-        return $response->withJson(['status' => 200, 'sessionId' => $sessionCode->getResult()]);
-    } catch (Exception $e) {
-        die($e->getMessage());
-        $res = array('status' => 404, 'message' => "ERROR", 'result' => 'Erro ao consultar PagSeguro!');
-        return $response->withJson($res, $res["status"]);
-    }
 
 });
 
@@ -638,6 +638,51 @@ $app->post('/app/notification', function(Request $request, Response $response, $
     } catch (Exception $e) {
         die($e->getMessage());
     }
+
+});
+
+$app->post('/app/checkout/status', function(Request $request, Response $response, $args) {
+    $data = $request->getParsedBody();
+    $auth = auth($request);
+
+    if($auth[status] != 200){
+        return $response->withJson($auth, $auth[status]);
+        die;
+    }
+
+    require_once 'Basics/StatusPagSeguro.php';
+    require_once 'Controller/CheckoutItensController.php';
+
+    $ref = $data['referencia'];
+    $user_id = $auth['token']->data->user_id;
+
+    $checkoutController = new CheckoutItensController();
+    $retorno = $checkoutController->consult($ref, $user_id);
+
+    if ($retorno['status'] == 500){
+        return $response->withJson($retorno, $retorno[status]);
+        die;
+    }else{
+
+        $statusPagSeguro = new StatusPagSeguro();
+        $statusPagSeguro->setCode($retorno[0]->checkout_status);
+        $status = $statusPagSeguro->getStaus();
+
+        $jwt = setToken($auth['token']->data);
+        $res = array(
+            'status' 		=> 200,
+            'message' 		=> "SUCCESS",
+            'result' 		=> "Checkout localizado",
+            'code'        	=> $status['code'],
+            'significado'  	=> $status['significado'],
+            'explicacao'  	=> $status['explicacao'],
+            'token'			=> $jwt
+        );
+
+        return $response->withJson($res, $res[status]);
+
+    }
+
 
 });
 
