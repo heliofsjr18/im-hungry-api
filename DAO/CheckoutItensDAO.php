@@ -234,4 +234,51 @@ class CheckoutItensDAO
 
 
     }
+
+    public function notification($code, $status, $referencia, $disponivel, $lastEventDate){
+        $conn = \Database::conexao();
+        $sql = "UPDATE checkout SET 
+                  checkout_status = ?, 
+                  checkout_disponivel = ?,
+                  checkout_last_event = ?
+
+                  WHERE checkout_ref = ? 
+                  AND checkout_code = ?;";
+        $stmt = $conn->prepare($sql);
+
+        try {
+            $stmt->bindValue(1,$status);
+            $stmt->bindValue(2,$disponivel);
+            $stmt->bindValue(3,$lastEventDate);
+            $stmt->bindValue(4,$referencia);
+            $stmt->bindValue(5,$code);
+            $stmt->execute();
+
+            $count = $stmt->rowCount();
+
+            if ($count == 1) {
+                return $count;
+            }else{
+                return array(
+                    'status'    => 500,
+                    'message'   => "ERROR",
+                    'result'    => 'Erro na execução da instrução!',
+                    'linhas'    => $count
+                );
+            }
+
+
+
+        } catch (PDOException $ex) {
+            return array(
+                'status'    => 500,
+                'message'   => "ERROR",
+                'result'    => 'Erro na execução da instrução!',
+                'CODE'      => $ex->getCode(),
+                'Exception' => $ex->getMessage(),
+            );
+        }
+
+
+    }
 }

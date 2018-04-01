@@ -30,4 +30,27 @@ class CheckoutItensController
         return $checkoutDAO->generate($array_itens, $array_qtd, $token, $hash, $user_id);
 
     }
+
+    public function notification($code, $status, $referencia, $disponivel, $lastEventDate){
+
+        if ( empty($code) ){
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'Código da Transação não informado!');
+            die;
+        }if ( empty($status) ){
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'Status da Transação não informado!');
+            die;
+        }if ( empty($referencia) ){
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'Referencia da Transação não informado!');
+            die;
+        }if ( empty($disponivel) ){
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'Disponiblidade não informada!');
+            die;
+        }if ( empty($lastEventDate) ){
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'Última atualização não informada!');
+            die;
+        }
+
+        $checkoutDAO = new CheckoutItensDAO();
+        return $checkoutDAO->notification($code, $status, $referencia, $disponivel, $lastEventDate);
+    }
 }

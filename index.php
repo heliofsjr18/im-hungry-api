@@ -573,6 +573,74 @@ $app->get('/app/session', function(Request $request, Response $response, $args) 
 
 });
 
+$app->post('/app/notification', function(Request $request, Response $response, $args) {
+
+    $data = $request->getParsedBody();
+
+    \PagSeguro\Library::initialize();
+    \PagSeguro\Library::cmsVersion()->setName("ImHungry")->setRelease("1.0.0");
+    \PagSeguro\Library::moduleVersion()->setName("ImHungry")->setRelease("1.0.0");
+
+    try {
+        if (\PagSeguro\Helpers\Xhr::hasPost()) {
+            $notification = \PagSeguro\Services\Transactions\Notification::check(
+                \PagSeguro\Configuration\Configure::getAccountCredentials()
+            );
+
+        } else {
+            throw new \InvalidArgumentException($_POST);
+        }
+
+        $code = $notification->getCode();
+        $status = $notification->getStatus();
+        $referencia = $notification->getReference();
+        $disponivel = $notification->getEscrowEndDate();
+        $lastEventDate = $notification->getLastEventDate();
+
+        $delimiter = explode("T", $lastEventDate);
+        $date = $delimiter[0];
+        $delimiter = explode(".", $delimiter[1]);
+        $time = $delimiter[0];
+        $lastEventDate = $date." ".$time;
+
+        if (!is_null($disponivel)){
+            $delimiter = explode("T", $disponivel);
+            $date = $delimiter[0];
+            $delimiter = explode(".", $delimiter[1]);
+            $time = $delimiter[0];
+            $disponivel = $date." ".$time;
+        }
+
+        require_once 'Basics/CheckoutItens.php';
+        require_once 'Controller/CheckoutItensController.php';
+
+        $checkoutController = new CheckoutItensController();
+        $retorno = $checkoutController->notification($code, $status, $referencia, $disponivel, $lastEventDate);
+
+        if ($retorno['status'] == 500){
+            return $response->withJson($retorno, $retorno[status]);
+            die;
+        }else{
+
+            $res = array(
+                'status' 		=> 200,
+                'message' 		=> "SUCCESS",
+                'result' 		=> "Notificação recebida com sucesso! Dados da transação alterados.",
+                'linhas'        => $retorno,
+                'trans_status'  => $status,
+                'code'        	=> $code
+            );
+
+            return $response->withJson($res, $res[status]);
+
+        }
+
+    } catch (Exception $e) {
+        die($e->getMessage());
+    }
+
+});
+
 
 function setToken($obj){
     //Gerar TOKEN
