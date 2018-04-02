@@ -163,9 +163,13 @@ $app->post('/empresa/insert', function(Request $request, Response $response, $ar
     //$file_brand = $files['foto'];
     //$filename = getNameFile($file_brand);
 
+    $telefone = str_replace("(", "", $data["telefone"]);
+    $telefone = str_replace(")", "", $telefone);
+    $telefone = str_replace("-", "", $telefone);
+
     $empresa = new Empresa();
     $empresa->setNome($data["nome"]);
-    $empresa->setTelefone($data["telefone"]);
+    $empresa->setTelefone($telefone);
     $empresa->setCnpj($data["cnpj"]);
     $empresa->setCep($data["cep"]);
     $empresa->setLatitude($data["lat"]);
