@@ -26,6 +26,7 @@ class Empresa
     private $instagram;
     private $twitter;
     private $status;
+    private $enabled;
     private $user_id;
 
     /**
@@ -314,6 +315,22 @@ class Empresa
     public function setStatus($status)
     {
         $this->status = $status;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getEnabled()
+    {
+        return $this->enabled;
+    }
+
+    /**
+     * @param mixed $enabled
+     */
+    public function setEnabled($enabled)
+    {
+        $this->enabled = $enabled;
     }
 
     /**

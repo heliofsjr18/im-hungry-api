@@ -16,13 +16,15 @@ class EmpresaDAO
         $sql = "SELECT empresa_id, empresa_nome, empresa_telefone, empresa_cnpj, empresa_cep, empresa_lat, 
                        empresa_long, empresa_numero_endereco, empresa_complemento_endereco, empresa_data_fundacao, 
                        empresa_data_cadastro, empresa_foto_marca, empresa_foto_perfil, empresa_foto_capa, 
-                       empresa_facebook, empresa_instagram, empresa_twitter, empresa_status, user_id
+                       empresa_facebook, empresa_instagram, empresa_twitter, empresa_status, empresa_enabled, user_id
                 FROM empresa 
-                WHERE user_id = ?;";
+                WHERE user_id = ?
+                AND empresa_enabled = ?;";
         $stmt = $conn->prepare($sql);
 
         try {
             $stmt->bindValue(1,$empresa->getUserId(), PDO::PARAM_INT);
+            $stmt->bindValue(2,$empresa->getEnabled());
             $stmt->execute();
             $countLogin = $stmt->rowCount();
             $resultEmpresa = $stmt->fetchAll(PDO::FETCH_OBJ);

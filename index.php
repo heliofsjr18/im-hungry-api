@@ -108,7 +108,9 @@ $app->post('/usuario/update', function(Request $request, Response $response, $ar
 
 });
 
-$app->get('/empresa/listAll', function(Request $request, Response $response, $args) {
+// Consumo WEB
+
+$app->post('/web/empresa/listAll', function(Request $request, Response $response, $args) {
     $data = $request->getParsedBody();
     $auth = auth($request);
 
@@ -119,8 +121,11 @@ $app->get('/empresa/listAll', function(Request $request, Response $response, $ar
     require_once 'Basics/Empresa.php';
     require_once 'Controller/EmpresaController.php';
 
+    $enabled = ($data["enabled"] == 'true')? true : false ;
+
     $empresa = new Empresa();
     $empresa->setUserId($auth['token']->data->user_id);
+    $empresa->setEnabled($enabled);
 
     $empresaController = new EmpresaController();
     $retorno = $empresaController->listAll($empresa);
@@ -135,6 +140,7 @@ $app->get('/empresa/listAll', function(Request $request, Response $response, $ar
             'status' 		=> 200,
             'message' 		=> "SUCCESS",
             'result' 		=> "Empresas Encontradas!",
+            'enabled'       => $data["enabled"],
             'qtd'           => count($retorno),
             'empresas' 		=> $retorno,
             'token'			=> $jwt

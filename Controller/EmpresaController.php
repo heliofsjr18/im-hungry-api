@@ -14,6 +14,9 @@ class EmpresaController
         if ( empty($empresa->getUserId()) ){
             return array('status' => 500, 'message' => "ERROR", 'result' => 'Id do usuário não informado!');
             die;
+        }if ( empty($empresa->getEnabled()) ){
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'Enabled da Empresa não definido!');
+            die;
         }
 
         $empresaDAO = new EmpresaDAO();
