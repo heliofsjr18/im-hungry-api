@@ -153,7 +153,7 @@ $app->post('/web/empresa/listAll', function(Request $request, Response $response
 
 });
 
-$app->post('/empresa/insert', function(Request $request, Response $response, $args) {
+$app->post('/web/empresa/insert', function(Request $request, Response $response, $args) {
     $data = $request->getParsedBody();
     $auth = auth($request);
 
@@ -205,6 +205,61 @@ $app->post('/empresa/insert', function(Request $request, Response $response, $ar
             'status' 		=> 200,
             'message' 		=> "SUCCESS",
             'result' 		=> "Empresa Cadastrada!",
+            'token'			=> $jwt
+        );
+
+        return $response->withJson($res, $res[status]);
+
+    }
+
+
+});
+
+$app->post('/web/empresa/update', function(Request $request, Response $response, $args) {
+    $data = $request->getParsedBody();
+    $auth = auth($request);
+
+    if($auth[status] != 200){
+        return $response->withJson($auth, $auth[status]);
+        die;
+    }
+    require_once 'Basics/Empresa.php';
+    require_once 'Controller/EmpresaController.php';
+
+    $telefone = str_replace("(", "", $data["telefone"]);
+    $telefone = str_replace(")", "", $telefone);
+    $telefone = str_replace("-", "", $telefone);
+
+    $empresa = new Empresa();
+    $empresa->setId($data["idAt"]);
+    $empresa->setNome($data["nome"]);
+    $empresa->setTelefone($telefone);
+    $empresa->setCnpj($data["cnpj"]);
+    $empresa->setCep($data["cep"]);
+    $empresa->setLatitude($data["lat"]);
+    $empresa->setLongitude($data["long"]);
+    $empresa->setNumeroEndereco($data["numero_end"]);
+    $empresa->setComplementoEndereco($data["complemento_end"]);
+    $empresa->setDataFundacao($data["dataFund"]);
+    $empresa->setFacebook($data["facebook"]);
+    $empresa->setInstagram($data["instagram"]);
+    $empresa->setTwitter($data["twitter"]);
+    $empresa->setUserId($auth['token']->data->user_id);
+    $empresa->setFotoMarca($data["foto"]);
+
+    $empresaController = new EmpresaController();
+    $retorno = $empresaController->update($empresa);
+
+    if ($retorno['status'] == 500){
+        return $response->withJson($retorno, $retorno[status]);
+        die;
+    }else{
+
+        $jwt = setToken($auth['token']->data);
+        $res = array(
+            'status' 		=> 200,
+            'message' 		=> "SUCCESS",
+            'result' 		=> "Dados Atualizados!",
             'token'			=> $jwt
         );
 
