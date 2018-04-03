@@ -66,4 +66,9 @@ class CheckoutItensController
         $checkoutDAO = new CheckoutItensDAO();
         return $checkoutDAO->consult($ref, $user_id);
     }
+
+    public function listAll(){
+        $checkoutDAO = new CheckoutItensDAO();
+        return $checkoutDAO->listAll();
+    }
 }

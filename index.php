@@ -31,6 +31,8 @@ $app->get('/', function(Request $request, Response $response, $args) {
 	return $response->withJson(['status' => 200, 'message' => "Api Manager I'm Hungry"]);
 });
 
+// Consumo Geral
+
 $app->post('/usuario/login', function(Request $request, Response $response, $args) {
     $data = $request->getParsedBody();
     require_once 'Basics/Usuario.php';
@@ -98,6 +100,49 @@ $app->post('/usuario/update', function(Request $request, Response $response, $ar
             'message' 		=> "SUCCESS",
             'result' 		=> "Usuário atualizado.",
             'usuario' 		=> $retorno[0],
+            'token'			=> $jwt
+        );
+
+        return $response->withJson($res, $res[status]);
+
+    }
+
+
+});
+
+$app->post('/cep', function(Request $request, Response $response, $args) {
+    $data = $request->getParsedBody();
+    $auth = auth($request);
+
+    if($auth[status] != 200){
+        return $response->withJson($auth, $auth[status]);
+        die;
+    }
+    require_once 'Basics/Enderecos.php';
+    require_once 'Controller/EnderecosController.php';
+
+
+    $cep = str_replace(".", "", $data['cep']);
+    $cep = str_replace("-", "", $cep);
+    $cep = mask($cep,'#####-###');
+
+    $endereco = new Enderecos();
+    $endereco->setCep($cep);
+
+    $enderecoController = new EnderecosController();
+    $retorno = $enderecoController->listCep($endereco);
+
+    if ($retorno['status'] == 500){
+        return $response->withJson($retorno, $retorno[status]);
+        die;
+    }else{
+
+        $jwt = setToken($auth['token']->data);
+        $res = array(
+            'status' 		=> 200,
+            'message' 		=> "SUCCESS",
+            'result' 		=> "CEP Encontrado!",
+            'dados' 		=> $retorno[0],
             'token'			=> $jwt
         );
 
@@ -481,7 +526,7 @@ $app->post('/filial/insert', function(Request $request, Response $response, $arg
 
 });
 
-$app->post('/cep', function(Request $request, Response $response, $args) {
+$app->post('/web/pedidos', function(Request $request, Response $response, $args) {
     $data = $request->getParsedBody();
     $auth = auth($request);
 
@@ -489,19 +534,11 @@ $app->post('/cep', function(Request $request, Response $response, $args) {
         return $response->withJson($auth, $auth[status]);
         die;
     }
-    require_once 'Basics/Enderecos.php';
-    require_once 'Controller/EnderecosController.php';
 
+    require_once 'Controller/CheckoutItensController.php';
 
-    $cep = str_replace(".", "", $data['cep']);
-    $cep = str_replace("-", "", $cep);
-    $cep = mask($cep,'#####-###');
-
-    $endereco = new Enderecos();
-    $endereco->setCep($cep);
-
-    $enderecoController = new EnderecosController();
-    $retorno = $enderecoController->listCep($endereco);
+    $checkoutController = new CheckoutItensController();
+    $retorno = $checkoutController->listAll();
 
     if ($retorno['status'] == 500){
         return $response->withJson($retorno, $retorno[status]);
@@ -512,8 +549,7 @@ $app->post('/cep', function(Request $request, Response $response, $args) {
         $res = array(
             'status' 		=> 200,
             'message' 		=> "SUCCESS",
-            'result' 		=> "CEP Encontrado!",
-            'dados' 		=> $retorno[0],
+            'pedidos' 		=> $retorno,
             'token'			=> $jwt
         );
 
@@ -523,7 +559,6 @@ $app->post('/cep', function(Request $request, Response $response, $args) {
 
 
 });
-
 
 
 // Consumo do APP

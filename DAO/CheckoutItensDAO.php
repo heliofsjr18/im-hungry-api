@@ -319,4 +319,50 @@ class CheckoutItensDAO
         }
 
     }
+
+    public  function listAll($ref, $user_id){
+
+        $conn = \Database::conexao();
+        $sql = "SELECT 
+                    checkout_id,
+                    checkout_ref,
+                    checkout_status,
+                    checkout_disponivel,
+                    checkout_date,
+                    checkout_last_event,
+                    checkout_valor_liquido,
+                    checkout_forma_pagamento,
+                    user_id,
+                    checkout_status,
+                FROM checkout
+                WHERE checkout_ref = ? 
+                AND user_id = ?;";
+        $stmt = $conn->prepare($sql);
+
+        try {
+            $stmt->bindValue(1,$ref);
+            $stmt->bindValue(2,$user_id);
+            $stmt->execute();
+            $result = $stmt->fetchAll(PDO::FETCH_OBJ);
+            $count = $stmt->rowCount();
+
+            if ($count != 1) {
+                return array('status' => 500, 'message' => "ERROR", 'result' => 'Código e/ou usuário inválidos!');
+            }else{
+                return $result;
+            }
+
+
+
+        } catch (PDOException $ex) {
+            return array(
+                'status'    => 500,
+                'message'   => "ERROR",
+                'result'    => 'Erro na execução da instrução!',
+                'CODE'      => $ex->getCode(),
+                'Exception' => $ex->getMessage(),
+            );
+        }
+
+    }
 }
