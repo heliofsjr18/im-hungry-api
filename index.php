@@ -121,11 +121,10 @@ $app->post('/web/empresa/listAll', function(Request $request, Response $response
     require_once 'Basics/Empresa.php';
     require_once 'Controller/EmpresaController.php';
 
-    $enabled = ($data["enabled"] == 'true')? true : false ;
 
     $empresa = new Empresa();
     $empresa->setUserId($auth['token']->data->user_id);
-    $empresa->setEnabled($enabled);
+    $empresa->setEnabled($data["enabled"]);
 
     $empresaController = new EmpresaController();
     $retorno = $empresaController->listAll($empresa);
@@ -249,6 +248,44 @@ $app->post('/web/empresa/update', function(Request $request, Response $response,
 
     $empresaController = new EmpresaController();
     $retorno = $empresaController->update($empresa);
+
+    if ($retorno['status'] == 500){
+        return $response->withJson($retorno, $retorno[status]);
+        die;
+    }else{
+
+        $jwt = setToken($auth['token']->data);
+        $res = array(
+            'status' 		=> 200,
+            'message' 		=> "SUCCESS",
+            'result' 		=> "Dados Atualizados!",
+            'token'			=> $jwt
+        );
+
+        return $response->withJson($res, $res[status]);
+
+    }
+
+
+});
+
+$app->post('/web/empresa/enabled', function(Request $request, Response $response, $args) {
+    $data = $request->getParsedBody();
+    $auth = auth($request);
+
+    if($auth[status] != 200){
+        return $response->withJson($auth, $auth[status]);
+        die;
+    }
+    require_once 'Basics/Empresa.php';
+    require_once 'Controller/EmpresaController.php';
+
+    $empresa = new Empresa();
+    $empresa->setId($data["idChange"]);
+    $empresa->setEnabled($data["status"]);
+
+    $empresaController = new EmpresaController();
+    $retorno = $empresaController->enabled($empresa);
 
     if ($retorno['status'] == 500){
         return $response->withJson($retorno, $retorno[status]);

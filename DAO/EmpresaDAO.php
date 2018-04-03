@@ -22,9 +22,11 @@ class EmpresaDAO
                 AND empresa_enabled = ?;";
         $stmt = $conn->prepare($sql);
 
+        $enabled = ($empresa->getEnabled() == 'true')? true : false;
+
         try {
             $stmt->bindValue(1,$empresa->getUserId(), PDO::PARAM_INT);
-            $stmt->bindValue(2,$empresa->getEnabled());
+            $stmt->bindValue(2,$enabled);
             $stmt->execute();
             $countLogin = $stmt->rowCount();
             $resultEmpresa = $stmt->fetchAll(PDO::FETCH_OBJ);
@@ -140,6 +142,39 @@ class EmpresaDAO
             }
 
             $stmt->bindValue($aux,$empresa->getId(), PDO::PARAM_INT);
+            $stmt->execute();
+
+            return array(
+                'status'    => 200,
+                'message'   => "SUCCESS"
+            );
+
+        } catch (PDOException $ex) {
+            return array(
+                'status'    => 500,
+                'message'   => "ERROR",
+                'result'    => 'Erro na execução da instrução!',
+                'CODE'      => $ex->getCode(),
+                'Exception' => $ex->getMessage(),
+            );
+        }
+
+    }
+
+    public function enabled(Empresa $empresa){
+
+        $conn = \Database::conexao();
+
+        $sql = "UPDATE empresa
+                SET  empresa_enabled  = ?
+                WHERE empresa_id = ?";
+        $stmt = $conn->prepare($sql);
+
+        $enabled = ($empresa->getEnabled() == 'true')? true : false ;
+
+        try {
+            $stmt->bindValue(1,$enabled);
+            $stmt->bindValue(2,$empresa->getId(), PDO::PARAM_INT);
             $stmt->execute();
 
             return array(

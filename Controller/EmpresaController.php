@@ -108,4 +108,19 @@ class EmpresaController
         return $empresaDAO->update($empresa);
 
     }
+
+    public function enabled(Empresa $empresa){
+
+        if ( empty($empresa->getId()) ){
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'Id da empresa não informado!');
+            die;
+        }if ( empty($empresa->getEnabled()) ){
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'Enabled da empresa não informado!');
+            die;
+        }
+
+        $empresaDAO = new EmpresaDAO();
+        return $empresaDAO->enabled($empresa);
+
+    }
 }
