@@ -16,7 +16,7 @@ class MenuFilialItensDAO
         $sql = "SELECT item_id, item_nome, item_valor, item_tempo_medio, item_status, item_promocao 
                 FROM menu_filial_itens 
                 WHERE item_status = TRUE 
-                AND empresa_id = ? 
+                AND filial_id = ? 
                 AND item_nome LIKE '%".$menu->getNome()."%';";
         $stmt = $conn->prepare($sql);
 

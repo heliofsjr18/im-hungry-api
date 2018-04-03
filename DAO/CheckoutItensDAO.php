@@ -13,7 +13,7 @@ class CheckoutItensDAO
     public function generate($array_itens, $array_qtd, $token, $hash, $user_id){
 
         $conn = \Database::conexao();
-        $sql = "SELECT item_id, item_nome, item_valor
+        $sql = "SELECT item_id, item_nome, item_valor, filial_id
                 FROM menu_filial_itens 
                 WHERE item_id = ?;";
         $stmt = $conn->prepare($sql);
@@ -53,6 +53,7 @@ class CheckoutItensDAO
             $userData = $userData[0];
             $carCompleto = [];
             $totalCompra = 0;
+            $filialId = [];
 
             foreach ($array_itens as $key => $value) {
 
@@ -62,7 +63,11 @@ class CheckoutItensDAO
                 $itemCompleto[0]['qtd'] = $array_qtd[$key];
                 $totalCompra += ($itemCompleto[0]['item_valor'] * $array_qtd[$key]);
                 array_push($carCompleto, $itemCompleto[0]);
+                array_push($filialId, $itemCompleto[0]['filialId']);
+
             }
+
+            $filialId = array_unique($filialId);
 
             $totalCompra = number_format($totalCompra, 2, '.', '');
 
@@ -197,6 +202,17 @@ class CheckoutItensDAO
                 $stmt->execute();
                 $last_id = $conn->lastInsertId();
 
+                $objPedido = [];
+
+                foreach ($filialId as $key1 => $value1) {
+                    $objPedido[$key1]['filialId'] =  $value1;
+                    $objPedido[$key1]['itens'] = [];
+                    foreach ($carCompleto as $key2 => $value2) {
+                        if ($objPedido[$key1]['filialId'] == $value2['filialId']){
+                            array_push( $objPedido[$key1]['itens'], $value2);
+                        }
+                    }
+                }
 
                 foreach ($carCompleto as $key => $value) {
 
