@@ -63,7 +63,7 @@ class CheckoutItensDAO
                 $itemCompleto[0]['qtd'] = $array_qtd[$key];
                 $totalCompra += ($itemCompleto[0]['item_valor'] * $array_qtd[$key]);
                 array_push($carCompleto, $itemCompleto[0]);
-                array_push($filialId, $itemCompleto[0]['filialId']);
+                array_push($filialId, $itemCompleto[0]['filial_id']);
 
             }
 
