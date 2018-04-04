@@ -67,7 +67,15 @@ class CheckoutItensDAO
 
             }
 
-            $filialId = array_unique($filialId);
+            if (count(array_unique($filialId)) != 1 ){
+                return array(
+                    'status'        => 500,
+                    'message'       => "ERROR",
+                    'result'        => 'Itens de filiais diferentes!',
+                    'description'   => 'Somente são permitidos a compra de itens de uma única filial por vez!'
+                );
+                die;
+            }
 
             $totalCompra = number_format($totalCompra, 2, '.', '');
 
@@ -201,18 +209,6 @@ class CheckoutItensDAO
                 $stmt->bindValue(8,$user_id, PDO::PARAM_INT);
                 $stmt->execute();
                 $last_id = $conn->lastInsertId();
-
-                $objPedido = [];
-
-                foreach ($filialId as $key1 => $value1) {
-                    $objPedido[$key1]['filialId'] =  $value1;
-                    $objPedido[$key1]['itens'] = [];
-                    foreach ($carCompleto as $key2 => $value2) {
-                        if ($objPedido[$key1]['filialId'] == $value2['filialId']){
-                            array_push( $objPedido[$key1]['itens'], $value2);
-                        }
-                    }
-                }
 
                 foreach ($carCompleto as $key => $value) {
 
