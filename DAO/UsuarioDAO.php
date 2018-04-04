@@ -67,11 +67,29 @@ class UsuarioDAO
             $stmt->bindValue(3,$usuario->getTipoId());
             $stmt->execute();
             $countLogin = $stmt->rowCount();
-            $resultUsuario = $stmt->fetchAll(PDO::FETCH_OBJ);
+            $resultUsuario = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             if ($countLogin != 1) {
                 return array('status' => 500, 'message' => "ERROR", 'result' => 'Usuário e/ou senha inválidos!');
             }else{
+
+                if($resultUsuario[0]['tipo_id'] == 2){
+
+                    $sql = "SELECT cartao_id, cartao_digitos, cartao_ano, cartao_mes,
+                                cartao_brand, cartao_status, cartao_cvc
+                            FROM clientes_cartao 
+                            WHERE user_id = ?
+                            AND cartao_status = true;";
+                    $stmt = $conn->prepare($sql);
+                    $stmt->bindValue(1,$resultUsuario[0]['user_id']);
+                    $stmt->execute();
+                    $countCards = $stmt->rowCount();
+                    $getCards = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+                    $resultUsuario[0]['credCards']['qtd'] = $countCards;
+                    $resultUsuario[0]['credCards']['list'] = $getCards;
+
+                }
                 return $resultUsuario;
             }
 

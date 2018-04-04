@@ -10,7 +10,7 @@ require_once 'Connection/Conexao.php';
 require_once "lib/vendor/autoload.php";
 class CheckoutItensDAO
 {
-    public function generate($array_itens, $array_qtd, $token, $hash, $user_id){
+    public function generate($array_itens, $array_qtd, $token, $hash, $user_id, $cartao_id){
 
         $conn = \Database::conexao();
         $sql = "SELECT item_id, item_nome, item_valor, filial_id
@@ -196,7 +196,7 @@ class CheckoutItensDAO
                 $sql = "INSERT INTO checkout (checkout_ref, checkout_code, checkout_status, checkout_date, 
                                               checkout_last_event, checkout_valor_bruto, checkout_valor_liquido,
                                               checkout_taxa, checkout_forma_pagamento, user_id, cartao_id)
-                VALUES ( ?, ?, ?, NOW(), NOW(), ?, ?, ?, ?, ?, 1);";
+                VALUES ( ?, ?, ?, NOW(), NOW(), ?, ?, ?, ?, ?, ?);";
                 $stmt = $conn->prepare($sql);
 
                 $stmt->bindValue(1,$referencia, PDO::PARAM_STR);
@@ -207,6 +207,7 @@ class CheckoutItensDAO
                 $stmt->bindValue(6,$taxaPag, PDO::PARAM_STR);
                 $stmt->bindValue(7,$tipo_pag, PDO::PARAM_INT);
                 $stmt->bindValue(8,$user_id, PDO::PARAM_INT);
+                $stmt->bindValue(9,$cartao_id, PDO::PARAM_INT);
                 $stmt->execute();
                 $last_id = $conn->lastInsertId();
 

@@ -684,9 +684,10 @@ $app->post('/app/checkout', function(Request $request, Response $response, $args
     $token = $data['token'];
     $hash = $data['hash'];
     $user_id = $auth['token']->data->user_id;
+    $cartao_id = $data['cartao_id'];
 
     $checkoutController = new CheckoutItensController();
-    $retorno = $checkoutController->generate($array_itens, $array_qtd, $token, $hash, $user_id);
+    $retorno = $checkoutController->generate($array_itens, $array_qtd, $token, $hash, $user_id, $cartao_id);
 
     if ($retorno['status'] == 500){
         return $response->withJson($retorno, $retorno[status]);
@@ -863,9 +864,19 @@ function auth($request) {
             JWT::$leeway = 60; 
 			$token = JWT::decode($authorization, SECRET_KEY, array('HS256'));
 			return array('status' => 200, 'token' => $token);
-		} catch (Exception $e) {
-			return array('status' => 401, 'message' => 'Acesso não autorizado');
-		}
+		} catch (Firebase\JWT\ExpiredException $ex) {
+            return array(
+                'status' => 401,
+                'result' => 'Acesso não autorizado',
+                'message' => $ex->getMessage()
+            );
+        }
+
+//        catch (Firebase\JWT\ExpiredException $e) {
+//            $e->getMessage();
+//            die;
+//            return array('status' => 401, 'message' => 'Acesso não autorizado');
+//        }
 	}
 }
 

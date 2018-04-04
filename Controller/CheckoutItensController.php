@@ -8,7 +8,7 @@
 require_once 'DAO/CheckoutItensDAO.php';
 class CheckoutItensController
 {
-    public function generate($array_itens, $array_qtd, $token, $hash, $user_id){
+    public function generate($array_itens, $array_qtd, $token, $hash, $user_id, $cartao_id){
         if ( count($array_itens) == 0 ){
             return array('status' => 500, 'message' => "ERROR", 'result' => 'Itens não informados!');
             die;
@@ -24,10 +24,16 @@ class CheckoutItensController
         }if ( empty($hash) ){
             return array('status' => 500, 'message' => "ERROR", 'result' => 'Hash da sessão não informado!');
             die;
+        }if ( empty($user_id) ){
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'Id do cliente não informado!');
+            die;
+        }if ( empty($cartao_id) || $cartao_id == 0 ){
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'Id do cartão não informado!');
+            die;
         }
 
         $checkoutDAO = new CheckoutItensDAO();
-        return $checkoutDAO->generate($array_itens, $array_qtd, $token, $hash, $user_id);
+        return $checkoutDAO->generate($array_itens, $array_qtd, $token, $hash, $user_id, $cartao_id);
 
     }
 
