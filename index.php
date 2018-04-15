@@ -560,6 +560,9 @@ $app->post('/web/pedidos', function(Request $request, Response $response, $args)
     $data = $request->getParsedBody();
     $auth = auth($request);
 
+    $user_id = $auth['token']->data->user_id;
+    $filial_id = $auth['token']->data->filial_id;
+
     if($auth[status] != 200){
         return $response->withJson($auth, $auth[status]);
         die;
@@ -567,8 +570,8 @@ $app->post('/web/pedidos', function(Request $request, Response $response, $args)
 
     require_once 'Controller/CheckoutItensController.php';
 
-    $checkoutController = new CheckoutItensController();
-    $retorno = $checkoutController->listAll();
+    $checkout = new CheckoutItensController();
+    $checkout->listAll($user_id, $filial_id, $status);
 
     if ($retorno['status'] == 500){
         return $response->withJson($retorno, $retorno[status]);
