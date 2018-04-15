@@ -44,7 +44,7 @@ $app->post('/usuario/login', function(Request $request, Response $response, $arg
     $usuario->setTipoId($data["tipo"]);
 
     $usuarioController = new UsuarioController();
-    $retorno = $usuarioController->login($usuario);
+    $retorno = $usuarioController->loginApp($usuario);
 
     if ($retorno['status'] == 500){
         return $response->withJson($retorno, $retorno[status]);
@@ -154,6 +154,36 @@ $app->post('/cep', function(Request $request, Response $response, $args) {
 });
 
 // Consumo WEB
+
+$app->post('/web/usuario/login', function(Request $request, Response $response, $args) {
+    $data = $request->getParsedBody();
+    require_once 'Basics/Usuario.php';
+    require_once 'Controller/UsuarioController.php';
+
+    $usuario = new Usuario();
+    $usuario->setEmail($data["email"]);
+    $usuario->setSenha($data["senha"]);
+
+    $usuarioController = new UsuarioController();
+    $retorno = $usuarioController->loginWeb($usuario);
+
+    if ($retorno['status'] == 500){
+        return $response->withJson($retorno, $retorno[status]);
+        die;
+    }else{
+        $jwt = setToken($retorno[0]);
+        $res = array(
+            'status'        => 200,
+            'message'       => "SUCCESS",
+            'usuario'       => $retorno[0],
+            'token'         => $jwt
+        );
+
+        return $response->withJson($res, $res[status]);
+
+    }
+
+});
 
 $app->post('/web/empresa/listAll', function(Request $request, Response $response, $args) {
     $data = $request->getParsedBody();

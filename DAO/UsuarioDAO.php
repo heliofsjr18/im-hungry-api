@@ -44,7 +44,7 @@ class UsuarioDAO
         }
     }
 
-    public function loginUsuario(Usuario $usuario) {
+    public function loginApp(Usuario $usuario) {
         //Cria conexao
         $conn = \Database::conexao();
         //Cria SQL para inserir no banco
@@ -73,7 +73,7 @@ class UsuarioDAO
                 return array('status' => 500, 'message' => "ERROR", 'result' => 'Usuário e/ou senha inválidos!');
             }else{
 
-                if($resultUsuario[0]['tipo_id'] == 2){
+                if($resultUsuario[0]['tipo_id'] == 3){
 
                     $sql = "SELECT cartao_id, cartao_digitos, cartao_ano, cartao_mes,
                                 cartao_brand, cartao_status, cartao_cvc
@@ -102,7 +102,48 @@ class UsuarioDAO
                 'Exception' => $ex->getMessage(),
             );
         }
+    }
 
+    public function loginWeb(Usuario $usuario) {
+        //Cria conexao
+        $conn = \Database::conexao();
+        //Cria SQL para inserir no banco
+        $sql = "SELECT  user_id, user_nome, user_cpf, user_email,
+                        user_telefone, user_data, user_cadastro,
+                        user_foto_perfil, user_status, tipo_id,
+                        DATE_FORMAT(user_data, '%d/%m/%Y') as dateAniversario, 
+                        DATE_FORMAT(user_cadastro, '%d/%m/%Y') as dateCadastro 
+              FROM usuarios 
+              WHERE user_email = ?
+              AND user_senha = sha1(?) 
+              AND tipo_id IN (1, 2) 
+              AND user_status = true 
+              LIMIT 1;";
+        $stmt = $conn->prepare($sql);
+
+        try {
+            $stmt->bindValue(1,$usuario->getEmail());
+            $stmt->bindValue(2,$usuario->getSenha());
+            $stmt->execute();
+            $countLogin = $stmt->rowCount();
+            $resultUsuario = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            if ($countLogin != 1) {
+                return array('status' => 500, 'message' => "ERROR", 'result' => 'Usuário e/ou senha inválidos!');
+            }else{
+
+                return $resultUsuario;
+            }
+
+        } catch (PDOException $ex) {
+            return array(
+                'status'    => 500,
+                'message'   => "ERROR",
+                'result'    => 'Erro na execução da instrução!',
+                'CODE'      => $ex->getCode(),
+                'Exception' => $ex->getMessage(),
+            );
+        }
     }
 
     public  function alterUser(Usuario $usuario){
@@ -153,7 +194,6 @@ class UsuarioDAO
                 'Exception' => $ex->getMessage(),
             );
         }
-
     }
 
 }

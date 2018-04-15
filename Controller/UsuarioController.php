@@ -10,7 +10,7 @@ require_once 'Basics/Usuario.php';
 require_once 'DAO/UsuarioDAO.php';
 class UsuarioController
 {
-    public function login(Usuario $usuario){
+    public function loginApp(Usuario $usuario){
 
         if ( empty($usuario->getEmail()) ){
             return array('status' => 500, 'message' => "ERROR", 'result' => 'E-Mail não informado!');
@@ -26,7 +26,23 @@ class UsuarioController
         }
 
         $usuarioDAO = new UsuarioDAO();
-        return $usuarioDAO->loginUsuario($usuario);
+        return $usuarioDAO->loginApp($usuario);
+
+    }
+
+    public function loginWeb(Usuario $usuario){
+
+        if ( empty($usuario->getEmail()) ){
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'E-Mail não informado!');
+            die;
+        }
+        if ( empty($usuario->getSenha()) ){
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'Senha não informada!');
+            die;
+        }
+
+        $usuarioDAO = new UsuarioDAO();
+        return $usuarioDAO->loginWeb($usuario);
 
     }
 
