@@ -41,7 +41,7 @@ $app->post('/usuario/login', function(Request $request, Response $response, $arg
     $usuario = new Usuario();
     $usuario->setEmail($data["email"]);
     $usuario->setSenha($data["senha"]);
-    $usuario->setTipoId($data["tipo"]);
+    $usuario->setTipoId(3);
 
     $usuarioController = new UsuarioController();
     $retorno = $usuarioController->loginApp($usuario);
@@ -562,6 +562,10 @@ $app->post('/web/pedidos', function(Request $request, Response $response, $args)
 
     $user_id = $auth['token']->data->user_id;
     $filial_id = $auth['token']->data->filial_id;
+    $status = $data["status"];
+
+    var_dump($auth['token']);
+    die;
 
     if($auth[status] != 200){
         return $response->withJson($auth, $auth[status]);
@@ -571,7 +575,7 @@ $app->post('/web/pedidos', function(Request $request, Response $response, $args)
     require_once 'Controller/CheckoutItensController.php';
 
     $checkout = new CheckoutItensController();
-    $checkout->listAll($user_id, $filial_id, $status);
+    $retorno = $checkout->listAll($user_id, $filial_id, $status);
 
     if ($retorno['status'] == 500){
         return $response->withJson($retorno, $retorno[status]);

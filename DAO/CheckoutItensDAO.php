@@ -77,6 +77,7 @@ class CheckoutItensDAO
                 die;
             }
 
+            $filial_id = $filialId[0];
             $totalCompra = number_format($totalCompra, 2, '.', '');
 
         } catch (PDOException $ex) {
@@ -195,8 +196,8 @@ class CheckoutItensDAO
 
                 $sql = "INSERT INTO checkout (checkout_ref, checkout_code, checkout_status, checkout_date, 
                                               checkout_last_event, checkout_valor_bruto, checkout_valor_liquido,
-                                              checkout_taxa, checkout_forma_pagamento, user_id, cartao_id)
-                VALUES ( ?, ?, ?, NOW(), NOW(), ?, ?, ?, ?, ?, ?);";
+                                              checkout_taxa, checkout_forma_pagamento, user_id, cartao_id, filial_id )
+                VALUES ( ?, ?, ?, NOW(), NOW(), ?, ?, ?, ?, ?, ?, ?);";
                 $stmt = $conn->prepare($sql);
 
                 $stmt->bindValue(1,$referencia, PDO::PARAM_STR);
@@ -208,6 +209,7 @@ class CheckoutItensDAO
                 $stmt->bindValue(7,$tipo_pag, PDO::PARAM_INT);
                 $stmt->bindValue(8,$user_id, PDO::PARAM_INT);
                 $stmt->bindValue(9,$cartao_id, PDO::PARAM_INT);
+                $stmt->bindValue(10, $filial_id, PDO::PARAM_INT);
                 $stmt->execute();
                 $last_id = $conn->lastInsertId();
 
@@ -333,39 +335,39 @@ class CheckoutItensDAO
 
     }
 
-    public  function listAll($ref, $user_id){
+    public  function listAll($user_id, $filial_id, $status){
 
         $conn = \Database::conexao();
         $sql = "SELECT 
-                    checkout_id,
-                    checkout_ref,
-                    checkout_status,
-                    checkout_disponivel,
-                    checkout_date,
-                    checkout_last_event,
-                    checkout_valor_liquido,
-                    checkout_forma_pagamento,
-                    user_id,
-                    checkout_status,
-                FROM checkout
-                WHERE checkout_ref = ? 
-                AND user_id = ?;";
+                    ped.checkout_id,
+                    ped.checkout_ref,
+                    ped.checkout_status,
+                    ped.checkout_disponivel,
+                    ped.checkout_date,
+                    DATE_FORMAT( ped.checkout_date , '%d/%m/%Y' ) AS checkout_date_format, 
+                    ped.checkout_last_event,
+                    ped.checkout_valor_bruto,
+                    ped.user_id,
+                    
+                    usu.user_nome,
+                    usu.user_cpf,
+                    usu.user_telefone,
+                    usu.user_foto_perfil
+
+                FROM checkout ped
+                INNER JOIN usuarios usu
+                ON ped.user_id = usu.user_id 
+                WHERE ped.filial_id = ? 
+                AND ped.checkout_status = ?;";
         $stmt = $conn->prepare($sql);
 
         try {
-            $stmt->bindValue(1,$ref);
-            $stmt->bindValue(2,$user_id);
+            $stmt->bindValue(1,$filial_id);
+            $stmt->bindValue(2,$status);
             $stmt->execute();
-            $result = $stmt->fetchAll(PDO::FETCH_OBJ);
-            $count = $stmt->rowCount();
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-            if ($count != 1) {
-                return array('status' => 500, 'message' => "ERROR", 'result' => 'Código e/ou usuário inválidos!');
-            }else{
-                return $result;
-            }
-
-
+            return $result;
 
         } catch (PDOException $ex) {
             return array(

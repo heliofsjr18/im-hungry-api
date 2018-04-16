@@ -50,7 +50,7 @@ class UsuarioDAO
         //Cria SQL para inserir no banco
         $sql = "SELECT 	user_id, user_nome, user_cpf, user_email,
                         user_telefone, user_data, user_cadastro,
-                        user_foto_perfil, user_status, tipo_id,
+                        user_foto_perfil, user_status, tipo_id, filial_id,
 						DATE_FORMAT(user_data, '%d/%m/%Y') as dateAniversario, 
 						DATE_FORMAT(user_cadastro, '%d/%m/%Y') as dateCadastro 
 			  FROM usuarios 
@@ -110,7 +110,7 @@ class UsuarioDAO
         //Cria SQL para inserir no banco
         $sql = "SELECT  user_id, user_nome, user_cpf, user_email,
                         user_telefone, user_data, user_cadastro,
-                        user_foto_perfil, user_status, tipo_id,
+                        user_foto_perfil, user_status, tipo_id, filial_id,
                         DATE_FORMAT(user_data, '%d/%m/%Y') as dateAniversario, 
                         DATE_FORMAT(user_cadastro, '%d/%m/%Y') as dateCadastro 
               FROM usuarios 

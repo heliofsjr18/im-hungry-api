@@ -74,7 +74,19 @@ class CheckoutItensController
     }
 
     public function listAll($user_id, $filial_id, $status){
+
+        if ( empty($user_id) ){
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'Id do usuário não informado!');
+            die;
+        }if ( empty($filial_id) ){
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'Código da filial não informado!');
+            die;
+        }if ( empty($status) ){
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'Status do pedido não informado!');
+            die;
+        }
+
         $checkoutDAO = new CheckoutItensDAO();
-        return $checkoutDAO->listAll();
+        return $checkoutDAO->listAll($user_id, $filial_id, $status);
     }
 }
