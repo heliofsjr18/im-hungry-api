@@ -19,6 +19,7 @@ class EmpresaFilial
     private $complemento_endereco;
     private $status;
     private $empresa_id;
+    private $enabled;
 
     /**
      * @return mixed
@@ -195,5 +196,23 @@ class EmpresaFilial
     {
         $this->empresa_id = $empresa_id;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getEnabled()
+    {
+        return $this->enabled;
+    }
+
+    /**
+     * @param mixed $enabled
+     */
+    public function setEnabled($enabled)
+    {
+        $this->enabled = $enabled;
+    }
+
+
 
 }

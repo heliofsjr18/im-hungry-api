@@ -70,4 +70,58 @@ class EmpresaFilialController
         $empresaFilialDAO = new EmpresaFilialDAO();
         return $empresaFilialDAO->insert($empresaFilial);
     }
+
+    public function update(EmpresaFilial $empresaFilial){
+
+        if ( empty($empresaFilial->getId()) ){
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'Id da filial não informado!');
+            die;
+        }if ( empty($empresaFilial->getNome()) ){
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'Nome não informado!');
+            die;
+        }
+        if ( empty($empresaFilial->getTelefone()) ){
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'Telefone não informado!');
+            die;
+        }
+        if ( empty($empresaFilial->getCnpj()) ){
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'CNPJ não informado!');
+            die;
+        }
+        if ( empty($empresaFilial->getCep()) ){
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'CEP não informado!');
+            die;
+        }
+        if ( empty($empresaFilial->getNumeroEndereco()) ){
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'Número do endereço não informado!');
+            die;
+        }
+        if ( empty($empresaFilial->getComplementoEndereco()) ){
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'Complemento não informado!');
+            die;
+        }if ( empty($empresaFilial->getEmpresaId()) ){
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'Id da empresa não informado!');
+            die;
+        }
+
+        $empresaDAO = new EmpresaFilialDAO();
+        return $empresaDAO->update($empresaFilial);
+
+    }
+
+    public function enabled(EmpresaFilial $empresaFilial){
+
+        if ( empty($empresaFilial->getId()) ){
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'Id da empresa não informado!');
+            die;
+        }if ( empty($empresaFilial->getEnabled()) ){
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'Enabled da empresa não informado!');
+            die;
+        }
+
+        $empresaDAO = new EmpresaFilialDAO();
+        return $empresaDAO->enabled($empresaFilial);
+
+    }
+
 }

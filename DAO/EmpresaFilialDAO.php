@@ -143,8 +143,8 @@ class EmpresaFilialDAO
 
         $conn = \Database::conexao();
         $sql = "INSERT INTO empresa_filial (filial_nome, filial_telefone, filial_cnpj, filial_cep, filial_lat, filial_long,
-                                     filial_numero_endereco, filial_complemento_endereco, filial_status, empresa_id)
-                VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, TRUE, ?);";
+                                     filial_numero_endereco, filial_complemento_endereco, filial_status, empresa_id, filial_enabled)
+                VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, TRUE, ?, 0);";
         $stmt = $conn->prepare($sql);
 
         try {
@@ -175,4 +175,85 @@ class EmpresaFilialDAO
         }
 
     }
+
+    public function update(EmpresaFilial $empresaFilial){
+
+        $conn = \Database::conexao();
+
+        $sql = "UPDATE empresa
+                SET  filial_nome  = ?,
+                     filial_telefone = ?,
+                     filial_cnpj = ?,
+                     filial_cep = ?,
+                     filial_lat = ?,
+                     filial_long = ?,
+                     filial_numero_endereco = ?,
+                     filial_complemento_endereco = ?,
+                     empresa_id = ?
+                WHERE filial_id = ?";
+        $stmt = $conn->prepare($sql);
+
+        try {
+            $stmt->bindValue(1,$empresaFilial->getNome(), PDO::PARAM_STR);
+            $stmt->bindValue(2,$empresaFilial->getTelefone(), PDO::PARAM_STR);
+            $stmt->bindValue(3,$empresaFilial->getCnpj(), PDO::PARAM_STR);
+            $stmt->bindValue(4,$empresaFilial->getCep(), PDO::PARAM_STR);
+            $stmt->bindValue(5,$empresaFilial->getLatitude(), PDO::PARAM_STR);
+            $stmt->bindValue(6,$empresaFilial->getLongitude(), PDO::PARAM_STR);
+            $stmt->bindValue(7,$empresaFilial->getNumeroEndereco(), PDO::PARAM_INT);
+            $stmt->bindValue(8,$empresaFilial->getComplementoEndereco(), PDO::PARAM_STR);
+            $stmt->bindValue(9,$empresaFilial->getEmpresaId(), PDO::PARAM_STR);
+            $stmt->bindValue(9,$empresaFilial->getId(), PDO::PARAM_STR);
+            $stmt->execute();
+
+            return array(
+                'status'    => 200,
+                'message'   => "SUCCESS"
+            );
+
+        } catch (PDOException $ex) {
+            return array(
+                'status'    => 500,
+                'message'   => "ERROR",
+                'result'    => 'Erro na execução da instrução!',
+                'CODE'      => $ex->getCode(),
+                'Exception' => $ex->getMessage(),
+            );
+        }
+
+    }
+
+    public function enabled(EmpresaFilial $empresaFilial){
+
+        $conn = \Database::conexao();
+
+        $sql = "UPDATE empresa_filial
+                SET  filial_enabled  = ?
+                WHERE filial_id = ?";
+        $stmt = $conn->prepare($sql);
+
+        $enabled = ($empresaFilial->getEnabled() == 'true')? true : false ;
+
+        try {
+            $stmt->bindValue(1,$enabled);
+            $stmt->bindValue(2,$empresaFilial->getId(), PDO::PARAM_INT);
+            $stmt->execute();
+
+            return array(
+                'status'    => 200,
+                'message'   => "SUCCESS"
+            );
+
+        } catch (PDOException $ex) {
+            return array(
+                'status'    => 500,
+                'message'   => "ERROR",
+                'result'    => 'Erro na execução da instrução!',
+                'CODE'      => $ex->getCode(),
+                'Exception' => $ex->getMessage(),
+            );
+        }
+
+    }
+
 }

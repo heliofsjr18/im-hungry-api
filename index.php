@@ -466,6 +466,90 @@ $app->post('/web/filial/insert', function(Request $request, Response $response, 
 
 });
 
+$app->post('/web/filial/update', function(Request $request, Response $response, $args) {
+    $data = $request->getParsedBody();
+    $auth = auth($request);
+
+    if($auth[status] != 200){
+        return $response->withJson($auth, $auth[status]);
+        die;
+    }
+    require_once 'Basics/EmpresaFilial.php';
+    require_once 'Controller/EmpresaFilialController.php';
+
+    $empresa = new EmpresaFilial();
+    $empresa->setId($data['idAt']);
+    $empresa->setNome($data["nome"]);
+    $empresa->setTelefone($data["telefone"]);
+    $empresa->setCnpj($data["cnpj"]);
+    $empresa->setCep($data["cep"]);
+    $empresa->setLatitude($data["lat"]);
+    $empresa->setLongitude($data["long"]);
+    $empresa->setNumeroEndereco($data["numero_end"]);
+    $empresa->setComplementoEndereco($data["complemento_end"]);
+    $empresa->setEmpresaId($data['empresa_id']);
+
+    $empresaController = new EmpresaFilialController();
+    $retorno = $empresaController->update($empresa);
+
+    if ($retorno['status'] == 500){
+        return $response->withJson($retorno, $retorno[status]);
+        die;
+    }else{
+
+        $jwt = setToken($auth['token']->data);
+        $res = array(
+            'status' 		=> 200,
+            'message' 		=> "SUCCESS",
+            'result' 		=> "A filial foi atualizada!",
+            'token'			=> $jwt
+        );
+
+        return $response->withJson($res, $res[status]);
+
+    }
+
+
+});
+
+$app->post('/web/filial/enabled', function(Request $request, Response $response, $args) {
+    $data = $request->getParsedBody();
+    $auth = auth($request);
+
+    if($auth[status] != 200){
+        return $response->withJson($auth, $auth[status]);
+        die;
+    }
+    require_once 'Basics/EmpresaFilial.php';
+    require_once 'Controller/EmpresaFilialController.php';
+
+    $empresa = new EmpresaFilial();
+    $empresa->setId($data["idChange"]);
+    $empresa->setEnabled($data["status"]);
+
+    $empresaController = new EmpresaFilialController();
+    $retorno = $empresaController->enabled($empresa);
+
+    if ($retorno['status'] == 500){
+        return $response->withJson($retorno, $retorno[status]);
+        die;
+    }else{
+
+        $jwt = setToken($auth['token']->data);
+        $res = array(
+            'status' 		=> 200,
+            'message' 		=> "SUCCESS",
+            'result' 		=> "Dados Atualizados!",
+            'token'			=> $jwt
+        );
+
+        return $response->withJson($res, $res[status]);
+
+    }
+
+});
+
+
 
 $app->post('/mpadrao/insert', function(Request $request, Response $response, $args) {
     $data = $request->getParsedBody();
@@ -557,9 +641,6 @@ $app->post('/mpadrao/listAll', function(Request $request, Response $response, $a
 
 
 });
-
-
-
 
 $app->post('/web/pedidos', function(Request $request, Response $response, $args) {
     $data = $request->getParsedBody();
