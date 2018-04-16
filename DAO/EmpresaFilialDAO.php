@@ -9,7 +9,7 @@ require_once 'Basics/EmpresaFilial.php';
 require_once 'Connection/Conexao.php';
 class EmpresaFilialDAO
 {
-    public function listAll($user_id){
+    public function listAll($user_id, $status){
 
         $conn = \Database::conexao();
 
@@ -27,6 +27,7 @@ class EmpresaFilialDAO
                         fil.filial_numero_endereco, 
                         fil.filial_complemento_endereco, 
                         fil.filial_status, 
+                        fil.filial_enabled,
                         
                         emp.empresa_id,
                         emp.empresa_nome
@@ -35,10 +36,13 @@ class EmpresaFilialDAO
                   INNER JOIN empresa emp
                   on emp.empresa_id = fil.empresa_id
                   WHERE fil.empresa_id = ?  
+                  AND fil.filial_enabled = ?
                   ORDER BY fil.filial_id;";
         $stmt2 = $conn->prepare($sql2);
 
         try {
+            $enabled = ($status == 'true')? true : false;
+
             $stmt1->bindValue(1,$user_id, PDO::PARAM_INT);
             $stmt1->execute();
             $ids_empresas = $stmt1->fetchAll(PDO::FETCH_OBJ);
@@ -48,6 +52,7 @@ class EmpresaFilialDAO
 
             foreach ($ids_empresas as $key => $value){
                 $stmt2->bindValue(1,$value->empresa_id, PDO::PARAM_INT);
+                $stmt2->bindValue(2,$enabled);
                 $stmt2->execute();
                 $filiais = $stmt2->fetchAll(PDO::FETCH_ASSOC);
 
