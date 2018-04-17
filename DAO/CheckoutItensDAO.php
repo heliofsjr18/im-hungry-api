@@ -373,7 +373,7 @@ class CheckoutItensDAO
                     item.item_nome,
                     item.item_tempo_medio
 
-                FROM checkout chec
+                FROM checkout_itens chec
                 INNER JOIN menu_filial_itens item
                 ON chec.item_id = item.item_id 
                 WHERE chec.checkout_id = ?;";
@@ -410,10 +410,16 @@ class CheckoutItensDAO
 
                     foreach ($obj as $key2 => $value2) {
 
+                        $stmt3->bindValue(1,$value2['item_id'], PDO::PARAM_INT);
+                        $stmt3->execute();
+                        $fotos = $stmt3->fetchAll(PDO::FETCH_ASSOC);
+
+                        $obj[$key2]['fotos'] = $fotos;
+
                     }
 
-                    $result[$key1]['fidelidade_desc'] = $obj[0];
-                    $result[$key1]['filial_fidelidade'] = ($value1['filial_fidelidade'] == 1) ? true : false;
+                    $result[$key1]['itens'] = $obj;
+
                 }
 
                 return $result;
