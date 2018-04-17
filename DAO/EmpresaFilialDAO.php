@@ -180,7 +180,7 @@ class EmpresaFilialDAO
 
         $conn = \Database::conexao();
 
-        $sql = "UPDATE empresa
+        $sql = "UPDATE empresa_filial
                 SET  filial_nome  = ?,
                      filial_telefone = ?,
                      filial_cnpj = ?,
@@ -203,7 +203,7 @@ class EmpresaFilialDAO
             $stmt->bindValue(7,$empresaFilial->getNumeroEndereco(), PDO::PARAM_INT);
             $stmt->bindValue(8,$empresaFilial->getComplementoEndereco(), PDO::PARAM_STR);
             $stmt->bindValue(9,$empresaFilial->getEmpresaId(), PDO::PARAM_STR);
-            $stmt->bindValue(9,$empresaFilial->getId(), PDO::PARAM_STR);
+            $stmt->bindValue(10,$empresaFilial->getId(), PDO::PARAM_STR);
             $stmt->execute();
 
             return array(
@@ -232,7 +232,7 @@ class EmpresaFilialDAO
                 WHERE filial_id = ?";
         $stmt = $conn->prepare($sql);
 
-        $enabled = ($empresaFilial->getEnabled() == 'true')? true : false ;
+        $enabled = ($empresaFilial->getEnabled() == 'true')? true : false;
 
         try {
             $stmt->bindValue(1,$enabled);
