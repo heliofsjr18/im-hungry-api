@@ -24,17 +24,20 @@ class EmpresaFilialController
 
     }
 
-    public function listApp($lat, $long, $search){
+    public function listApp($lat, $long, $search, $fidelidade){
         if ( empty($lat)){
             return array('status' => 500, 'message' => "ERROR", 'result' => 'Latitude não Informada!');
             die;
         }if ( empty($long)){
             return array('status' => 500, 'message' => "ERROR", 'result' => 'Longitude não Informada!');
             die;
+        }if ( empty($fidelidade)){
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'Parâmetro de fidelidade não Informado!');
+            die;
         }
 
         $empresaFilialDAO = new EmpresaFilialDAO();
-        return $empresaFilialDAO->listApp($lat, $long, $search);
+        return $empresaFilialDAO->listApp($lat, $long, $search, $fidelidade);
 
     }
 

@@ -162,6 +162,20 @@ CREATE TABLE `empresa_filial` (
 -- Estrutura para tabela `menu_filial`
 --
 
+CREATE TABLE `empresa_cartao_fid` (
+  `cartao_fid_id` INT(11) AUTO_INCREMENT NOT NULL PRIMARY KEY,
+  `cartao_fid_qtd` int(11) NOT NULL,
+  `cartao_fid_valor` double NOT NULL,
+  `cartao_fid_beneficio` LONGTEXT NOT NULL,
+  `filial_id` INT(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `menu_filial`
+--
+
 CREATE TABLE `menu_filial` (
   `menu_id` INT(11) AUTO_INCREMENT NOT NULL PRIMARY KEY,
   `menu_nome` LONGTEXT NOT NULL,

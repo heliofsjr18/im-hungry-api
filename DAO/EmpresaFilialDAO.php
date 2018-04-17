@@ -89,11 +89,11 @@ class EmpresaFilialDAO
 
     }
 
-    public function listApp($lat, $long, $search){
+    public function listApp($lat, $long, $search, $fidelidade){
 
         $conn = \Database::conexao();
 
-        $sql1 = "SELECT F.filial_id, F.filial_nome, F.filial_status, F.filial_numero_endereco, E.logradouro, E.bairro, E.cidade, E.uf, EM.empresa_foto_marca, 4 as avaliacao,
+        $sql1 = "SELECT F.filial_id, F.filial_nome, F.filial_status, F.filial_numero_endereco, F.filial_fidelidade, E.logradouro, E.bairro, E.cidade, E.uf, EM.empresa_foto_marca, 4 as avaliacao,
                   ( SELECT 6371 * acos( cos( radians(?) ) * cos( radians( E.latitude ) ) * cos( radians( ? ) - radians(E.longitude) ) + sin( radians(?) ) * sin( radians( E.latitude ) ) )) as distancia
                  FROM empresa_filial F
 	             INNER JOIN enderecos E
@@ -101,17 +101,27 @@ class EmpresaFilialDAO
 			     INNER JOIN empresa EM
 			     ON F.empresa_id = EM.empresa_id
                  WHERE F.empresa_id IS NOT NULL 
+                 AND (F.filial_fidelidade = ? or 2 = ?)
                  AND F.filial_nome LIKE '%".$search."%'";
         $stmt1 = $conn->prepare($sql1);
+
+        $sql2 = "SELECT cartao_fid_id, cartao_fid_qtd, cartao_fid_valor, cartao_fid_beneficio, filial_id
+                 FROM empresa_cartao_fid
+                 WHERE filial_id = ? 
+                 LIMIT 1;";
+        $stmt2 = $conn->prepare($sql2);
+
+        //WHERE filial.tem_fidelidade = @parametrofidelidade  OR @parametrofidelidade = 2
 
         try {
             $stmt1->bindValue(1,$lat, PDO::PARAM_STR);
             $stmt1->bindValue(2,$long, PDO::PARAM_STR);
             $stmt1->bindValue(3,$lat, PDO::PARAM_STR);
-
+            $stmt1->bindValue(4,$fidelidade, PDO::PARAM_STR);
+            $stmt1->bindValue(5,$fidelidade, PDO::PARAM_STR);
             $stmt1->execute();
+            $result = $stmt1->fetchAll(PDO::FETCH_ASSOC);
 
-            $result = $stmt1->fetchAll(PDO::FETCH_OBJ);
             $count = count($result);
 
             if ($count == 0){
@@ -122,6 +132,15 @@ class EmpresaFilialDAO
                     'result'    => 'Nenhuma filial encontrada!'
                 );
             }else{
+
+                foreach ($result as $key => $value){
+                    $stmt2->bindValue(1,$value['filial_id'], PDO::PARAM_INT);
+                    $stmt2->execute();
+                    $obj = $stmt2->fetchAll(PDO::FETCH_ASSOC);
+                    $result[$key]['fidelidade_desc'] = $obj[0];
+                    $result[$key]['filial_fidelidade'] = ($value['filial_fidelidade'] == 1) ? true : false;
+                }
+
                 return $result;
             }
 

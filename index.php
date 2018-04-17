@@ -699,9 +699,10 @@ $app->post('/app/filial/list', function(Request $request, Response $response, $a
     $lat = $data["latitude"];
     $long = $data["longitude"];
     $search = $data["search"];
+    $fidelidade = $data["onlyFidelidade"];
 
     $empresaController = new EmpresaFilialController();
-    $retorno = $empresaController->listApp($lat, $long, $search);
+    $retorno = $empresaController->listApp($lat, $long, $search, $fidelidade);
 
     if ($retorno['status'] == 500){
         return $response->withJson($retorno, $retorno[status]);
