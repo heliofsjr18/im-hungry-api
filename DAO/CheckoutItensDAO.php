@@ -348,6 +348,8 @@ class CheckoutItensDAO
                     ped.checkout_last_event,
                     ped.checkout_valor_bruto,
                     ped.user_id,
+                    ped.user_id,
+                    ped.checkout_flag,
                     
                     usu.user_nome,
                     usu.user_cpf,
@@ -358,16 +360,64 @@ class CheckoutItensDAO
                 INNER JOIN usuarios usu
                 ON ped.user_id = usu.user_id 
                 WHERE ped.filial_id = ? 
-                AND ped.checkout_status = ?;";
+                AND (ped.checkout_status = 3 OR ped.checkout_status = 4)
+                AND ped.checkout_flag = ?;";
         $stmt = $conn->prepare($sql);
+
+        $sql2 = "SELECT 
+                    chec.checkout_item_id,
+                    chec.checkout_item_qtd,
+                    chec.checkout_item_valor,
+                    chec.item_id,
+                    
+                    item.item_nome,
+                    item.item_tempo_medio
+
+                FROM checkout chec
+                INNER JOIN menu_filial_itens item
+                ON chec.item_id = item.item_id 
+                WHERE chec.checkout_id = ?;";
+        $stmt2 = $conn->prepare($sql2);
+
+        $sql3 = "SELECT 
+                    fot_id,
+                    fot_file 
+
+                FROM itens_fotos 
+                WHERE item_id = ?;";
+        $stmt3 = $conn->prepare($sql3);
 
         try {
             $stmt->bindValue(1,$filial_id);
             $stmt->bindValue(2,$status);
             $stmt->execute();
             $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $count = count($result);
 
-            return $result;
+            if ($count == 0){
+                return array(
+                    'status'    => 500,
+                    'message'   => "INFO",
+                    'qtd'       => 0,
+                    'result'    => 'Nenhum pedido encontrado!'
+                );
+            }else{
+
+                foreach ($result as $key1 => $value1){
+                    $stmt2->bindValue(1,$value1['checkout_id'], PDO::PARAM_INT);
+                    $stmt2->execute();
+                    $obj = $stmt2->fetchAll(PDO::FETCH_ASSOC);
+
+                    foreach ($obj as $key2 => $value2) {
+
+                    }
+
+                    $result[$key1]['fidelidade_desc'] = $obj[0];
+                    $result[$key1]['filial_fidelidade'] = ($value1['filial_fidelidade'] == 1) ? true : false;
+                }
+
+                return $result;
+            }
 
         } catch (PDOException $ex) {
             return array(
