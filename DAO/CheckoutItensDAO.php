@@ -344,12 +344,12 @@ class CheckoutItensDAO
                     ped.checkout_status,
                     ped.checkout_disponivel,
                     ped.checkout_date,
-                    DATE_FORMAT( ped.checkout_date , '%d/%m/%Y' ) AS checkout_date_format, 
+                    DATE_FORMAT( ped.checkout_date , '%d/%m/%Y às %H:%i:%s' ) AS checkout_date_format, 
                     ped.checkout_last_event,
                     ped.checkout_valor_bruto,
                     ped.user_id,
                     ped.user_id,
-                    ped.checkout_flag,
+                    ped.checkout_flag_id,
                     
                     usu.user_nome,
                     usu.user_cpf,
@@ -361,7 +361,7 @@ class CheckoutItensDAO
                 ON ped.user_id = usu.user_id 
                 WHERE ped.filial_id = ? 
                 AND (ped.checkout_status = 3 OR ped.checkout_status = 4)
-                AND ped.checkout_flag = ?;";
+                AND ped.checkout_flag_id = ?;";
         $stmt = $conn->prepare($sql);
 
         $sql2 = "SELECT 
