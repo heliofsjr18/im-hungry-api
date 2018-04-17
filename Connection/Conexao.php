@@ -23,13 +23,17 @@ class Database
         $db_usuario = "u181619366_hungr";
         $db_senha = "lw@N~s>d*4CE";
         $db_driver = "mysql";
+        $param = array(
+            PDO::MYSQL_ATTR_INIT_COMMAND => 'set lc_time_names="pt_BR";',
+            PDO::MYSQL_ATTR_INIT_COMMAND => 'set time_zone = "America/Recife"'
+        );
         # Informações sobre o sistema:
         $sistema_titulo = "API - I'm Hingry";
         $sistema_email = "rafael.vasconcelos@outlook.com";
         try
         {
             # Atribui o objeto PDO à variável $db.
-            self::$db = new PDO("$db_driver:host=$db_host; dbname=$db_nome", $db_usuario, $db_senha);
+            self::$db = new PDO("$db_driver:host=$db_host; dbname=$db_nome", $db_usuario, $db_senha, $param);
             # Garante que o PDO lance exceções durante erros.
             self::$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             # Garante que os dados sejam armazenados com codificação UFT-8.

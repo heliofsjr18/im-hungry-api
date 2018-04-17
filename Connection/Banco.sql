@@ -295,3 +295,13 @@ CREATE TABLE `tipo_usuario` (
     `item_id` INT(11) NOT NULL,
     `checkout_id` INT(11) NOT NULL
   ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `checkout_flag`
+--
+  CREATE TABLE `checkout_flag` (
+    `checkout_flag_id` INT(10) AUTO_INCREMENT NOT NULL PRIMARY KEY,
+    `checkout_flag_desc` LONGTEXT NOT NULL
+  ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
