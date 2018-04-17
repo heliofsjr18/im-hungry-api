@@ -407,6 +407,7 @@ class CheckoutItensDAO
                     $stmt2->bindValue(1,$value1['checkout_id'], PDO::PARAM_INT);
                     $stmt2->execute();
                     $obj = $stmt2->fetchAll(PDO::FETCH_ASSOC);
+                    $result[$key1]['checkout_valor_bruto'] = number_format($value1['checkout_valor_bruto'], 2, '.', '');
 
                     foreach ($obj as $key2 => $value2) {
 
