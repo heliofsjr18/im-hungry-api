@@ -146,6 +146,10 @@ class UsuarioDAO
         }
     }
 
+    public function insert(){
+
+    }
+
     public  function alterUser(Usuario $usuario){
         //Cria conexao
         $conn = \Database::conexao();

@@ -90,7 +90,20 @@ class CheckoutItensController
         return $checkoutDAO->listAll($user_id, $filial_id, $status);
     }
 
-    public function changeFlag(){
+    public function changeFlag($status, $idChange){
 
+        if ( empty($status) ){
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'Status não informado!');
+            die;
+        }if ( empty($status != 2 && $status != 3) ){
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'Status inválido!');
+            die;
+        }if ( empty($idChange) ){
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'Id do checkout não informado!');
+            die;
+        }
+
+        $checkoutDAO = new CheckoutItensDAO();
+        return $checkoutDAO->changeFlag($status, $idChange);
     }
 }

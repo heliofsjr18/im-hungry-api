@@ -342,10 +342,14 @@ class CheckoutItensDAO
                     ped.checkout_id,
                     ped.checkout_ref,
                     ped.checkout_status,
+                    ped.checkout_last_event,
                     ped.checkout_disponivel,
                     ped.checkout_date,
+                    ped.checkout_date_concluido
+                    ped.checkout_date_entregue
                     DATE_FORMAT( ped.checkout_date , '%d/%m/%Y às %H:%i:%s' ) AS checkout_date_format, 
-                    ped.checkout_last_event,
+                    DATE_FORMAT( ped.checkout_date_concluido , '%d/%m/%Y às %H:%i:%s' ) AS checkout_conc_format, 
+                    DATE_FORMAT( ped.checkout_date_entregue , '%d/%m/%Y às %H:%i:%s' ) AS checkout_ent_format, 
                     ped.checkout_valor_bruto,
                     ped.user_id,
                     ped.user_id,
@@ -438,7 +442,34 @@ class CheckoutItensDAO
 
     }
 
-    public function changeFlag(){
+    public function changeFlag($status, $idChange){
+        $conn = \Database::conexao();
 
+        $collum = ($status == 2)? "checkout_date_concluido" : "checkout_date_entregue";
+
+        $sql = "UPDATE checkout
+                SET  ".$collum."  = ?,
+                WHERE checkout_id = ?";
+        $stmt = $conn->prepare($sql);
+
+        try {
+            $stmt->bindValue(1,$status);
+            $stmt->bindValue(2,$idChange);
+            $stmt->execute();
+
+            return array(
+                'status'    => 200,
+                'message'   => "SUCCESS"
+            );
+
+        } catch (PDOException $ex) {
+            return array(
+                'status'    => 500,
+                'message'   => "ERROR",
+                'result'    => 'Erro na execução da instrução!',
+                'CODE'      => $ex->getCode(),
+                'Exception' => $ex->getMessage(),
+            );
+        }
     }
 }

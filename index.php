@@ -558,14 +558,13 @@ $app->post('/web/checkout/changeFlag', function(Request $request, Response $resp
         die;
     }
 
-    $user_id = $auth['token']->data->user_id;
-    $filial_id = $auth['token']->data->filial_id;
     $status = $data["status"];
+    $idChange = $data["idChange"];
 
     require_once 'Controller/CheckoutItensController.php';
 
     $checkout = new CheckoutItensController();
-    $retorno = $checkout->listAll($user_id, $filial_id, $status);
+    $retorno = $checkout->changeFlag($status, $idChange);
 
     if ($retorno['status'] == 500){
         return $response->withJson($retorno, $retorno[status]);
@@ -576,14 +575,13 @@ $app->post('/web/checkout/changeFlag', function(Request $request, Response $resp
         $res = array(
             'status' 		=> 200,
             'message' 		=> "SUCCESS",
-            'pedidos' 		=> $retorno,
+            'result' 		=> "Dados Atualizados!",
             'token'			=> $jwt
         );
 
         return $response->withJson($res, $res[status]);
 
     }
-
 
 });
 
