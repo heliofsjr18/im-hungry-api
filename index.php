@@ -549,6 +549,44 @@ $app->post('/web/filial/enabled', function(Request $request, Response $response,
 
 });
 
+$app->post('/web/checkout/changeFlag', function(Request $request, Response $response, $args) {
+    $data = $request->getParsedBody();
+    $auth = auth($request);
+
+    if($auth[status] != 200){
+        return $response->withJson($auth, $auth[status]);
+        die;
+    }
+
+    $user_id = $auth['token']->data->user_id;
+    $filial_id = $auth['token']->data->filial_id;
+    $status = $data["status"];
+
+    require_once 'Controller/CheckoutItensController.php';
+
+    $checkout = new CheckoutItensController();
+    $retorno = $checkout->listAll($user_id, $filial_id, $status);
+
+    if ($retorno['status'] == 500){
+        return $response->withJson($retorno, $retorno[status]);
+        die;
+    }else{
+
+        $jwt = setToken($auth['token']->data);
+        $res = array(
+            'status' 		=> 200,
+            'message' 		=> "SUCCESS",
+            'pedidos' 		=> $retorno,
+            'token'			=> $jwt
+        );
+
+        return $response->withJson($res, $res[status]);
+
+    }
+
+
+});
+
 $app->post('/web/pedidos', function(Request $request, Response $response, $args) {
     $data = $request->getParsedBody();
     $auth = auth($request);

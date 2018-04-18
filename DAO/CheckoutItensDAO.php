@@ -196,8 +196,8 @@ class CheckoutItensDAO
 
                 $sql = "INSERT INTO checkout (checkout_ref, checkout_code, checkout_status, checkout_date, 
                                               checkout_last_event, checkout_valor_bruto, checkout_valor_liquido,
-                                              checkout_taxa, checkout_forma_pagamento, user_id, cartao_id, filial_id )
-                VALUES ( ?, ?, ?, NOW(), NOW(), ?, ?, ?, ?, ?, ?, ?);";
+                                              checkout_taxa, checkout_forma_pagamento, user_id, cartao_id, filial_id, checkout_flag_id )
+                VALUES ( ?, ?, ?, NOW(), NOW(), ?, ?, ?, ?, ?, ?, ?, 1);";
                 $stmt = $conn->prepare($sql);
 
                 $stmt->bindValue(1,$referencia, PDO::PARAM_STR);
@@ -435,6 +435,10 @@ class CheckoutItensDAO
                 'Exception' => $ex->getMessage(),
             );
         }
+
+    }
+
+    public function changeFlag(){
 
     }
 }

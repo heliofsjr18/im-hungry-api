@@ -89,4 +89,8 @@ class CheckoutItensController
         $checkoutDAO = new CheckoutItensDAO();
         return $checkoutDAO->listAll($user_id, $filial_id, $status);
     }
+
+    public function changeFlag(){
+
+    }
 }
