@@ -46,6 +46,25 @@ class UsuarioController
 
     }
 
+    public function insert(Usuario $usuario){
+        if ( empty($usuario->getNome()) ){
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'Nome do usuário não informado!');
+            die;
+        }if ( empty($usuario->getEmail()) ){
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'E-Mail não informado!');
+            die;
+        }if ( empty($usuario->getSenha()) ){
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'Senha não informada!');
+            die;
+        }if ( empty($usuario->getFotoPerfil()) ){
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'Foto não informada!');
+            die;
+        }
+
+        $usuarioDAO = new UsuarioDAO();
+        return $usuarioDAO->insert($usuario);
+    }
+
     public function update(Usuario $usuario){
 
         if ( empty($usuario->getId()) ){
