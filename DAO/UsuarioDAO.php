@@ -15,7 +15,8 @@ class UsuarioDAO
         $conn = \Database::conexao();
         //Cria SQL para inserir no banco
         $sql = "SELECT 	user_id, user_nome, user_cpf, user_email, user_telefone,
-                        user_data, user_cadastro, user_foto_perfil, user_status, tipo_id
+                        user_data, user_cadastro, user_foto_perfil, user_cep, tipo_id,
+                        user_endereco_numero, user_endereco_complemento, user_status, 
 						DATE_FORMAT(user_data, '%d/%m/%Y') as dateAniversario 
 						DATE_FORMAT(user_cadastro, '%d/%m/%Y') as dateCadastro 
 			FROM usuarios WHERE user_id = ? LIMIT 1;";
@@ -129,7 +130,7 @@ class UsuarioDAO
             $resultUsuario = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             if ($countLogin != 1) {
-                return array('status' => 500, 'message' => "ERROR", 'result' => 'Usuário e/ou senha inválidos!');
+                return array('status' => 204, 'message' => "ERROR", 'result' => 'Usuário e/ou senha inválidos!');
             }else{
 
                 return $resultUsuario;
@@ -147,10 +148,38 @@ class UsuarioDAO
     }
 
     public function insert(Usuario $usuario){
+        $conn = \Database::conexao();
+        $sql = "INSERT INTO usuarios (user_nome, user_email, user_senha, user_cadastro, 
+                                      user_foto_perfil, user_status, tipo_id)
+                VALUES ( ?, ?, SHA1(?), NOW(), ?, ?, ?);";
+        $stmt = $conn->prepare($sql);
 
+        try {
+            $stmt->bindValue(1,$usuario->getNome());
+            $stmt->bindValue(2,$usuario->getEmail());
+            $stmt->bindValue(3,$usuario->getSenha());
+            $stmt->bindValue(4,$usuario->getFotoPerfil());
+            $stmt->bindValue(5,$usuario->getStatus());
+            $stmt->bindValue(6,$usuario->getTipoId());
+            $stmt->execute();
+            $last_id = $conn->lastInsertId();
+
+            if ($stmt->execute()){
+                return $this->getUser($last_id);
+            }
+
+        } catch (PDOException $ex) {
+            return array(
+                'status'    => 500,
+                'message'   => "ERROR",
+                'result'    => 'Erro na execução da instrução!',
+                'CODE'      => $ex->getCode(),
+                'Exception' => $ex->getMessage(),
+            );
+        }
     }
 
-    public  function alterUser(Usuario $usuario){
+    public  function update(Usuario $usuario){
         //Cria conexao
         $conn = \Database::conexao();
 

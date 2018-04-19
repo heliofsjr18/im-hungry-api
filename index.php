@@ -33,83 +33,6 @@ $app->get('/', function(Request $request, Response $response, $args) {
 
 // Consumo Geral
 
-$app->post('/usuario/login', function(Request $request, Response $response, $args) {
-    $data = $request->getParsedBody();
-    require_once 'Basics/Usuario.php';
-    require_once 'Controller/UsuarioController.php';
-
-    $usuario = new Usuario();
-    $usuario->setEmail($data["email"]);
-    $usuario->setSenha($data["senha"]);
-    $usuario->setTipoId(3);
-
-    $usuarioController = new UsuarioController();
-    $retorno = $usuarioController->loginApp($usuario);
-
-    if ($retorno['status'] == 500){
-        return $response->withJson($retorno, $retorno[status]);
-        die;
-    }else{
-        $jwt = setToken($retorno[0]);
-        $res = array(
-            'status' 		=> 200,
-            'message' 		=> "SUCCESS",
-            'usuario' 		=> $retorno[0],
-            'token'			=> $jwt
-        );
-
-        return $response->withJson($res, $res[status]);
-
-    }
-
-});
-
-$app->post('/usuario/update', function(Request $request, Response $response, $args) {
-    $data = $request->getParsedBody();
-    $auth = auth($request);
-
-    if($auth[status] != 200){
-        return $response->withJson($auth, $auth[status]);
-        die;
-    }
-    require_once 'Basics/Usuario.php';
-    require_once 'Controller/UsuarioController.php';
-
-    $usuario = new Usuario();
-    $usuario->setId($auth['token']->data->user_id);
-    $usuario->setNome($data["nome"]);
-    $usuario->setCpf($data["cpf"]);
-    $usuario->setEmail($data["email"]);
-    $usuario->setSenha($data["senha"]);
-    $usuario->setTelefone($data["telefone"]);
-    $usuario->setData($data["dataNasc"]);
-    //$usuario->setFotoPerfil($data["foto"]);
-
-
-    $usuarioControle = new UsuarioController();
-    $retorno = $usuarioControle->update($usuario);
-
-    if ($retorno['status'] == 500){
-        return $response->withJson($retorno, $retorno[status]);
-        die;
-    }else{
-
-        $jwt = setToken($retorno[0]);
-        $res = array(
-            'status' 		=> 200,
-            'message' 		=> "SUCCESS",
-            'result' 		=> "Usuário atualizado.",
-            'usuario' 		=> $retorno[0],
-            'token'			=> $jwt
-        );
-
-        return $response->withJson($res, $res[status]);
-
-    }
-
-
-});
-
 $app->post('/cep', function(Request $request, Response $response, $args) {
     $data = $request->getParsedBody();
     $auth = auth($request);
@@ -716,7 +639,39 @@ $app->post('/mpadrao/listAll', function(Request $request, Response $response, $a
 
 // Consumo do APP
 
-$app->post('/app/usuario/insert', function(Request $request, Response $response, $args) {
+
+$app->post('/app/cliente/login', function(Request $request, Response $response, $args) {
+    $data = $request->getParsedBody();
+    require_once 'Basics/Usuario.php';
+    require_once 'Controller/UsuarioController.php';
+
+    $usuario = new Usuario();
+    $usuario->setEmail($data["email"]);
+    $usuario->setSenha($data["senha"]);
+    $usuario->setTipoId(3);
+
+    $usuarioController = new UsuarioController();
+    $retorno = $usuarioController->loginApp($usuario);
+
+    if ($retorno['status'] == 500){
+        return $response->withJson($retorno, $retorno[status]);
+        die;
+    }else{
+        $jwt = setToken($retorno[0]);
+        $res = array(
+            'status' 		=> 200,
+            'message' 		=> "SUCCESS",
+            'usuario' 		=> $retorno[0],
+            'token'			=> $jwt
+        );
+
+        return $response->withJson($res, $res[status]);
+
+    }
+
+});
+
+$app->post('/app/cliente/insert', function(Request $request, Response $response, $args) {
     $data = $request->getParsedBody();
     require_once 'Basics/Usuario.php';
     require_once 'Controller/UsuarioController.php';
@@ -726,6 +681,8 @@ $app->post('/app/usuario/insert', function(Request $request, Response $response,
     $usuario->setEmail($data["email"]);
     $usuario->setSenha($data["senha"]);
     $usuario->setFotoPerfil($data["fot64"]);
+    $usuario->setStatus(1);
+    $usuario->setTipoId(3);
 
     $usuarioController = new UsuarioController();
     $retorno = $usuarioController->insert($usuario);
@@ -738,7 +695,7 @@ $app->post('/app/usuario/insert', function(Request $request, Response $response,
         $res = array(
             'status'        => 200,
             'message'       => "SUCCESS",
-            'result'        => "Usuário cadastrado, login realizado!",
+            'result'        => "Usuário cadastrado e o login foi realizado!",
             'usuario'       => $retorno[0],
             'token'         => $jwt
         );
@@ -746,6 +703,52 @@ $app->post('/app/usuario/insert', function(Request $request, Response $response,
         return $response->withJson($res, $res[status]);
 
     }
+
+});
+
+$app->post('/app/cliente/update', function(Request $request, Response $response, $args) {
+    $data = $request->getParsedBody();
+    $auth = auth($request);
+
+    if($auth[status] != 200){
+        return $response->withJson($auth, $auth[status]);
+        die;
+    }
+    require_once 'Basics/Usuario.php';
+    require_once 'Controller/UsuarioController.php';
+
+    $usuario = new Usuario();
+    $usuario->setId($auth['token']->data->user_id);
+    $usuario->setNome($data["nome"]);
+    $usuario->setCpf($data["cpf"]);
+    $usuario->setEmail($data["email"]);
+    $usuario->setSenha($data["senha"]);
+    $usuario->setTelefone($data["telefone"]);
+    $usuario->setData($data["dataNasc"]);
+    //$usuario->setFotoPerfil($data["foto"]);
+
+
+    $usuarioControle = new UsuarioController();
+    $retorno = $usuarioControle->update($usuario);
+
+    if ($retorno['status'] == 500){
+        return $response->withJson($retorno, $retorno[status]);
+        die;
+    }else{
+
+        $jwt = setToken($retorno[0]);
+        $res = array(
+            'status' 		=> 200,
+            'message' 		=> "SUCCESS",
+            'result' 		=> "Usuário atualizado.",
+            'usuario' 		=> $retorno[0],
+            'token'			=> $jwt
+        );
+
+        return $response->withJson($res, $res[status]);
+
+    }
+
 
 });
 

@@ -79,11 +79,11 @@ class UsuarioController
             return array('status' => 500, 'message' => "ERROR", 'result' => 'CPF não informado!');
             die;
         }
-        if ( empty($usuario->setEmail()) ){
+        if ( empty($usuario->getEmail()) ){
             return array('status' => 500, 'message' => "ERROR", 'result' => 'E-mail não informado!');
             die;
         }
-        if ( empty($usuario->setTelefone()) ){
+        if ( empty($usuario->getTelefone()) ){
             return array('status' => 500, 'message' => "ERROR", 'result' => 'Telefone não informado!');
             die;
         }
@@ -96,7 +96,7 @@ class UsuarioController
         }
 
         $usuarioDAO = new UsuarioDAO();
-        return $usuarioDAO->alterUser($usuario);
+        return $usuarioDAO->update($usuario);
         //Enviar requisição para DAO
 
     }
