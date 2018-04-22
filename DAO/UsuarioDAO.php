@@ -17,7 +17,7 @@ class UsuarioDAO
         $sql = "SELECT 	user_id, user_nome, user_cpf, user_email, user_telefone,
                         user_data, user_cadastro, user_foto_perfil, user_cep, tipo_id,
                         user_endereco_numero, user_endereco_complemento, user_status, 
-						DATE_FORMAT(user_data, '%d/%m/%Y') as dateAniversario 
+						DATE_FORMAT(user_data, '%d/%m/%Y') as dateAniversario, 
 						DATE_FORMAT(user_cadastro, '%d/%m/%Y') as dateCadastro 
 			FROM usuarios WHERE user_id = ? LIMIT 1;";
         $stmt = $conn->prepare($sql);
@@ -164,9 +164,7 @@ class UsuarioDAO
             $stmt->execute();
             $last_id = $conn->lastInsertId();
 
-            if ($stmt->execute()){
-                return $this->getUser($last_id);
-            }
+            return $this->getUser($last_id);
 
         } catch (PDOException $ex) {
             return array(
