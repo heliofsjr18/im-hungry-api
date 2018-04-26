@@ -345,8 +345,8 @@ class CheckoutItensDAO
                     ped.checkout_last_event,
                     ped.checkout_disponivel,
                     ped.checkout_date,
-                    ped.checkout_date_concluido
-                    ped.checkout_date_entregue
+                    ped.checkout_date_concluido,
+                    ped.checkout_date_entregue,
                     DATE_FORMAT( ped.checkout_date , '%d/%m/%Y às %H:%i:%s' ) AS checkout_date_format, 
                     DATE_FORMAT( ped.checkout_date_concluido , '%d/%m/%Y às %H:%i:%s' ) AS checkout_conc_format, 
                     DATE_FORMAT( ped.checkout_date_entregue , '%d/%m/%Y às %H:%i:%s' ) AS checkout_ent_format, 
@@ -448,7 +448,8 @@ class CheckoutItensDAO
         $collum = ($status == 2)? "checkout_date_concluido" : "checkout_date_entregue";
 
         $sql = "UPDATE checkout
-                SET  ".$collum."  = ?,
+                SET  ".$collum."  = NOW(),
+                checkout_flag_id = ?
                 WHERE checkout_id = ?";
         $stmt = $conn->prepare($sql);
 

@@ -95,7 +95,7 @@ class CheckoutItensController
         if ( empty($status) ){
             return array('status' => 500, 'message' => "ERROR", 'result' => 'Status não informado!');
             die;
-        }if ( empty($status != 2 && $status != 3) ){
+        }if ( empty($status != 2 || $status != 3) ){
             return array('status' => 500, 'message' => "ERROR", 'result' => 'Status inválido!');
             die;
         }if ( empty($idChange) ){
