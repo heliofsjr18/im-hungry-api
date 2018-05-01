@@ -173,17 +173,17 @@
     },
     {
         "name": "phpmailer/phpmailer",
-        "version": "v6.0.3",
-        "version_normalized": "6.0.3.0",
+        "version": "v6.0.5",
+        "version_normalized": "6.0.5.0",
         "source": {
             "type": "git",
             "url": "https://github.com/PHPMailer/PHPMailer.git",
-            "reference": "44d49bab5ab1fef721d3ee07e75dc0865ddf4cc6"
+            "reference": "cb3ea134d4d3729e7857737d5f320cce9caf4d32"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/PHPMailer/PHPMailer/zipball/44d49bab5ab1fef721d3ee07e75dc0865ddf4cc6",
-            "reference": "44d49bab5ab1fef721d3ee07e75dc0865ddf4cc6",
+            "url": "https://api.github.com/repos/PHPMailer/PHPMailer/zipball/cb3ea134d4d3729e7857737d5f320cce9caf4d32",
+            "reference": "cb3ea134d4d3729e7857737d5f320cce9caf4d32",
             "shasum": ""
         },
         "require": {
@@ -208,7 +208,7 @@
             "stevenmaguire/oauth2-microsoft": "Needed for Microsoft XOAUTH2 authentication",
             "symfony/polyfill-mbstring": "To support UTF-8 if the Mbstring PHP extension is not enabled (^1.2)"
         },
-        "time": "2018-01-05T13:19:58+00:00",
+        "time": "2018-03-27T13:49:45+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -396,17 +396,17 @@
     },
     {
         "name": "slim/slim",
-        "version": "3.9.2",
-        "version_normalized": "3.9.2.0",
+        "version": "3.10.0",
+        "version_normalized": "3.10.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/slimphp/Slim.git",
-            "reference": "4086d0106cf5a7135c69fce4161fe355a8feb118"
+            "reference": "d8aabeacc3688b25e2f2dd2db91df91ec6fdd748"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/slimphp/Slim/zipball/4086d0106cf5a7135c69fce4161fe355a8feb118",
-            "reference": "4086d0106cf5a7135c69fce4161fe355a8feb118",
+            "url": "https://api.github.com/repos/slimphp/Slim/zipball/d8aabeacc3688b25e2f2dd2db91df91ec6fdd748",
+            "reference": "d8aabeacc3688b25e2f2dd2db91df91ec6fdd748",
             "shasum": ""
         },
         "require": {
@@ -424,7 +424,7 @@
             "phpunit/phpunit": "^4.0",
             "squizlabs/php_codesniffer": "^2.5"
         },
-        "time": "2017-11-26T19:13:09+00:00",
+        "time": "2018-04-19T19:29:08+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
