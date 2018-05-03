@@ -8,6 +8,12 @@
 
 require_once 'Connection/Conexao.php';
 require_once "lib/vendor/autoload.php";
+
+use sngrl\PhpFirebaseCloudMessaging\Client;
+use sngrl\PhpFirebaseCloudMessaging\Message;
+use sngrl\PhpFirebaseCloudMessaging\Recipient\Topic;
+use sngrl\PhpFirebaseCloudMessaging\Notification;
+
 class CheckoutItensDAO
 {
     public function generate($array_itens, $array_qtd, $token, $hash, $user_id, $cartao_id){
@@ -443,20 +449,51 @@ class CheckoutItensDAO
     }
 
     public function changeFlag($status, $idChange){
+
         $conn = \Database::conexao();
 
         $collum = ($status == 2)? "checkout_date_concluido" : "checkout_date_entregue";
 
-        $sql = "UPDATE checkout
+        $sql = "SELECT 
+                    checkout_ref,
+                    checkout_date_concluido,
+                    user_id
+                FROM checkout
+                WHERE checkout_id = ?;";
+        $stmt = $conn->prepare($sql);
+
+        $sql2 = "UPDATE checkout
                 SET  ".$collum."  = NOW(),
                 checkout_flag_id = ?
                 WHERE checkout_id = ?";
-        $stmt = $conn->prepare($sql);
+        $stmt2 = $conn->prepare($sql2);
 
         try {
-            $stmt->bindValue(1,$status);
-            $stmt->bindValue(2,$idChange);
+            $stmt->bindValue(1,$idChange);
             $stmt->execute();
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            $stmt2->bindValue(1,$status);
+            $stmt2->bindValue(2,$idChange);
+            $stmt2->execute();
+
+
+            $server_key = '_YOUR_SERVER_KEY_';
+            $client = new Client();
+            $client->setApiKey($server_key);
+            $client->injectGuzzleHttpClient(new \GuzzleHttp\Client());
+
+            $message = new Message();
+            $message->setPriority('high');
+            $message->addRecipient(new Topic('_YOUR_TOPIC_'));
+            $message
+                ->setNotification(new Notification('some title', 'some body'))
+                ->setData(['key' => 'value'])
+            ;
+
+            $response = $client->send($message);
+            var_dump($response->getStatusCode());
+            var_dump($response->getBody()->getContents());
 
             return array(
                 'status'    => 200,
