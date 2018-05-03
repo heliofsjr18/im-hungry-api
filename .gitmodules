@@ -1,0 +1,2 @@
+[submodule "lib/vendor/sngrl/php-firebase-cloud-messaging"]
+	url = https://github.com/sngrl/php-firebase-cloud-messaging
