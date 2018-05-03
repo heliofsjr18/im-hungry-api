@@ -88,11 +88,11 @@ class CheckoutItensDAO
 
         } catch (PDOException $ex) {
             return array(
-            'status'    => 500,
-            'message'   => "ERROR",
-            'result'    => 'Erro na execução da instrução!',
-            'CODE'      => $ex->getCode(),
-            'Exception' => $ex->getMessage(),
+                'status'    => 500,
+                'message'   => "ERROR",
+                'result'    => 'Erro na execução da instrução!',
+                'CODE'      => $ex->getCode(),
+                'Exception' => $ex->getMessage(),
             );
         }
 
@@ -455,11 +455,15 @@ class CheckoutItensDAO
         $collum = ($status == 2)? "checkout_date_concluido" : "checkout_date_entregue";
 
         $sql = "SELECT 
-                    checkout_ref,
-                    checkout_date_concluido,
-                    user_id
-                FROM checkout
-                WHERE checkout_id = ?;";
+                    chec.checkout_ref,
+                    chec.checkout_date_concluido,
+                    chec.user_id,
+                    usu.user_nome
+                    
+                FROM checkout chec
+                INNER JOIN usuarios usu
+                ON usu.user_id = chec.user_id
+                WHERE chec.checkout_id = ?;";
         $stmt = $conn->prepare($sql);
 
         $sql2 = "UPDATE checkout
@@ -473,32 +477,61 @@ class CheckoutItensDAO
             $stmt->execute();
             $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-            $stmt2->bindValue(1,$status);
-            $stmt2->bindValue(2,$idChange);
-            $stmt2->execute();
+            $ref = substr($result[0]["checkout_ref"], -6);
+            $nome = explode(" ", $result[0]["user_nome"]);
 
-
-            $server_key = '_YOUR_SERVER_KEY_';
+            $server_key = 'AAAAHTO1V3s:APA91bE-n76NJl5OfMx9D7i44xkbiswnKN1zzOv8iAFOidjimuD6uPu1opNnOrgPLti1_K-MCLJFPOvbDXmwOPYeezIDYxczwkgjEgW5HAEqzue5yLtvX_UFl_IGZEn8AzUFQN-Nzd2_';
             $client = new Client();
             $client->setApiKey($server_key);
             $client->injectGuzzleHttpClient(new \GuzzleHttp\Client());
 
+            $notification = new Notification();
+
+            switch ($status){
+                case 2:
+                    $notification->setTitle("Acabou a espera!");
+                    $notification->setBody("Olá ".$nome[0]."! Seu pedido #".$ref." já está pronto! Por favor, retire no balcão.");
+
+                    break;
+                case 3:
+                    $notification->setTitle("Agradecemos sua visita!");
+                    $notification->setBody($nome[0].", muito obrigado por utilizar o I`m Hungry!");
+                    break;
+            }
+
             $message = new Message();
             $message->setPriority('high');
-            $message->addRecipient(new Topic('_YOUR_TOPIC_'));
+            $message->addRecipient(new Topic('com.br.ImHungryApp-'.$result[0]["user_id"]));
             $message
-                ->setNotification(new Notification('some title', 'some body'))
+                ->setNotification($notification)
                 ->setData(['key' => 'value'])
             ;
 
             $response = $client->send($message);
-            var_dump($response->getStatusCode());
-            var_dump($response->getBody()->getContents());
 
-            return array(
-                'status'    => 200,
-                'message'   => "SUCCESS"
-            );
+            if ($response->getStatusCode() === 200){
+
+                $return = json_decode($response->getBody()->getContents());
+                $idNotification = $return->message_id;
+
+                $stmt2->bindValue(1,$status);
+                $stmt2->bindValue(2,$idChange);
+                $stmt2->execute();
+
+                return array(
+                    'status'    => 200,
+                    'message'   => "SUCCESS"
+                );
+
+            }else{
+
+                return array(
+                    'status'    => 500,
+                    'message'   => "ERROR",
+                    'result'   => "Notificação não enviada! Tente novamente."
+                );
+            }
+
 
         } catch (PDOException $ex) {
             return array(
