@@ -2,7 +2,16 @@ SetEnvIf Authorization "(.*)" HTTP_AUTHORIZATION=$1
 Header set Access-Control-Allow-Origin "*" env=CORS
 
 RewriteEngine on
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteRule ^(.*)$ /index.php?/$1 [L]
-#RewriteRule ^(.*)$ /api/index.php?/$1 [L]
+
+# Bloquear acesso ao subdomínio através de pastas.
+    RewriteCond %{HTTP_HOST} !^api\. [NC]
+    RewriteRule ^ - [F]
+####
+
+# Enviar todos as solicitações para o arquivo principal
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^(.*)$ /index.php?/$1 [L]
+    #RewriteRule ^(.*)$ /api/index.php?/$1 [L]
+####
+
