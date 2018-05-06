@@ -637,6 +637,46 @@ $app->post('/mpadrao/listAll', function(Request $request, Response $response, $a
 
 });
 
+$app->post('/web/fidelidade/insert', function(Request $request, Response $response, $args) {
+    $data = $request->getParsedBody();
+    $auth = auth($request);
+
+    if($auth[status] != 200){
+        return $response->withJson($auth, $auth[status]);
+        die;
+    }
+    require_once 'Basics/FidelidadeFilial.php';
+    require_once 'Controller/FidelidadeFilialController.php';
+
+    $fidelidade = new FidelidadeFilial();
+    $fidelidade->setQtd($data["qtd"]);
+    $fidelidade->setValor($data["valor"]);
+    $fidelidade->setBeneficio($data["beneficio"]);
+    $fidelidade->setFilialId($data["filial_id"]);
+    
+    $fidelidadeFilialController = new FidelidadeFilialController();
+    $retorno = $fidelidadeFilialController->insert($fidelidade);
+
+    if ($retorno['status'] == 500){
+        return $response->withJson($retorno, $retorno[status]);
+        die;
+    }else{
+
+        $jwt = setToken($auth['token']->data);
+        $res = array(
+            'status'        => 200,
+            'message'       => "SUCCESS",
+            'result'        => "Filial Cadastrada!",
+            'token'         => $jwt
+        );
+
+        return $response->withJson($res, $res[status]);
+
+    }
+
+
+});
+
 // Consumo do APP
 
 
