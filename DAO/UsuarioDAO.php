@@ -14,7 +14,7 @@ class UsuarioDAO
         //Cria conexao
         $conn = \Database::conexao();
         //Cria SQL para inserir no banco
-        $sql = "SELECT 	user_id, user_nome, user_cpf, user_email, user_telefone,
+        $sql = "SELECT 	user_id, user_nome, user_senha, user_cpf, user_email, user_telefone,
                         user_data, user_cadastro, user_foto_perfil, user_cep, tipo_id,
                         user_endereco_numero, user_endereco_complemento, user_status, 
 						DATE_FORMAT(user_data, '%d/%m/%Y') as dateAniversario, 
@@ -49,7 +49,7 @@ class UsuarioDAO
         //Cria conexao
         $conn = \Database::conexao();
         //Cria SQL para inserir no banco
-        $sql = "SELECT 	user_id, user_nome, user_cpf, user_email,
+        $sql = "SELECT 	user_id, user_nome, user_senha, user_cpf, user_email,
                         user_telefone, user_data, user_cadastro,
                         user_foto_perfil, user_status, tipo_id, filial_id,
 						DATE_FORMAT(user_data, '%d/%m/%Y') as dateAniversario, 
