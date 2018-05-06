@@ -30,11 +30,18 @@ class EmpresaFilialDAO
                         fil.filial_enabled,
                         
                         emp.empresa_id,
-                        emp.empresa_nome
+                        emp.empresa_nome,
+
+                        ecf.cartao_fid_id,
+                        ecf.cartao_fid_qtd,
+                        ecf.cartao_fid_valor,
+                        ecf.cartao_fid_beneficio
                   
                   FROM empresa_filial fil
                   INNER JOIN empresa emp
                   on emp.empresa_id = fil.empresa_id
+                  LEFT JOIN empresa_cartao_fid ecf
+                  on fil.filial_id = ecf.filial_id
                   WHERE fil.empresa_id = ?  
                   AND fil.filial_enabled = ?
                   ORDER BY fil.filial_id;";
