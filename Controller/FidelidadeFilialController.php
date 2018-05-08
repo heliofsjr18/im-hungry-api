@@ -24,5 +24,21 @@ class FidelidadeFilialController
 
         $fidelidadeFilialDAO = new FidelidadeFilialDAO();
         return $fidelidadeFilialDAO->insert($fidelidadeFilial);
+
+    }
+
+    public function remove(FidelidadeFilial $fidelidadeFilial){
+        if ( empty($fidelidadeFilial->getId()) ){
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'Id da Fidelidade não informado!');
+            die;
+        }
+        if ( empty($fidelidadeFilial->getFilialId()) ){
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'ID da Filial não informado!');
+            die;
+        }
+
+        $fidelidadeFilialDAO = new FidelidadeFilialDAO();
+        return $fidelidadeFilialDAO->remove($fidelidadeFilial);
+
     }
 }

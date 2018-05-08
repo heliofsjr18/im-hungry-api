@@ -666,7 +666,48 @@ $app->post('/web/fidelidade/insert', function(Request $request, Response $respon
         $res = array(
             'status'        => 200,
             'message'       => "SUCCESS",
-            'result'        => "Filial Cadastrada!",
+            'result'        => "Fidelidade Cadastrada!",
+            'token'         => $jwt
+        );
+
+        return $response->withJson($res, $res[status]);
+
+    }
+
+
+});
+
+$app->post('/web/fidelidade/remove', function(Request $request, Response $response, $args) {
+    $data = $request->getParsedBody();
+    $auth = auth($request);
+
+    if($auth[status] != 200){
+        return $response->withJson($auth, $auth[status]);
+        die;
+    }
+    require_once 'Basics/FidelidadeFilial.php';
+    require_once 'Controller/FidelidadeFilialController.php';
+
+    $fidelidade = new FidelidadeFilial();
+    $fidelidade->setId($data["cartao_fid_id"]);
+    $fidelidade->setQtd($data["qtd"]);
+    $fidelidade->setValor($data["valor"]);
+    $fidelidade->setBeneficio($data["beneficio"]);
+    $fidelidade->setFilialId($data["filial_id"]);
+
+    $fidelidadeFilialController = new FidelidadeFilialController();
+    $retorno = $fidelidadeFilialController->remove($fidelidade);
+
+    if ($retorno['status'] == 500){
+        return $response->withJson($retorno, $retorno[status]);
+        die;
+    }else{
+
+        $jwt = setToken($auth['token']->data);
+        $res = array(
+            'status'        => 200,
+            'message'       => "SUCCESS",
+            'result'        => "Fidelidade Removida!",
             'token'         => $jwt
         );
 

@@ -35,4 +35,31 @@ class FidelidadeFilialDAO
 
     }
 
+    public function remove(FidelidadeFilial $fidelidadeFilial){
+
+        $conn = \Database::conexao();
+        $sql = "delete from empresa_cartao_fid where cartao_fid_id = ?;";
+        $stmt = $conn->prepare($sql);
+
+        try {
+            $stmt->bindValue(1,$fidelidadeFilial->getId(), PDO::PARAM_STR);
+            $stmt->execute();
+
+            return array(
+                'status'    => 200,
+                'message'   => "SUCCESS"
+            );
+
+        } catch (PDOException $ex) {
+            return array(
+                'status'    => 500,
+                'message'   => "ERROR",
+                'result'    => 'Erro na execução da instrução!',
+                'CODE'      => $ex->getCode(),
+                'Exception' => $ex->getMessage(),
+            );
+        }
+
+    }
+
 }
