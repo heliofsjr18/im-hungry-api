@@ -73,6 +73,17 @@ class CheckoutItensController
         return $checkoutDAO->consult($ref, $user_id);
     }
 
+    public function appListAll($user_id){
+
+        if ( empty($user_id) ){
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'Id do usuário não informado!');
+            die;
+        }
+
+        $checkoutDAO = new CheckoutItensDAO();
+        return $checkoutDAO->appListAll($user_id);
+    }
+
     public function listAll($user_id, $filial_id, $status){
 
         if ( empty($user_id) ){

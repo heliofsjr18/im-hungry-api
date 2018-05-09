@@ -982,6 +982,43 @@ $app->post('/app/checkout', function(Request $request, Response $response, $args
 
 });
 
+$app->get('/app/checkout', function(Request $request, Response $response, $args) {
+    $data = $request->getParsedBody();
+    $auth = auth($request);
+
+    if($auth[status] != 200){
+        return $response->withJson($auth, $auth[status]);
+        die;
+    }
+
+    require_once 'Basics/CheckoutItens.php';
+    require_once 'Controller/CheckoutItensController.php';
+
+    $user_id = $auth['token']->data->user_id;
+
+    $checkoutController = new CheckoutItensController();
+    $retorno = $checkoutController->appListAll($user_id);
+
+    if ($retorno['status'] == 500){
+        return $response->withJson($retorno, $retorno[status]);
+        die;
+    }else{
+        $jwt = setToken($retorno[0]);
+        $res = array(
+            'status' 		=> 200,
+            'message' 		=> "SUCCESS",
+            'checkouts' 	=> $retorno,
+            'token'			=> $jwt
+        );
+
+        return $response->withJson($res, $res[status]);
+
+    }
+
+
+
+});
+
 $app->post('/app/notification', function(Request $request, Response $response, $args) {
 
     $data = $request->getParsedBody();

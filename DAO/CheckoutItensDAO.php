@@ -341,6 +341,112 @@ class CheckoutItensDAO
 
     }
 
+    public  function appListAll($user_id){
+
+        $conn = \Database::conexao();
+        $sql = "SELECT 
+                    ped.checkout_id,
+                    ped.checkout_ref,
+                    ped.checkout_status,
+                    ped.checkout_last_event,
+                    ped.checkout_date,
+                    ped.checkout_date_concluido,
+                    ped.checkout_date_entregue,
+                    DATE_FORMAT( ped.checkout_date , '%d/%m/%Y às %H:%i:%s' ) AS checkout_date_format, 
+                    DATE_FORMAT( ped.checkout_date_concluido , '%d/%m/%Y às %H:%i:%s' ) AS checkout_conc_format, 
+                    DATE_FORMAT( ped.checkout_date_entregue , '%d/%m/%Y às %H:%i:%s' ) AS checkout_ent_format, 
+                    ped.checkout_valor_bruto,
+                    ped.user_id,
+                    ped.checkout_flag_id,
+                    
+                    fla.checkout_flag_desc,
+                    
+                    fili.filial_nome,
+                    empr.empresa_foto_marca 
+                    
+                FROM checkout ped
+                INNER JOIN checkout_flag fla
+                ON ped.checkout_flag_id = fla.checkout_flag_id 
+                INNER JOIN empresa_filial fili
+                ON ped.filial_id = fili.filial_id
+                INNER JOIN empresa empr
+                ON fili.empresa_id = empr.empresa_id
+                WHERE ped.user_id = ?;";
+        $stmt = $conn->prepare($sql);
+
+        $sql2 = "SELECT 
+                    chec.checkout_item_id,
+                    chec.checkout_item_qtd,
+                    chec.checkout_item_valor,
+                    chec.item_id,
+                    
+                    item.item_nome,
+                    item.item_tempo_medio
+
+                FROM checkout_itens chec
+                INNER JOIN menu_filial_itens item
+                ON chec.item_id = item.item_id 
+                WHERE chec.checkout_id = ?;";
+        $stmt2 = $conn->prepare($sql2);
+
+        $sql3 = "SELECT 
+                    fot_id,
+                    fot_file 
+
+                FROM itens_fotos 
+                WHERE item_id = ?;";
+        $stmt3 = $conn->prepare($sql3);
+
+        try {
+            $stmt->bindValue(1,$user_id);
+            $stmt->execute();
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $count = count($result);
+
+            if ($count == 0){
+                return array(
+                    'status'    => 500,
+                    'message'   => "INFO",
+                    'qtd'       => 0,
+                    'result'    => 'Nenhum pedido encontrado!'
+                );
+            }else{
+
+                foreach ($result as $key1 => $value1){
+                    $stmt2->bindValue(1,$value1['checkout_id'], PDO::PARAM_INT);
+                    $stmt2->execute();
+                    $obj = $stmt2->fetchAll(PDO::FETCH_ASSOC);
+                    $result[$key1]['checkout_valor_bruto'] = number_format($value1['checkout_valor_bruto'], 2, '.', '');
+
+                    foreach ($obj as $key2 => $value2) {
+
+                        $stmt3->bindValue(1,$value2['item_id'], PDO::PARAM_INT);
+                        $stmt3->execute();
+                        $fotos = $stmt3->fetchAll(PDO::FETCH_ASSOC);
+
+                        $obj[$key2]['fotos'] = $fotos;
+
+                    }
+
+                    $result[$key1]['itens'] = $obj;
+
+                }
+
+                return $result;
+            }
+
+        } catch (PDOException $ex) {
+            return array(
+                'status'    => 500,
+                'message'   => "ERROR",
+                'result'    => 'Erro na execução da instrução!',
+                'CODE'      => $ex->getCode(),
+                'Exception' => $ex->getMessage(),
+            );
+        }
+
+    }
+
     public  function listAll($user_id, $filial_id, $status){
 
         $conn = \Database::conexao();
