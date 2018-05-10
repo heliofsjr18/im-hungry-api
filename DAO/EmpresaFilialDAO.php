@@ -64,6 +64,7 @@ class EmpresaFilialDAO
                 $filiais = $stmt2->fetchAll(PDO::FETCH_ASSOC);
 
                 foreach ($filiais as $key2 => $value2) {
+                    $value2["cartao_fid_valor"] = number_format($value2['cartao_fid_valor'], 2, '.', '');
                     array_push($array_filiais, $value2);
                 }
 
