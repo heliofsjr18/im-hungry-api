@@ -283,4 +283,37 @@ class EmpresaFilialDAO
 
     }
 
+    public function status(EmpresaFilial $empresaFilial){
+
+        $conn = \Database::conexao();
+
+        $sql = "UPDATE empresa_filial
+                SET  filial_status  = ?
+                WHERE filial_id = ?";
+        $stmt = $conn->prepare($sql);
+
+        $status = ($empresaFilial->getStatus() == 'true')? true : false;
+
+        try {
+            $stmt->bindValue(1,$status);
+            $stmt->bindValue(2,$empresaFilial->getId(), PDO::PARAM_INT);
+            $stmt->execute();
+
+            return array(
+                'status'    => 200,
+                'message'   => "SUCCESS"
+            );
+
+        } catch (PDOException $ex) {
+            return array(
+                'status'    => 500,
+                'message'   => "ERROR",
+                'result'    => 'Erro na execução da instrução!',
+                'CODE'      => $ex->getCode(),
+                'Exception' => $ex->getMessage(),
+            );
+        }
+
+    }
+
 }

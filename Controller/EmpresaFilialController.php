@@ -115,15 +115,30 @@ class EmpresaFilialController
     public function enabled(EmpresaFilial $empresaFilial){
 
         if ( empty($empresaFilial->getId()) ){
-            return array('status' => 500, 'message' => "ERROR", 'result' => 'Id da empresa não informado!');
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'Id da filial não informado!');
             die;
         }if ( empty($empresaFilial->getEnabled()) ){
-            return array('status' => 500, 'message' => "ERROR", 'result' => 'Enabled da empresa não informado!');
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'Enabled da filial não informado!');
             die;
         }
 
         $empresaDAO = new EmpresaFilialDAO();
         return $empresaDAO->enabled($empresaFilial);
+
+    }
+
+    public function status(EmpresaFilial $empresaFilial){
+
+        if ( empty($empresaFilial->getId()) ){
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'Id da filial não informado!');
+            die;
+        }if ( empty($empresaFilial->getStatus()) ){
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'Status da filial não informado!');
+            die;
+        }
+
+        $empresaDAO = new EmpresaFilialDAO();
+        return $empresaDAO->status($empresaFilial);
 
     }
 
