@@ -7,6 +7,7 @@
  */
 
 require_once 'Basics/MenuFilialItens.php';
+require_once 'Basics/ItensFotos.php';
 require_once 'Connection/Conexao.php';
 class MenuFilialItensDAO
 {
@@ -98,6 +99,37 @@ class MenuFilialItensDAO
                 $stmt2->bindValue(2,$last_id, PDO::PARAM_INT);
                 $stmt2->execute();
             }
+
+            return array(
+                'status'    => 200,
+                'message'   => "SUCCESS"
+            );
+
+        } catch (PDOException $ex) {
+            return array(
+                'status'    => 500,
+                'message'   => "ERROR",
+                'result'    => 'Erro na execução da instrução!',
+                'CODE'      => $ex->getCode(),
+                'Exception' => $ex->getMessage(),
+            );
+        }
+
+    }
+
+    public function addImage(ItensFotos $item){
+
+        $conn = \Database::conexao();
+
+        $sql = "INSERT INTO itens_fotos (fot_file, item_id)
+                VALUES ( ?, ?);";
+
+        $stmt = $conn->prepare($sql);
+
+        try {
+            $stmt->bindValue(1,$item->getFotFile(), PDO::PARAM_STR);
+            $stmt->bindValue(2,$item->getItemId(), PDO::PARAM_INT);
+            $stmt->execute();
 
             return array(
                 'status'    => 200,

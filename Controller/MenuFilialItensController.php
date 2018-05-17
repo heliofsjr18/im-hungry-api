@@ -7,6 +7,7 @@
  */
 
 require_once 'Basics/MenuFilialItens.php';
+require_once 'Basics/ItensFotos.php';
 require_once 'DAO/MenuFilialItensDAO.php';
 class MenuFilialItensController
 {
@@ -47,6 +48,20 @@ class MenuFilialItensController
 
         $menuDAO = new MenuFilialItensDAO();
         return $menuDAO->insert($itens, $itensFotos);
+
+    }
+
+    public function addImage(ItensFotos $item){
+        if ( empty($item->getItemId()) ){
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'ID do item não informado!');
+            die;
+        }if ( empty($item->getFotFile()) ){
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'Nome da imagem não informado!');
+            die;
+        }
+
+        $menuDAO = new MenuFilialItensDAO();
+        return $menuDAO->addImage($item);
 
     }
 }

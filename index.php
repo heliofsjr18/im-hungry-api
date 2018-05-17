@@ -593,6 +593,44 @@ $app->post('/web/menu/insert', function(Request $request, Response $response, $a
 
 });
 
+$app->post('/web/item/foto', function(Request $request, Response $response, $args) {
+    $data = $request->getParsedBody();
+    $auth = auth($request);
+
+    if($auth[status] != 200){
+        return $response->withJson($auth, $auth[status]);
+        die;
+    }
+    require_once 'Basics/ItensFotos.php';
+    require_once 'Controller/MenuFilialItensController.php';
+
+    $item = new ItensFotos();
+    $item->setItemId($data["item_id"]);
+    $item->setFotFile($data["foto"]);
+
+    $menuController = new MenuFilialItensController();
+    $retorno = $menuController->addImage($item);
+
+    if ($retorno['status'] == 500){
+        return $response->withJson($retorno, $retorno[status]);
+        die;
+    }else{
+
+        $jwt = setToken($auth['token']->data);
+        $res = array(
+            'status' 		=> 200,
+            'message' 		=> "SUCCESS",
+            'result' 		=> "Foto cadastrada!",
+            'token'			=> $jwt
+        );
+
+        return $response->withJson($res, $res[status]);
+
+    }
+
+
+});
+
 $app->post('/web/checkout/changeFlag', function(Request $request, Response $response, $args) {
     $data = $request->getParsedBody();
     $auth = auth($request);
