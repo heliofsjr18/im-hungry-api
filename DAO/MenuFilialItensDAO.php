@@ -67,4 +67,52 @@ class MenuFilialItensDAO
         }
 
     }
+
+    public function insert(MenuFilialItens $itens, $itensFotos){
+
+        $conn = \Database::conexao();
+
+        $enabled = ($itens->getPromocao() == 'true')? true : false;
+
+        $sql = "INSERT INTO menu_filial_itens (item_nome, item_valor, item_tempo_medio, item_status, item_promocao, filial_id)
+                VALUES ( ?, ?, ?, TRUE, ?, ?);";
+
+        $sql2 = "INSERT INTO itens_fotos (fot_file, item_id)
+                VALUES ( ?, ?);";
+
+        $stmt = $conn->prepare($sql);
+        $stmt2 = $conn->prepare($sql2);
+
+        try {
+            $stmt->bindValue(1,$itens->getNome(), PDO::PARAM_STR);
+            $stmt->bindValue(2,$itens->getValor(), PDO::PARAM_STR);
+            $stmt->bindValue(3,$itens->getTempoMedio(), PDO::PARAM_STR);
+            $stmt->bindValue(4,$enabled);
+            $stmt->bindValue(5,$itens->getFilialId(), PDO::PARAM_INT);
+            $stmt->execute();
+
+            $last_id = $conn->lastInsertId();
+
+            foreach ($itensFotos as $key => $value){
+                $stmt2->bindValue(1,$value, PDO::PARAM_STR);
+                $stmt2->bindValue(2,$last_id, PDO::PARAM_INT);
+                $stmt2->execute();
+            }
+
+            return array(
+                'status'    => 200,
+                'message'   => "SUCCESS"
+            );
+
+        } catch (PDOException $ex) {
+            return array(
+                'status'    => 500,
+                'message'   => "ERROR",
+                'result'    => 'Erro na execução da instrução!',
+                'CODE'      => $ex->getCode(),
+                'Exception' => $ex->getMessage(),
+            );
+        }
+
+    }
 }

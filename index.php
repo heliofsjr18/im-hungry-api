@@ -548,6 +548,51 @@ $app->post('/web/menu/listAll', function(Request $request, Response $response, $
 
 });
 
+$app->post('/web/menu/insert', function(Request $request, Response $response, $args) {
+    $data = $request->getParsedBody();
+    $auth = auth($request);
+
+    if($auth[status] != 200){
+        return $response->withJson($auth, $auth[status]);
+        die;
+    }
+    require_once 'Basics/MenuFilialItens.php';
+    require_once 'Controller/MenuFilialItensController.php';
+
+    $data['valor'] = str_replace('R$ ', '' , $data['valor']);
+    $data['valor'] = str_replace('.', '' , $data['valor']);
+    $data['valor'] = str_replace(',', '.' , $data['valor']);
+
+    $itens = new MenuFilialItens();
+    $itens->setNome($data["nome"]);
+    $itens->setValor($data["valor"]);
+    $itens->setTempoMedio($data["tempo"]);
+    $itens->setPromocao($data["promo"]);
+    $itens->setFilialId($data["filial_id"]);
+
+    $menuController = new MenuFilialItensController();
+    $retorno = $menuController->insert($itens, $data["fotos"]);
+
+    if ($retorno['status'] == 500){
+        return $response->withJson($retorno, $retorno[status]);
+        die;
+    }else{
+
+        $jwt = setToken($auth['token']->data);
+        $res = array(
+            'status' 		=> 200,
+            'message' 		=> "SUCCESS",
+            'result' 		=> "Item cadastrado!",
+            'token'			=> $jwt
+        );
+
+        return $response->withJson($res, $res[status]);
+
+    }
+
+
+});
+
 $app->post('/web/checkout/changeFlag', function(Request $request, Response $response, $args) {
     $data = $request->getParsedBody();
     $auth = auth($request);
