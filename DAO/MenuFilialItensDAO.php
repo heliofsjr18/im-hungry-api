@@ -13,15 +13,19 @@ class MenuFilialItensDAO
     public function listAll(MenuFilialItens $menu){
 
         $conn = \Database::conexao();
+
+        $enabled = ($menu->getStatus() == 'true')? true : false;
+
         $sql = "SELECT item_id, item_nome, item_valor, item_tempo_medio, item_status, item_promocao 
                 FROM menu_filial_itens 
-                WHERE item_status = TRUE 
+                WHERE item_status = ? 
                 AND filial_id = ? 
                 AND item_nome LIKE '%".$menu->getNome()."%';";
         $stmt = $conn->prepare($sql);
 
         try {
-            $stmt->bindValue(1,$menu->getFilialId(), PDO::PARAM_INT);
+            $stmt->bindValue(1,$enabled);
+            $stmt->bindValue(2,$menu->getFilialId(), PDO::PARAM_INT);
             $stmt->execute();
             $countMenu = $stmt->rowCount();
             $resultItens = $stmt->fetchAll(PDO::FETCH_OBJ);

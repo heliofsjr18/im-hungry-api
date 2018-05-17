@@ -509,6 +509,45 @@ $app->post('/web/filial/status', function(Request $request, Response $response, 
 
 });
 
+$app->post('/web/menu/listAll', function(Request $request, Response $response, $args) {
+    $data = $request->getParsedBody();
+    $auth = auth($request);
+
+    if($auth[status] != 200){
+        return $response->withJson($auth, $auth[status]);
+        die;
+    }
+    require_once 'Basics/MenuFilialItens.php';
+    require_once 'Controller/MenuFilialItensController.php';
+
+    $menu = new MenuFilialItens();
+    $menu->setFilialId($data["filial_id"]);
+    $menu->setStatus($data["enabled"]);
+
+    $menuController = new MenuFilialItensController();
+    $retorno = $menuController->listAll($menu);
+
+    if ($retorno['status'] == 500){
+        return $response->withJson($retorno, $retorno[status]);
+        die;
+    }else{
+
+        $jwt = setToken($auth['token']->data);
+        $res = array(
+            'status' 		=> 200,
+            'message' 		=> "SUCCESS",
+            'result' 		=> "Menu Encontrado!",
+            'menu'  		=> $retorno,
+            'token'			=> $jwt
+        );
+
+        return $response->withJson($res, $res[status]);
+
+    }
+
+
+});
+
 $app->post('/web/checkout/changeFlag', function(Request $request, Response $response, $args) {
     $data = $request->getParsedBody();
     $auth = auth($request);
@@ -593,7 +632,7 @@ $app->post('/mpadrao/insert', function(Request $request, Response $response, $ar
     }
     require_once 'Basics/MenuPadrao.php';
     require_once 'Basics/MenuPadraoItens.php';
-    require_once 'Controller/MenuPadraoController.php';
+    require_once 'Controller/MenuFilialController.php';
 
     $menu = new MenuPadrao();
     $menu->setNome($data["nome"]);
@@ -612,7 +651,7 @@ $app->post('/mpadrao/insert', function(Request $request, Response $response, $ar
         //array_push($array_itens, $itens);
     }
 
-    $menuController = new MenuPadraoController();
+    $menuController = new MenuFilialController();
     $retorno = $menuController->insert($menu, $array_itens);
 
     if ($retorno['status'] == 500){
@@ -634,45 +673,6 @@ $app->post('/mpadrao/insert', function(Request $request, Response $response, $ar
 
 });
 
-$app->post('/mpadrao/listAll', function(Request $request, Response $response, $args) {
-    $data = $request->getParsedBody();
-    $auth = auth($request);
-
-    if($auth[status] != 200){
-        return $response->withJson($auth, $auth[status]);
-        die;
-    }
-    require_once 'Basics/MenuPadrao.php';
-    require_once 'Controller/MenuPadraoController.php';
-
-    $menu = new MenuPadrao();
-    $menu->setEmpresaId($data["empresa_id"]);
-    $menu->setStatus($data["status"]);
-
-    $menuController = new MenuPadraoController();
-    $retorno = $menuController->listAll($menu);
-
-    if ($retorno['status'] == 500){
-        return $response->withJson($retorno, $retorno[status]);
-        die;
-    }else{
-
-        $jwt = setToken($auth['token']->data);
-        $res = array(
-            'status' 		=> 200,
-            'message' 		=> "SUCCESS",
-            'result' 		=> "Menu Encontrado!",
-            'qtd'           => count($retorno),
-            'empresas' 		=> $retorno,
-            'token'			=> $jwt
-        );
-
-        return $response->withJson($res, $res[status]);
-
-    }
-
-
-});
 
 $app->post('/web/fidelidade/insert', function(Request $request, Response $response, $args) {
     $data = $request->getParsedBody();
@@ -919,13 +919,14 @@ $app->post('/app/menu/list', function(Request $request, Response $response, $arg
         die;
     }
     require_once 'Basics/MenuFilialItens.php';
-    require_once 'Controller/MenuItensController.php';
+    require_once 'Controller/MenuFilialItensController.php';
 
     $menu = new MenuFilialItens();
     $menu->setFilialId($data["filial_id"]);
     $menu->setNome($data["search"]);
+    $menu->setStatus('true');
 
-    $menuController = new MenuItensController();
+    $menuController = new MenuFilialItensController();
     $retorno = $menuController->listAll($menu);
 
     if ($retorno['status'] == 500){
