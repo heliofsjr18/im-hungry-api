@@ -40,6 +40,8 @@ class MenuFilialItensDAO
 
                 foreach ($resultItens as $key => $value){
 
+                    $resultItens[$key]->item_valor = number_format($resultItens[$key]->item_valor, 2, '.', '');
+
                     $stmt->bindValue(1,$value->item_id, PDO::PARAM_INT);
                     $stmt->execute();
                     $fotos = $stmt->fetchAll(PDO::FETCH_OBJ);
