@@ -227,4 +227,49 @@ class UsuarioDAO
         }
     }
 
+    public function listAll(Usuario $usuario){
+
+        $conn = \Database::conexao();
+        $sql = "SELECT user_id, user_nome, user_cpf, user_email, user_senha, user_telefone, 
+                       user_data, user_cadastro, user_foto_perfil, user_cep, user_endereco_numero,  
+                       user_endereco_complemento, user_status, tipo_id, filial_id 
+                FROM usuarios 
+                WHERE tipo_id = ? 
+                AND user_status = ? 
+                AND filial_id = ?;";
+        $stmt = $conn->prepare($sql);
+
+        $enabled = ($usuario->getStatus() == 'true')? true : false;
+
+        try {
+            $stmt->bindValue(1,$usuario->getTipoId(), PDO::PARAM_INT);
+            $stmt->bindValue(2,$enabled);
+            $stmt->bindValue(3,$usuario->getFilialId(), PDO::PARAM_INT);
+            $stmt->execute();
+            $countLogin = $stmt->rowCount();
+            $resultUsuario = $stmt->fetchAll(PDO::FETCH_OBJ);
+
+            if ($countLogin != 0) {
+                return $resultUsuario;
+            }else{
+                return array(
+                    'status'    => 500,
+                    'message'   => "INFO",
+                    'qtd'       => 0,
+                    'result'    => 'Você não possui funcionarios cadastradas!'
+                );
+            }
+
+        } catch (PDOException $ex) {
+            return array(
+                'status'    => 500,
+                'message'   => "ERROR",
+                'result'    => 'Erro na execução da instrução!',
+                'CODE'      => $ex->getCode(),
+                'Exception' => $ex->getMessage(),
+            );
+        }
+
+    }
+
 }

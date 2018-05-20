@@ -19,6 +19,23 @@ class Usuario
     private $foto_perfil;
     private $status;
     private $tipo_id;
+    private $filial_id;
+
+    /**
+     * @return mixed
+     */
+    public function getFilialId()
+    {
+        return $this->filial_id;
+    }
+
+    /**
+     * @param mixed $filial_id
+     */
+    public function setFilialId($filial_id)
+    {
+        $this->filial_id = $filial_id;
+    }
 
     /**
      * @return mixed

@@ -94,10 +94,27 @@ class UsuarioController
             return array('status' => 500, 'message' => "ERROR", 'result' => 'Formato de Data incorreto, espera-se YYYY-MM-DD!');
             die;
         }
-
         $usuarioDAO = new UsuarioDAO();
         return $usuarioDAO->update($usuario);
         //Enviar requisição para DAO
+
+    }
+
+    public function listAll(Usuario $usuario){
+        if ( empty($usuario->getTipoId()) ){
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'Id do tipo do usuário não informado!');
+            die;
+        }if ( empty($usuario->getStatus()) ){
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'Enabled do usuário não definido!');
+            die;
+        }if ( empty($usuario->getFilialId()) ){
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'Id da filial do usuário não definido!');
+            die;
+        }
+
+
+        $usuarioDAO = new UsuarioDAO();
+        return $usuarioDAO->listAll($usuario);
 
     }
 }
