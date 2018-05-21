@@ -921,6 +921,49 @@ $app->post('/web/fidelidade/remove', function(Request $request, Response $respon
 
 });
 
+$app->post('/web/usuario/listAll', function(Request $request, Response $response, $args) {
+    $data = $request->getParsedBody();
+    $auth = auth($request);
+
+    if($auth[status] != 200){
+        return $response->withJson($auth, $auth[status]);
+        die;
+    }
+    require_once 'Basics/Usuario.php';
+    require_once 'Controller/UsuarioController.php';
+
+
+    $usuario = new Usuario();
+    $usuario->setTipoId($data["tipo_usuario"]);
+    $usuario->setStatus($data["enabled"]);
+    $usuario->setFilialId($data["filial_id"]);
+
+    $usuarioController = new UsuarioController();
+    $retorno = $usuarioController->listAll($usuario);
+
+    if ($retorno['status'] == 500){
+        return $response->withJson($retorno, $retorno[status]);
+        die;
+    }else{
+
+        $jwt = setToken($auth['token']->data);
+        $res = array(
+            'status' 		=> 200,
+            'message' 		=> "SUCCESS",
+            'result' 		=> "Funcionarios Encontradas!",
+            'enabled'       => $data["enabled"],
+            'qtd'           => count($retorno),
+            'funcionarios' 		=> $retorno,
+            'token'			=> $jwt
+        );
+
+        return $response->withJson($res, $res[status]);
+
+    }
+
+
+});
+
 // Consumo do APP
 
 
