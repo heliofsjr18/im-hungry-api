@@ -593,6 +593,52 @@ $app->post('/web/menu/insert', function(Request $request, Response $response, $a
 
 });
 
+$app->post('/web/menu/update', function(Request $request, Response $response, $args) {
+    $data = $request->getParsedBody();
+    $auth = auth($request);
+
+    if($auth[status] != 200){
+        return $response->withJson($auth, $auth[status]);
+        die;
+    }
+    require_once 'Basics/MenuFilialItens.php';
+    require_once 'Controller/MenuFilialItensController.php';
+
+    $data['valor'] = str_replace('R$ ', '' , $data['valor']);
+    $data['valor'] = str_replace('.', '' , $data['valor']);
+    $data['valor'] = str_replace(',', '.' , $data['valor']);
+
+    $itens = new MenuFilialItens();
+    $itens->setNome($data["nome"]);
+    $itens->setValor($data["valor"]);
+    $itens->setTempoMedio($data["tempo"]);
+    $itens->setPromocao($data["promo"]);
+    $itens->setStatus($data["statusAt"]);
+    $itens->setId($data["item_id"]);
+
+    $menuController = new MenuFilialItensController();
+    $retorno = $menuController->update($itens);
+
+    if ($retorno['status'] == 500){
+        return $response->withJson($retorno, $retorno[status]);
+        die;
+    }else{
+
+        $jwt = setToken($auth['token']->data);
+        $res = array(
+            'status' 		=> 200,
+            'message' 		=> "SUCCESS",
+            'result' 		=> "Item atualizado!",
+            'token'			=> $jwt
+        );
+
+        return $response->withJson($res, $res[status]);
+
+    }
+
+
+});
+
 $app->post('/web/item/foto', function(Request $request, Response $response, $args) {
     $data = $request->getParsedBody();
     $auth = auth($request);
@@ -605,8 +651,8 @@ $app->post('/web/item/foto', function(Request $request, Response $response, $arg
     require_once 'Controller/MenuFilialItensController.php';
 
     $item = new ItensFotos();
-    $item->setItemId($data["item_id"]);
     $item->setFotFile($data["foto"]);
+    $item->setItemId($data["item_id"]);
 
     $menuController = new MenuFilialItensController();
     $retorno = $menuController->addImage($item);
@@ -621,6 +667,43 @@ $app->post('/web/item/foto', function(Request $request, Response $response, $arg
             'status' 		=> 200,
             'message' 		=> "SUCCESS",
             'result' 		=> "Foto cadastrada!",
+            'token'			=> $jwt
+        );
+
+        return $response->withJson($res, $res[status]);
+
+    }
+
+
+});
+
+$app->post('/web/item/foto/del', function(Request $request, Response $response, $args) {
+    $data = $request->getParsedBody();
+    $auth = auth($request);
+
+    if($auth[status] != 200){
+        return $response->withJson($auth, $auth[status]);
+        die;
+    }
+    require_once 'Basics/ItensFotos.php';
+    require_once 'Controller/MenuFilialItensController.php';
+
+    $item = new ItensFotos();
+    $item->setId($data["fot_id"]);
+
+    $menuController = new MenuFilialItensController();
+    $retorno = $menuController->delImage($item);
+
+    if ($retorno['status'] == 500){
+        return $response->withJson($retorno, $retorno[status]);
+        die;
+    }else{
+
+        $jwt = setToken($auth['token']->data);
+        $res = array(
+            'status' 		=> 200,
+            'message' 		=> "SUCCESS",
+            'result' 		=> "Foto excluída!",
             'token'			=> $jwt
         );
 

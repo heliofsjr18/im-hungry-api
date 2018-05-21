@@ -51,6 +51,32 @@ class MenuFilialItensController
 
     }
 
+    public function update(MenuFilialItens $itens){
+        if ( empty($itens->getId()) ){
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'ID do item não informado!');
+            die;
+        }if ( empty($itens->getNome()) ){
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'Nome do item não informado!');
+            die;
+        }if ( empty($itens->getValor()) ){
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'Valor do item não informado!');
+            die;
+        }if ( empty($itens->getTempoMedio()) ){
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'Tempo médio do preparo não informado!');
+            die;
+        }if ( empty($itens->getPromocao()) ){
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'Você precisa informar se o item está ou não na promoção!');
+            die;
+        }if ( empty($itens->getStatus()) ){
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'Status não informado!');
+            die;
+        }
+
+        $menuDAO = new MenuFilialItensDAO();
+        return $menuDAO->update($itens);
+
+    }
+
     public function addImage(ItensFotos $item){
         if ( empty($item->getItemId()) ){
             return array('status' => 500, 'message' => "ERROR", 'result' => 'ID do item não informado!');
@@ -62,6 +88,17 @@ class MenuFilialItensController
 
         $menuDAO = new MenuFilialItensDAO();
         return $menuDAO->addImage($item);
+
+    }
+
+    public function delImage(ItensFotos $item){
+        if ( empty($item->getId()) ){
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'ID da imagem não informado!');
+            die;
+        }
+
+        $menuDAO = new MenuFilialItensDAO();
+        return $menuDAO->delImage($item);
 
     }
 }

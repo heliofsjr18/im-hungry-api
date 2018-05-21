@@ -119,6 +119,47 @@ class MenuFilialItensDAO
 
     }
 
+    public function update(MenuFilialItens $itens){
+
+        $conn = \Database::conexao();
+
+        $enabled = ($itens->getPromocao() == 'true')? true : false;
+
+        $sql = "UPDATE menu_filial_itens
+                SET  item_nome  = ?,
+                     item_valor = ?,
+                     item_tempo_medio = ?,
+                     item_status = ?,
+                     item_promocao = ?
+                WHERE item_id = ?";
+        $stmt = $conn->prepare($sql);
+
+        try {
+            $stmt->bindValue(1,$itens->getNome(), PDO::PARAM_STR);
+            $stmt->bindValue(2,$itens->getValor(), PDO::PARAM_STR);
+            $stmt->bindValue(3,$itens->getTempoMedio(), PDO::PARAM_STR);
+            $stmt->bindValue(4,$itens->getStatus(), PDO::PARAM_STR);
+            $stmt->bindValue(5,$enabled);
+            $stmt->bindValue(6,$itens->getId(), PDO::PARAM_INT);
+            $stmt->execute();
+
+            return array(
+                'status'    => 200,
+                'message'   => "SUCCESS"
+            );
+
+        } catch (PDOException $ex) {
+            return array(
+                'status'    => 500,
+                'message'   => "ERROR",
+                'result'    => 'Erro na execução da instrução!',
+                'CODE'      => $ex->getCode(),
+                'Exception' => $ex->getMessage(),
+            );
+        }
+
+    }
+
     public function addImage(ItensFotos $item){
 
         $conn = \Database::conexao();
@@ -131,6 +172,34 @@ class MenuFilialItensDAO
         try {
             $stmt->bindValue(1,$item->getFotFile(), PDO::PARAM_STR);
             $stmt->bindValue(2,$item->getItemId(), PDO::PARAM_INT);
+            $stmt->execute();
+
+            return array(
+                'status'    => 200,
+                'message'   => "SUCCESS"
+            );
+
+        } catch (PDOException $ex) {
+            return array(
+                'status'    => 500,
+                'message'   => "ERROR",
+                'result'    => 'Erro na execução da instrução!',
+                'CODE'      => $ex->getCode(),
+                'Exception' => $ex->getMessage(),
+            );
+        }
+
+    }
+
+    public function delImage(ItensFotos $item){
+
+        $conn = \Database::conexao();
+
+        $sql = "DELETE from itens_fotos WHERE fot_id = ?";
+        $stmt = $conn->prepare($sql);
+
+        try {
+            $stmt->bindValue(1,$item->getId(), PDO::PARAM_INT);
             $stmt->execute();
 
             return array(
