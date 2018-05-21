@@ -108,6 +108,100 @@ $app->post('/web/usuario/login', function(Request $request, Response $response, 
 
 });
 
+$app->post('/web/usuario/listAll', function(Request $request, Response $response, $args) {
+    $data = $request->getParsedBody();
+    $auth = auth($request);
+
+    if($auth[status] != 200){
+        return $response->withJson($auth, $auth[status]);
+        die;
+    }
+    require_once 'Basics/Usuario.php';
+    require_once 'Controller/UsuarioController.php';
+
+
+    $usuario = new Usuario();
+    $usuario->setTipoId($data["tipo_usuario"]);
+    $usuario->setStatus($data["enabled"]);
+    $usuario->setFilialId($data["filial_id"]);
+
+    $usuarioController = new UsuarioController();
+    $retorno = $usuarioController->listAll($usuario);
+
+    if ($retorno['status'] == 500){
+        return $response->withJson($retorno, $retorno[status]);
+        die;
+    }else{
+
+        $jwt = setToken($auth['token']->data);
+        $res = array(
+            'status' 		=> 200,
+            'message' 		=> "SUCCESS",
+            'result' 		=> "Funcionarios Encontradas!",
+            'enabled'       => $data["enabled"],
+            'qtd'           => count($retorno),
+            'funcionarios' 		=> $retorno,
+            'token'			=> $jwt
+        );
+
+        return $response->withJson($res, $res[status]);
+
+    }
+
+
+});
+
+$app->post('/web/usuario/insert', function(Request $request, Response $response, $args) {
+    $data = $request->getParsedBody();
+    $auth = auth($request);
+
+    if($auth[status] != 200){
+        return $response->withJson($auth, $auth[status]);
+        die;
+    }
+    require_once 'Basics/Usuario.php';
+    require_once 'Controller/UsuarioController.php';
+
+    $telefone = str_replace("(", "", $data["telefone"]);
+    $telefone = str_replace(")", "", $telefone);
+    $telefone = str_replace("-", "", $telefone);
+
+    $usuario = new Usuario();
+    $usuario->setNome($data["nome"]);
+    $usuario->setCpf($data["cpf"]);
+    $usuario->setTelefone($telefone);
+    $usuario->setEmail($data["email"]);
+    $usuario->setSenha($data["senha"]);
+    $usuario->setCep($data["cep"]);
+    $usuario->setEnderecoNumero($data["numero_end"]);
+    $usuario->setTipoId($data["tipo_usuario"]);
+    $usuario->setStatus($data["enabled"]);
+    $usuario->setFilialId($data["filial_id"]);
+    $usuario->setFotoPerfil($data["foto_perfil"]);
+
+    $usuarioController = new UsuarioController();
+    $retorno = $usuarioController->insert($usuario);
+
+    if ($retorno['status'] == 500){
+        return $response->withJson($retorno, $retorno[status]);
+        die;
+    }else{
+
+        $jwt = setToken($auth['token']->data);
+        $res = array(
+            'status' 		=> 200,
+            'message' 		=> "SUCCESS",
+            'result' 		=> "Usuário Cadastrado!",
+            'token'			=> $jwt
+        );
+
+        return $response->withJson($res, $res[status]);
+
+    }
+
+
+});
+
 $app->post('/web/empresa/listAll', function(Request $request, Response $response, $args) {
     $data = $request->getParsedBody();
     $auth = auth($request);
@@ -690,6 +784,7 @@ $app->post('/web/item/foto/del', function(Request $request, Response $response, 
 
     $item = new ItensFotos();
     $item->setId($data["fot_id"]);
+    $item->setItemId($data["item_id"]);
 
     $menuController = new MenuFilialItensController();
     $retorno = $menuController->delImage($item);
@@ -788,58 +883,6 @@ $app->post('/web/pedidos', function(Request $request, Response $response, $args)
 
 });
 
-$app->post('/mpadrao/insert', function(Request $request, Response $response, $args) {
-    $data = $request->getParsedBody();
-    $auth = auth($request);
-
-    if($auth[status] != 200){
-        return $response->withJson($auth, $auth[status]);
-        die;
-    }
-    require_once 'Basics/MenuPadrao.php';
-    require_once 'Basics/MenuPadraoItens.php';
-    require_once 'Controller/MenuFilialController.php';
-
-    $menu = new MenuPadrao();
-    $menu->setNome($data["nome"]);
-    $menu->setEmpresaId($data["empresa_id"]);
-
-    //$array_itens = [];
-    $array_itens = new ArrayObject();
-
-    foreach ($data["item_nome"] as $key => $value){
-        $itens = new MenuPadraoItens();
-        $itens->setNome($data["item_nome"][$key]);
-        $itens->setValor($data["item_valor"][$key]);
-        $itens->setTempoMedio($data["item_tempo_medio"][$key]);
-        $itens->setPromocao($data["item_promocao"][$key]);
-        $array_itens->append($itens);
-        //array_push($array_itens, $itens);
-    }
-
-    $menuController = new MenuFilialController();
-    $retorno = $menuController->insert($menu, $array_itens);
-
-    if ($retorno['status'] == 500){
-        return $response->withJson($retorno, $retorno[status]);
-        die;
-    }else{
-
-        $jwt = setToken($auth['token']->data);
-        $res = array(
-            'status' 		=> 200,
-            'message' 		=> "SUCCESS",
-            'result' 		=> "Menu Cadastrado!",
-            'token'			=> $jwt
-        );
-
-        return $response->withJson($res, $res[status]);
-
-    }
-
-});
-
-
 $app->post('/web/fidelidade/insert', function(Request $request, Response $response, $args) {
     $data = $request->getParsedBody();
     $auth = auth($request);
@@ -921,102 +964,7 @@ $app->post('/web/fidelidade/remove', function(Request $request, Response $respon
 
 });
 
-$app->post('/web/usuario/listAll', function(Request $request, Response $response, $args) {
-    $data = $request->getParsedBody();
-    $auth = auth($request);
-
-    if($auth[status] != 200){
-        return $response->withJson($auth, $auth[status]);
-        die;
-    }
-    require_once 'Basics/Usuario.php';
-    require_once 'Controller/UsuarioController.php';
-
-
-    $usuario = new Usuario();
-    $usuario->setTipoId($data["tipo_usuario"]);
-    $usuario->setStatus($data["enabled"]);
-    $usuario->setFilialId($data["filial_id"]);
-
-    $usuarioController = new UsuarioController();
-    $retorno = $usuarioController->listAll($usuario);
-
-    if ($retorno['status'] == 500){
-        return $response->withJson($retorno, $retorno[status]);
-        die;
-    }else{
-
-        $jwt = setToken($auth['token']->data);
-        $res = array(
-            'status' 		=> 200,
-            'message' 		=> "SUCCESS",
-            'result' 		=> "Funcionarios Encontradas!",
-            'enabled'       => $data["enabled"],
-            'qtd'           => count($retorno),
-            'funcionarios' 		=> $retorno,
-            'token'			=> $jwt
-        );
-
-        return $response->withJson($res, $res[status]);
-
-    }
-
-
-});
-
-$app->post('/web/usuario/insert', function(Request $request, Response $response, $args) {
-    $data = $request->getParsedBody();
-    $auth = auth($request);
-
-    if($auth[status] != 200){
-        return $response->withJson($auth, $auth[status]);
-        die;
-    }
-    require_once 'Basics/Usuario.php';
-    require_once 'Controller/UsuarioController.php';
-
-    $telefone = str_replace("(", "", $data["telefone"]);
-    $telefone = str_replace(")", "", $telefone);
-    $telefone = str_replace("-", "", $telefone);
-
-    $usuario = new Usuario();
-    $usuario->setNome($data["nome"]);
-    $usuario->setCpf($data["cpf"]);
-    $usuario->setTelefone($telefone);
-    $usuario->setEmail($data["email"]);
-    $usuario->setSenha($data["senha"]);
-    $usuario->setCep($data["cep"]);
-    $usuario->setEnderecoNumero($data["numero_end"]);
-    $usuario->setTipoId($data["tipo_usuario"]);
-    $usuario->setStatus($data["enabled"]);
-    $usuario->setFilialId($data["filial_id"]);
-    $usuario->setFotoPerfil($data["foto_perfil"]);
-
-    $usuarioController = new UsuarioController();
-    $retorno = $usuarioController->insert($usuario);
-
-    if ($retorno['status'] == 500){
-        return $response->withJson($retorno, $retorno[status]);
-        die;
-    }else{
-
-        $jwt = setToken($auth['token']->data);
-        $res = array(
-            'status' 		=> 200,
-            'message' 		=> "SUCCESS",
-            'result' 		=> "Usuário Cadastrado!",
-            'token'			=> $jwt
-        );
-
-        return $response->withJson($res, $res[status]);
-
-    }
-
-
-});
-
 // Consumo do APP
-
 
 $app->post('/app/cliente/login', function(Request $request, Response $response, $args) {
     $data = $request->getParsedBody();

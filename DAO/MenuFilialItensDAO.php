@@ -195,17 +195,35 @@ class MenuFilialItensDAO
 
         $conn = \Database::conexao();
 
-        $sql = "DELETE from itens_fotos WHERE fot_id = ?";
+        $sql = "SELECT fot_id from itens_fotos WHERE item_id = ?";
         $stmt = $conn->prepare($sql);
 
-        try {
-            $stmt->bindValue(1,$item->getId(), PDO::PARAM_INT);
-            $stmt->execute();
+        $sql2 = "DELETE from itens_fotos WHERE fot_id = ?";
+        $stmt2 = $conn->prepare($sql2);
 
-            return array(
-                'status'    => 200,
-                'message'   => "SUCCESS"
-            );
+        try {
+
+            $stmt->bindValue(1,$item->getItemId(), PDO::PARAM_INT);
+            $stmt->execute();
+            $count = $stmt->rowCount();
+
+            if ($count != 1){
+                $stmt2->bindValue(1,$item->getId(), PDO::PARAM_INT);
+                $stmt2->execute();
+
+                return array(
+                    'status'    => 200,
+                    'message'   => "SUCCESS"
+                );
+
+            }else{
+                return array(
+                    'status'    => 500,
+                    'message'   => "ERROR",
+                    'result'    => "Cada item deve ter no mínimo uma imagem!"
+                );
+            }
+
 
         } catch (PDOException $ex) {
             return array(

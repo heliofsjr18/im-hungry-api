@@ -95,6 +95,9 @@ class MenuFilialItensController
         if ( empty($item->getId()) ){
             return array('status' => 500, 'message' => "ERROR", 'result' => 'ID da imagem não informado!');
             die;
+        }if ( empty($item->getItemId()) ){
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'ID do item não informado!');
+            die;
         }
 
         $menuDAO = new MenuFilialItensDAO();
