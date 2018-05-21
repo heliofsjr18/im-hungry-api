@@ -149,18 +149,46 @@ class UsuarioDAO
 
     public function insert(Usuario $usuario){
         $conn = \Database::conexao();
-        $sql = "INSERT INTO usuarios (user_nome, user_email, user_senha, user_cadastro, 
-                                      user_foto_perfil, user_status, tipo_id)
-                VALUES ( ?, ?, SHA1(?), NOW(), ?, ?, ?);";
+
+        //2 = funcionario, para salvar da web, caso não vai pro else(como tava)
+        if($usuario->getTipoId()== "2"){
+            $sql = "INSERT INTO usuarios (user_nome, user_cpf, user_telefone, user_email, user_senha, 
+                                user_cep, user_endereco_numero, user_status, tipo_id, filial_id,
+                                user_foto_perfil, user_data, user_cadastro)
+                    VALUES ( ?, ?, ?, ?, SHA1(?), ?, ?, ?, ?, ?, ?, NOW(), NOW());";
+        }else{
+            $sql = "INSERT INTO usuarios (user_nome, user_email, user_senha, user_cadastro, 
+                                user_foto_perfil, user_status, tipo_id)
+                    VALUES ( ?, ?, SHA1(?), NOW(), ?, ?, ?);";
+        }
+
         $stmt = $conn->prepare($sql);
 
+        $enabled = ($usuario->getStatus() == 'true')? true : false;
+
         try {
-            $stmt->bindValue(1,$usuario->getNome());
-            $stmt->bindValue(2,$usuario->getEmail());
-            $stmt->bindValue(3,$usuario->getSenha());
-            $stmt->bindValue(4,$usuario->getFotoPerfil());
-            $stmt->bindValue(5,$usuario->getStatus());
-            $stmt->bindValue(6,$usuario->getTipoId());
+            //2 = funcionario, para salvar da web, caso não vai pro else(como tava)
+            if($usuario->getTipoId()== "2"){
+                $stmt->bindValue(1,$usuario->getNome());
+                $stmt->bindValue(2,$usuario->getCpf());
+                $stmt->bindValue(3,$usuario->getTelefone());
+                $stmt->bindValue(4,$usuario->getEmail());
+                $stmt->bindValue(5,$usuario->getSenha());
+                $stmt->bindValue(6,$usuario->getCep());
+                $stmt->bindValue(7,$usuario->getEnderecoNumero());
+                $stmt->bindValue(8,$enabled);
+                $stmt->bindValue(9,$usuario->getTipoId());
+                $stmt->bindValue(10,$usuario->getFilialId());
+                $stmt->bindValue(11,$usuario->getFotoPerfil());
+            }else{
+                $stmt->bindValue(1,$usuario->getNome());
+                $stmt->bindValue(2,$usuario->getEmail());
+                $stmt->bindValue(3,$usuario->getSenha());
+                $stmt->bindValue(4,$usuario->getFotoPerfil());
+                $stmt->bindValue(5,$usuario->getStatus());
+                $stmt->bindValue(6,$usuario->getTipoId());
+            }
+
             $stmt->execute();
             $last_id = $conn->lastInsertId();
 

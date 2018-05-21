@@ -11,6 +11,8 @@ class Usuario
     private $id;
     private $nome;
     private $cpf;
+    private $cep;
+    private $endereco_numero;
     private $email;
     private $senha;
     private $telefone;
@@ -21,6 +23,38 @@ class Usuario
     private $tipo_id;
     private $filial_id;
 
+    /**
+     * @return mixed
+     */
+    public function getCep()
+    {
+        return $this->cep;
+    }
+
+    /**
+     * @param mixed $cep
+     */
+    public function setCep($cep)
+    {
+        $this->cep = $cep;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getEnderecoNumero()
+    {
+        return $this->endereco_numero;
+    }
+
+    /**
+     * @param mixed $endereco_numero
+     */
+    public function setEnderecoNumero($endereco_numero)
+    {
+        $this->endereco_numero = $endereco_numero;
+    }
+    
     /**
      * @return mixed
      */
