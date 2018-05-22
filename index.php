@@ -162,20 +162,18 @@ $app->post('/web/usuario/insert', function(Request $request, Response $response,
     require_once 'Basics/Usuario.php';
     require_once 'Controller/UsuarioController.php';
 
-    $telefone = str_replace("(", "", $data["telefone"]);
-    $telefone = str_replace(")", "", $telefone);
-    $telefone = str_replace("-", "", $telefone);
-
     $usuario = new Usuario();
     $usuario->setNome($data["nome"]);
     $usuario->setCpf($data["cpf"]);
-    $usuario->setTelefone($telefone);
+    $usuario->setTelefone($data["telefone"]);
+    $usuario->setData($data["data"]);
     $usuario->setEmail($data["email"]);
-    $usuario->setSenha($data["senha"]);
+    $usuario->setSenha("123");
     $usuario->setCep($data["cep"]);
     $usuario->setEnderecoNumero($data["numero_end"]);
-    $usuario->setTipoId($data["tipo_usuario"]);
+    $usuario->setEnderecoComplemento($data["complemento"]);
     $usuario->setStatus($data["enabled"]);
+    $usuario->setTipoId($data["tipo_usuario"]);
     $usuario->setFilialId($data["filial_id"]);
     $usuario->setFotoPerfil($data["foto_perfil"]);
 

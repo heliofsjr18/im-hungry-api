@@ -13,6 +13,7 @@ class Usuario
     private $cpf;
     private $cep;
     private $endereco_numero;
+    private $endereco_complemento;
     private $email;
     private $senha;
     private $telefone;
@@ -22,54 +23,6 @@ class Usuario
     private $status;
     private $tipo_id;
     private $filial_id;
-
-    /**
-     * @return mixed
-     */
-    public function getCep()
-    {
-        return $this->cep;
-    }
-
-    /**
-     * @param mixed $cep
-     */
-    public function setCep($cep)
-    {
-        $this->cep = $cep;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getEnderecoNumero()
-    {
-        return $this->endereco_numero;
-    }
-
-    /**
-     * @param mixed $endereco_numero
-     */
-    public function setEnderecoNumero($endereco_numero)
-    {
-        $this->endereco_numero = $endereco_numero;
-    }
-    
-    /**
-     * @return mixed
-     */
-    public function getFilialId()
-    {
-        return $this->filial_id;
-    }
-
-    /**
-     * @param mixed $filial_id
-     */
-    public function setFilialId($filial_id)
-    {
-        $this->filial_id = $filial_id;
-    }
 
     /**
      * @return mixed
@@ -117,6 +70,54 @@ class Usuario
     public function setCpf($cpf)
     {
         $this->cpf = $cpf;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCep()
+    {
+        return $this->cep;
+    }
+
+    /**
+     * @param mixed $cep
+     */
+    public function setCep($cep)
+    {
+        $this->cep = $cep;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getEnderecoNumero()
+    {
+        return $this->endereco_numero;
+    }
+
+    /**
+     * @param mixed $endereco_numero
+     */
+    public function setEnderecoNumero($endereco_numero)
+    {
+        $this->endereco_numero = $endereco_numero;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getEnderecoComplemento()
+    {
+        return $this->endereco_complemento;
+    }
+
+    /**
+     * @param mixed $endereco_complemento
+     */
+    public function setEnderecoComplemento($endereco_complemento)
+    {
+        $this->endereco_complemento = $endereco_complemento;
     }
 
     /**
@@ -245,6 +246,22 @@ class Usuario
     public function setTipoId($tipo_id)
     {
         $this->tipo_id = $tipo_id;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFilialId()
+    {
+        return $this->filial_id;
+    }
+
+    /**
+     * @param mixed $filial_id
+     */
+    public function setFilialId($filial_id)
+    {
+        $this->filial_id = $filial_id;
     }
 
 

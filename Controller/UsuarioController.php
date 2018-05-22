@@ -66,7 +66,10 @@ class UsuarioController
                 return array('status' => 500, 'message' => "ERROR", 'result' => 'Telefone não informado!');
                 die;
             }
-            if (empty($usuario->getEmail())) {
+            if (empty($usuario->getData())) {
+                return array('status' => 500, 'message' => "ERROR", 'result' => 'Data de Nascimento não informada!');
+                die;
+            }if (empty($usuario->getEmail())) {
                 return array('status' => 500, 'message' => "ERROR", 'result' => 'Email não informado!');
                 die;
             }
@@ -229,6 +232,7 @@ class UsuarioController
         return $usuarioDAO->listAll($usuario);
 
     }
+
     public function enabled(Usuario $usuario){
 
         if ( empty($usuario->getId()) ){
