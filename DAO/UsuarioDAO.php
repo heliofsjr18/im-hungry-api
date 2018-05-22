@@ -130,7 +130,7 @@ class UsuarioDAO
             $resultUsuario = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             if ($countLogin != 1) {
-                return array('status' => 204, 'message' => "ERROR", 'result' => 'Usuário e/ou senha inválidos!');
+                return array('status' => 500, 'message' => "ERROR", 'result' => 'Usuário e/ou senha inválidos!');
             }else{
 
                 return $resultUsuario;

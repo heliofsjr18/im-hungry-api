@@ -110,6 +110,7 @@ class EmpresaFilialDAO
 			     ON F.empresa_id = EM.empresa_id
                  WHERE F.empresa_id IS NOT NULL 
                  AND (F.filial_fidelidade = ? or 2 = ?)
+                 AND F.filial_enabled = 1
                  AND F.filial_nome LIKE '%".$search."%'";
         $stmt1 = $conn->prepare($sql1);
 
