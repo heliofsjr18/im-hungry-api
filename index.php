@@ -202,6 +202,58 @@ $app->post('/web/usuario/insert', function(Request $request, Response $response,
 
 });
 
+$app->post('/web/usuario/update', function(Request $request, Response $response, $args) {
+    $data = $request->getParsedBody();
+    $auth = auth($request);
+
+    if($auth[status] != 200){
+        return $response->withJson($auth, $auth[status]);
+        die;
+    }
+    require_once 'Basics/Usuario.php';
+    require_once 'Controller/UsuarioController.php';
+
+    $usuario = new Usuario();
+    $telefone = str_replace("(", "", $data["telefone"]);
+    $telefone = str_replace(")", "", $telefone);
+    $telefone = str_replace("-", "", $telefone);
+
+    $usuario = new Usuario();
+    $usuario->setId($data["id"]);
+    $usuario->setNome($data["nome"]);
+    $usuario->setCpf($data["cpf"]);
+    $usuario->setTelefone($telefone);
+    $usuario->setEmail($data["email"]);
+    $usuario->setSenha($data["senha"]);
+    $usuario->setCep($data["cep"]);
+    $usuario->setEnderecoNumero($data["numero_end"]);
+    $usuario->setTipoId($data["tipo_usuario"]);
+    $usuario->setStatus($data["enabled"]);
+    $usuario->setFilialId($data["filial_id"]);
+    $usuario->setFotoPerfil($data["foto_perfil"]);
+
+    $usuarioController = new UsuarioController();
+    $retorno = $usuarioController->update($usuario);
+
+    if ($retorno['status'] == 500){
+        return $response->withJson($retorno, $retorno[status]);
+        die;
+    }else{
+
+        $jwt = setToken($auth['token']->data);
+        $res = array(
+            'status'      => 200,
+            'message'     => "SUCCESS",
+            'result'      => "Usuário Atualizado!",
+            'token'          => $jwt
+        );
+
+        return $response->withJson($res, $res[status]);
+
+    }
+
+});
+
 $app->post('/web/empresa/listAll', function(Request $request, Response $response, $args) {
     $data = $request->getParsedBody();
     $auth = auth($request);

@@ -205,40 +205,40 @@ class UsuarioDAO
         }
     }
 
-    public  function update(Usuario $usuario){
+    public function update(Usuario $usuario){
         //Cria conexao
         $conn = \Database::conexao();
 
-        $query_senha = ( !empty($usuario->getSenha()) ) ? ',user_senha = sha1(?)' : '';
-        $query_foto = ( !empty($usuario->getFotoPerfil()) ) ? ',user_foto_perfil = ?' : '';
-
-        $sql = "UPDATE aluno
-                SET  user_nome  = ?,
-                     user_cpf = ?,
-                     user_email = ?,
-                     user_telefone = ?,
-                     user_data = ?
-                     ".$query_senha."
-                     ".$query_foto."
+        $sql = "UPDATE usuarios 
+                SET   user_nome = ?, 
+                      user_cpf = ?, 
+                      user_telefone = ?, 
+                      user_email = ?, 
+                      user_senha = ?,  
+                      user_cep = ?, 
+                      user_endereco_numero = ?, 
+                      user_status = ?, 
+                      tipo_id = ?, 
+                      filial_id = ?, 
+                      user_foto_perfil = ? 
                 WHERE user_id = ?";
         $stmt = $conn->prepare($sql);
+
+        $enabled = ($usuario->getStatus() == 'true')? true : false;
 
         try {
             $stmt->bindValue(1,$usuario->getNome());
             $stmt->bindValue(2,$usuario->getCpf());
-            $stmt->bindValue(3,$usuario->getEmail());
-            $stmt->bindValue(4,$usuario->getTelefone());
-            $stmt->bindValue(5,$usuario->getData());
-
-            $aux = 6;
-            if (!empty($query_senha)){
-                $stmt->bindValue($aux,$usuario->getSenha());
-                $aux++;
-            }if (!empty($query_foto)){
-                $stmt->bindValue($aux,$usuario->getFotoPerfil());
-                $aux++;
-            }
-            $stmt->bindValue($aux,$usuario->getId());
+            $stmt->bindValue(3,$usuario->getTelefone());
+            $stmt->bindValue(4,$usuario->getEmail());
+            $stmt->bindValue(5,$usuario->getSenha());
+            $stmt->bindValue(6,$usuario->getCep());
+            $stmt->bindValue(7,$usuario->getEnderecoNumero());
+            $stmt->bindValue(8,$enabled);
+            $stmt->bindValue(9,$usuario->getTipoId());
+            $stmt->bindValue(10,$usuario->getFilialId());
+            $stmt->bindValue(11,$usuario->getFotoPerfil());
+            $stmt->bindValue(12,$usuario->getId());
 
             if ($stmt->execute()){
                 return $this->getUser($usuario->getId());
