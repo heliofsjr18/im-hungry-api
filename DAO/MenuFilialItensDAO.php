@@ -129,7 +129,6 @@ class MenuFilialItensDAO
                 SET  item_nome  = ?,
                      item_valor = ?,
                      item_tempo_medio = ?,
-                     item_status = ?,
                      item_promocao = ?
                 WHERE item_id = ?";
         $stmt = $conn->prepare($sql);
@@ -138,9 +137,8 @@ class MenuFilialItensDAO
             $stmt->bindValue(1,$itens->getNome(), PDO::PARAM_STR);
             $stmt->bindValue(2,$itens->getValor(), PDO::PARAM_STR);
             $stmt->bindValue(3,$itens->getTempoMedio(), PDO::PARAM_STR);
-            $stmt->bindValue(4,$itens->getStatus(), PDO::PARAM_STR);
-            $stmt->bindValue(5,$enabled);
-            $stmt->bindValue(6,$itens->getId(), PDO::PARAM_INT);
+            $stmt->bindValue(4,$enabled);
+            $stmt->bindValue(5,$itens->getId(), PDO::PARAM_INT);
             $stmt->execute();
 
             return array(
@@ -235,5 +233,37 @@ class MenuFilialItensDAO
             );
         }
 
+    }
+
+    public function enabled(MenuFilialItens $itens){
+        //Cria conexao
+        $conn = \Database::conexao();
+
+        $sql = "UPDATE menu_filial_itens 
+                SET   item_status = ?  
+                WHERE item_id = ?";
+        $stmt = $conn->prepare($sql);
+
+        $enabled = ($itens->getStatus() == 'true')? true : false;
+
+        try {
+            $stmt->bindValue(1,$enabled);
+            $stmt->bindValue(2,$itens->getId());
+            $stmt->execute();
+
+            return array(
+                'status'    => 200,
+                'message'   => "SUCCESS"
+            );
+
+        } catch (PDOException $ex) {
+            return array(
+                'status'    => 500,
+                'message'   => "ERROR",
+                'result'    => 'Erro na execução da instrução!',
+                'CODE'      => $ex->getCode(),
+                'Exception' => $ex->getMessage(),
+            );
+        }
     }
 }

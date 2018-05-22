@@ -820,7 +820,6 @@ $app->post('/web/menu/update', function(Request $request, Response $response, $a
     $itens->setValor($data["valor"]);
     $itens->setTempoMedio($data["tempo"]);
     $itens->setPromocao($data["promo"]);
-    $itens->setStatus($data["statusAt"]);
     $itens->setId($data["item_id"]);
 
     $menuController = new MenuFilialItensController();
@@ -843,6 +842,43 @@ $app->post('/web/menu/update', function(Request $request, Response $response, $a
 
     }
 
+
+});
+
+$app->post('/web/menu/enabled', function(Request $request, Response $response, $args) {
+    $data = $request->getParsedBody();
+    $auth = auth($request);
+
+    if($auth[status] != 200){
+        return $response->withJson($auth, $auth[status]);
+        die;
+    }
+    require_once 'Basics/MenuFilialItens.php';
+    require_once 'Controller/MenuFilialItensController.php';
+
+    $itens = new MenuFilialItens();
+    $itens->setId($data["idChange"]);
+    $itens->setStatus($data["status"]);
+
+    $menuController = new MenuFilialItensController();
+    $retorno = $menuController->enabled($itens);
+
+    if ($retorno['status'] == 500){
+        return $response->withJson($retorno, $retorno[status]);
+        die;
+    }else{
+
+        $jwt = setToken($auth['token']->data);
+        $res = array(
+            'status' 		=> 200,
+            'message' 		=> "SUCCESS",
+            'result' 		=> "Dados Atualizados!",
+            'token'			=> $jwt
+        );
+
+        return $response->withJson($res, $res[status]);
+
+    }
 
 });
 

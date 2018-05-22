@@ -67,9 +67,6 @@ class MenuFilialItensController
         }if ( empty($itens->getPromocao()) ){
             return array('status' => 500, 'message' => "ERROR", 'result' => 'Você precisa informar se o item está ou não na promoção!');
             die;
-        }if ( empty($itens->getStatus()) ){
-            return array('status' => 500, 'message' => "ERROR", 'result' => 'Status não informado!');
-            die;
         }
 
         $menuDAO = new MenuFilialItensDAO();
@@ -102,6 +99,21 @@ class MenuFilialItensController
 
         $menuDAO = new MenuFilialItensDAO();
         return $menuDAO->delImage($item);
+
+    }
+
+    public function enabled(MenuFilialItens $itens){
+
+        if ( empty($itens->getId()) ){
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'Id do item não informado!');
+            die;
+        }if ( empty($itens->getStatus()) ){
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'Enabled do item não informado!');
+            die;
+        }
+
+        $menuDAO = new MenuFilialItensDAO();
+        return $menuDAO->enabled($itens);
 
     }
 }

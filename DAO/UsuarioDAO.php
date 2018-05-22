@@ -320,10 +320,12 @@ class UsuarioDAO
         try {
             $stmt->bindValue(1,$enabled);
             $stmt->bindValue(2,$usuario->getId());
+            $stmt->execute();
 
-            if ($stmt->execute()){
-                return $this->getUser($usuario->getId());
-            }
+            return array(
+                'status'    => 200,
+                'message'   => "SUCCESS"
+            );
 
         } catch (PDOException $ex) {
             return array(
