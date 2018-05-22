@@ -211,40 +211,44 @@ class UsuarioDAO
         //Cria conexao
         $conn = \Database::conexao();
 
+        $query_foto = ( !empty($usuario->getFotoPerfil()) ) ? ',user_foto_perfil = ?' : '';
+
         $sql = "UPDATE usuarios 
                 SET   user_nome = ?, 
                       user_cpf = ?, 
                       user_telefone = ?, 
+                      user_data = ?, 
                       user_email = ?, 
-                      user_senha = ?,  
                       user_cep = ?, 
                       user_endereco_numero = ?, 
-                      user_status = ?, 
-                      tipo_id = ?, 
-                      filial_id = ?, 
-                      user_foto_perfil = ? 
+                      user_endereco_complemento = ?  
+                      ".$query_foto."
                 WHERE user_id = ?";
         $stmt = $conn->prepare($sql);
-
-        $enabled = ($usuario->getStatus() == 'true')? true : false;
 
         try {
             $stmt->bindValue(1,$usuario->getNome());
             $stmt->bindValue(2,$usuario->getCpf());
             $stmt->bindValue(3,$usuario->getTelefone());
-            $stmt->bindValue(4,$usuario->getEmail());
-            $stmt->bindValue(5,$usuario->getSenha());
+            $stmt->bindValue(4,$usuario->getData());
+            $stmt->bindValue(5,$usuario->getEmail());
             $stmt->bindValue(6,$usuario->getCep());
             $stmt->bindValue(7,$usuario->getEnderecoNumero());
-            $stmt->bindValue(8,$enabled);
-            $stmt->bindValue(9,$usuario->getTipoId());
-            $stmt->bindValue(10,$usuario->getFilialId());
-            $stmt->bindValue(11,$usuario->getFotoPerfil());
-            $stmt->bindValue(12,$usuario->getId());
+            $stmt->bindValue(8,$usuario->getEnderecoComplemento());
 
-            if ($stmt->execute()){
-                return $this->getUser($usuario->getId());
+            $aux = 9;
+            if (!empty($query_foto)){
+                $stmt->bindValue($aux,$usuario->getFotoPerfil());
+                $aux++;
             }
+            $stmt->bindValue($aux,$usuario->getId());
+
+            $stmt->execute();
+
+            return array(
+                'status'    => 200,
+                'message'   => "SUCCESS"
+            );
 
         } catch (PDOException $ex) {
             return array(

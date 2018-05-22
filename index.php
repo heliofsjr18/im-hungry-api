@@ -212,22 +212,15 @@ $app->post('/web/usuario/update', function(Request $request, Response $response,
     require_once 'Controller/UsuarioController.php';
 
     $usuario = new Usuario();
-    $telefone = str_replace("(", "", $data["telefone"]);
-    $telefone = str_replace(")", "", $telefone);
-    $telefone = str_replace("-", "", $telefone);
-
-    $usuario = new Usuario();
-    $usuario->setId($data["id"]);
+    $usuario->setId($data["idAt"]);
     $usuario->setNome($data["nome"]);
     $usuario->setCpf($data["cpf"]);
-    $usuario->setTelefone($telefone);
+    $usuario->setTelefone($data["telefone"]);
+    $usuario->setData($data["data"]);
     $usuario->setEmail($data["email"]);
-    $usuario->setSenha($data["senha"]);
     $usuario->setCep($data["cep"]);
     $usuario->setEnderecoNumero($data["numero_end"]);
-    $usuario->setTipoId($data["tipo_usuario"]);
-    $usuario->setStatus($data["enabled"]);
-    $usuario->setFilialId($data["filial_id"]);
+    $usuario->setEnderecoComplemento($data["complemento"]);
     $usuario->setFotoPerfil($data["foto_perfil"]);
 
     $usuarioController = new UsuarioController();
