@@ -300,4 +300,34 @@ class UsuarioDAO
 
     }
 
+    public function enabled(Usuario $usuario){
+        //Cria conexao
+        $conn = \Database::conexao();
+
+        $sql = "UPDATE usuarios 
+                SET   user_status = ?  
+                WHERE user_id = ?";
+        $stmt = $conn->prepare($sql);
+
+        $enabled = ($usuario->getStatus() == 'true')? true : false;
+
+        try {
+            $stmt->bindValue(1,$enabled);
+            $stmt->bindValue(2,$usuario->getId());
+
+            if ($stmt->execute()){
+                return $this->getUser($usuario->getId());
+            }
+
+        } catch (PDOException $ex) {
+            return array(
+                'status'    => 500,
+                'message'   => "ERROR",
+                'result'    => 'Erro na execução da instrução!',
+                'CODE'      => $ex->getCode(),
+                'Exception' => $ex->getMessage(),
+            );
+        }
+    }
+
 }

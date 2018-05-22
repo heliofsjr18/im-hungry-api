@@ -229,4 +229,18 @@ class UsuarioController
         return $usuarioDAO->listAll($usuario);
 
     }
+    public function enabled(Usuario $usuario){
+
+        if ( empty($usuario->getId()) ){
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'Id do usuário não informado!');
+            die;
+        }if ( empty($usuario->getStatus()) ){
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'Enabled do usuário não informado!');
+            die;
+        }
+
+        $usuarioDAO = new UsuarioDAO();
+        return $usuarioDAO->enabled($usuario);
+
+    }
 }
