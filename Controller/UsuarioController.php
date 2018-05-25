@@ -190,6 +190,18 @@ class UsuarioController
 
     }
 
+    public function perfil(Usuario $usuario)
+    {
+        if (empty($usuario->getId())) {
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'Id do usuário não informado!');
+            die;
+        }
+
+        $usuarioDAO = new UsuarioDAO();
+        return $usuarioDAO->getUser($usuario->getId());
+
+    }
+
     public function enabled(Usuario $usuario){
 
         if ( empty($usuario->getId()) ){

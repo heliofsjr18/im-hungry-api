@@ -151,6 +151,45 @@ $app->post('/web/usuario/listAll', function(Request $request, Response $response
 
 });
 
+$app->post('/web/usuario/perfil', function(Request $request, Response $response, $args) {
+    $data = $request->getParsedBody();
+    $auth = auth($request);
+
+    if($auth[status] != 200){
+        return $response->withJson($auth, $auth[status]);
+        die;
+    }
+    require_once 'Basics/Usuario.php';
+    require_once 'Controller/UsuarioController.php';
+
+
+    $usuario = new Usuario();
+    $usuario->setId($data["user_id"]);
+
+    $usuarioController = new UsuarioController();
+    $retorno = $usuarioController->perfil($usuario);
+
+    if ($retorno['status'] == 500){
+        return $response->withJson($retorno, $retorno[status]);
+        die;
+    }else{
+
+        $jwt = setToken($auth['token']->data);
+        $res = array(
+            'status' 		=> 200,
+            'message' 		=> "SUCCESS",
+            'result' 		=> "Informações carregadas!",
+            'usuario' 		=> $retorno,
+            'token'			=> $jwt
+        );
+
+        return $response->withJson($res, $res[status]);
+
+    }
+
+
+});
+
 $app->post('/web/usuario/insert', function(Request $request, Response $response, $args) {
     $data = $request->getParsedBody();
     $auth = auth($request);
