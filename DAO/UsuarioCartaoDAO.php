@@ -52,16 +52,16 @@ class UsuarioCartaoDAO
     public function insert(UsuarioCartao $cartao){
 
         $conn = \Database::conexao();
-        $sql = "INSERT INTO usuarios (cartao_digitos, cartao_ano, cartao_mes, cartao_brand, cartao_status, user_id)
+        $sql = "INSERT INTO clientes_cartao (cartao_digitos, cartao_ano, cartao_mes, cartao_brand, cartao_status, user_id)
                     VALUES ( ?, ?, ?, ?, ?, ?);";
         $stmt = $conn->prepare($sql);
 
         try {
-            $stmt->bindValue(1,$cartao->getDigitos(), PDO::PARAM_INT);
-            $stmt->bindValue(2,$cartao->getAno(), PDO::PARAM_INT);
-            $stmt->bindValue(3,$cartao->getMes(), PDO::PARAM_INT);
-            $stmt->bindValue(4,$cartao->getBrand(), PDO::PARAM_INT);
-            $stmt->bindValue(5,$cartao->getStatus(), PDO::PARAM_INT);
+            $stmt->bindValue(1,$cartao->getDigitos(), PDO::PARAM_STR);
+            $stmt->bindValue(2,$cartao->getAno(), PDO::PARAM_STR);
+            $stmt->bindValue(3,$cartao->getMes(), PDO::PARAM_STR);
+            $stmt->bindValue(4,$cartao->getBrand(), PDO::PARAM_STR);
+            $stmt->bindValue(5,$cartao->getStatus());
             $stmt->bindValue(6,$cartao->getUserId(), PDO::PARAM_INT);
             $stmt->execute();
 
@@ -76,13 +76,12 @@ class UsuarioCartaoDAO
                 'Exception' => $ex->getMessage(),
             );
         }
-
     }
 
     public function enabled(UsuarioCartao $cartao){
 
         $conn = \Database::conexao();
-        $sql = "UPDATE usuarios SET cartao_status = ?
+        $sql = "UPDATE clientes_cartao SET cartao_status = 0
                 WHERE cartao_id = ?;";
         $stmt = $conn->prepare($sql);
 

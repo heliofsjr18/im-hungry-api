@@ -1319,7 +1319,7 @@ $app->post('/app/cartao/insert', function(Request $request, Response $response, 
     $cartao->setAno($data["ano"]);
     $cartao->setMes($data["mes"]);
     $cartao->setBrand($data["brand"]);
-    $cartao->setStatus(1);
+    $cartao->setStatus(true);
     $cartao->setUserId($auth['token']->data->user_id);
 
     $cartaoController = new UsuarioCartaoController();

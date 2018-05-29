@@ -52,7 +52,7 @@ class UsuarioCartaoController
 
 
         $cartaoDAO = new UsuarioCartaoDAO();
-        return $cartaoDAO->listAll($cartao);
+        return $cartaoDAO->insert($cartao);
 
     }
 
