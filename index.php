@@ -1266,6 +1266,120 @@ $app->post('/app/cliente/update', function(Request $request, Response $response,
 
 });
 
+$app->get('/app/cartao/list', function(Request $request, Response $response, $args) {
+    $data = $request->getParsedBody();
+    $auth = auth($request);
+
+    if($auth[status] != 200){
+        return $response->withJson($auth, $auth[status]);
+        die;
+    }
+
+    require_once 'Basics/UsuarioCartao.php';
+    require_once 'Controller/UsuarioCartaoController.php';
+
+    $cartao = new UsuarioCartao();
+    $cartao->setUserId($auth['token']->data->user_id);
+
+    $cartaoController = new UsuarioCartaoController();
+    $retorno = $cartaoController->listAll($cartao);
+
+    if ($retorno['status'] == 500){
+        return $response->withJson($retorno, $retorno[status]);
+        die;
+    }else{
+        $jwt = setToken($retorno[0]);
+        $res = array(
+            'status' 		=> 200,
+            'message' 		=> "SUCCESS",
+            'result' 	    => "Cartões encontrados!",
+            'cartões' 	    => $retorno,
+            'token'			=> $jwt
+        );
+
+        return $response->withJson($res, $res[status]);
+
+    }
+});
+
+$app->post('/app/cartao/insert', function(Request $request, Response $response, $args) {
+    $data = $request->getParsedBody();
+    $auth = auth($request);
+
+    if($auth[status] != 200){
+        return $response->withJson($auth, $auth[status]);
+        die;
+    }
+
+    require_once 'Basics/UsuarioCartao.php';
+    require_once 'Controller/UsuarioCartaoController.php';
+
+    $cartao = new UsuarioCartao();
+    $cartao->setDigitos($data["digitos"]);
+    $cartao->setAno($data["ano"]);
+    $cartao->setMes($data["mes"]);
+    $cartao->setBrand($data["brand"]);
+    $cartao->setStatus(1);
+    $cartao->setUserId($auth['token']->data->user_id);
+
+    $cartaoController = new UsuarioCartaoController();
+    $retorno = $cartaoController->insert($cartao);
+
+    if ($retorno['status'] == 500){
+        return $response->withJson($retorno, $retorno[status]);
+        die;
+    }else{
+        $jwt = setToken($retorno[0]);
+        $res = array(
+            'status' 		=> 200,
+            'message' 		=> "SUCCESS",
+            'result' 	    => "Cartão cadastrado!",
+            'cartões' 	    => $retorno,
+            'token'			=> $jwt
+        );
+
+        return $response->withJson($res, $res[status]);
+
+    }
+});
+
+$app->post('/app/cartao/enabled', function(Request $request, Response $response, $args) {
+    $data = $request->getParsedBody();
+    $auth = auth($request);
+
+    if($auth[status] != 200){
+        return $response->withJson($auth, $auth[status]);
+        die;
+    }
+
+    require_once 'Basics/UsuarioCartao.php';
+    require_once 'Controller/UsuarioCartaoController.php';
+
+    $cartao = new UsuarioCartao();
+    $cartao->setId($data["cartao_id"]);
+    $cartao->setUserId($auth['token']->data->user_id);
+
+    $cartaoController = new UsuarioCartaoController();
+    $retorno = $cartaoController->enabled($cartao);
+
+    if ($retorno['status'] == 500){
+        return $response->withJson($retorno, $retorno[status]);
+        die;
+    }else{
+        $jwt = setToken($retorno[0]);
+        $res = array(
+            'status' 		=> 200,
+            'message' 		=> "SUCCESS",
+            'result' 	    => "Cartão desativado!",
+            'cartões' 	    => $retorno,
+            'token'			=> $jwt
+        );
+
+        return $response->withJson($res, $res[status]);
+
+    }
+});
+
 $app->post('/app/filial/list', function(Request $request, Response $response, $args) {
     $data = $request->getParsedBody();
     $auth = auth($request);

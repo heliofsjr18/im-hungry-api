@@ -10,6 +10,8 @@ class UsuarioCartao
 {
     private $id;
     private $digitos;
+    private $ano;
+    private $mes;
     private $brand;
     private $token;
     private $status;
@@ -46,6 +48,40 @@ class UsuarioCartao
     {
         $this->digitos = $digitos;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getAno()
+    {
+        return $this->ano;
+    }
+
+    /**
+     * @param mixed $ano
+     */
+    public function setAno($ano)
+    {
+        $this->ano = $ano;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getMes()
+    {
+        return $this->mes;
+    }
+
+    /**
+     * @param mixed $mes
+     */
+    public function setMes($mes)
+    {
+        $this->mes = $mes;
+    }
+
+
 
     /**
      * @return mixed
