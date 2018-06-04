@@ -41,6 +41,10 @@ class UsuarioCartaoController
             return array('status' => 500, 'message' => "ERROR", 'result' => 'Bandeira do cartão não informada!');
             die;
         }
+        if (empty($cartao->getCvc())) {
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'Código de segurança do cartão não informado!');
+            die;
+        }
         if (empty($cartao->getStatus())) {
             return array('status' => 500, 'message' => "ERROR", 'result' => 'Status não informado!');
             die;

@@ -13,6 +13,7 @@ class UsuarioCartao
     private $ano;
     private $mes;
     private $brand;
+    private $cvc;
     private $token;
     private $status;
     private $user_id;
@@ -98,6 +99,24 @@ class UsuarioCartao
     {
         $this->brand = $brand;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getCvc()
+    {
+        return $this->cvc;
+    }
+
+    /**
+     * @param mixed $cvc
+     */
+    public function setCvc($cvc)
+    {
+        $this->cvc = $cvc;
+    }
+
+
 
     /**
      * @return mixed

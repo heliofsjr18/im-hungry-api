@@ -14,7 +14,7 @@ class UsuarioCartaoDAO
     public function listAll(UsuarioCartao $cartao){
 
         $conn = \Database::conexao();
-        $sql = "SELECT cartao_id, cartao_digitos, cartao_ano, cartao_mes, cartao_brand, cartao_status 
+        $sql = "SELECT cartao_id, cartao_digitos, cartao_ano, cartao_mes, cartao_brand, cartao_status, cartao_cvc 
                 FROM clientes_cartao 
                 WHERE user_id = ? 
                 AND cartao_status = 1;";
@@ -52,8 +52,8 @@ class UsuarioCartaoDAO
     public function insert(UsuarioCartao $cartao){
 
         $conn = \Database::conexao();
-        $sql = "INSERT INTO clientes_cartao (cartao_digitos, cartao_ano, cartao_mes, cartao_brand, cartao_status, user_id)
-                    VALUES ( ?, ?, ?, ?, ?, ?);";
+        $sql = "INSERT INTO clientes_cartao (cartao_digitos, cartao_ano, cartao_mes, cartao_brand, cartao_status, user_id, cartao_cvc)
+                    VALUES ( ?, ?, ?, ?, ?, ?, ?);";
         $stmt = $conn->prepare($sql);
 
         try {
@@ -63,6 +63,7 @@ class UsuarioCartaoDAO
             $stmt->bindValue(4,$cartao->getBrand(), PDO::PARAM_STR);
             $stmt->bindValue(5,$cartao->getStatus());
             $stmt->bindValue(6,$cartao->getUserId(), PDO::PARAM_INT);
+            $stmt->bindValue(7,$cartao->getCvc(), PDO::PARAM_INT);
             $stmt->execute();
 
             return $this->listAll($cartao);

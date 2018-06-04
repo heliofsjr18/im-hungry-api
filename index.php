@@ -19,6 +19,10 @@ $app = new \Slim\App(array('templates.path' => 'templates', 'settings' => ['disp
 $container = $app->getContainer();
 $container['upload_directory'] = __DIR__ . '/uploads';
 
+$app->options('/{routes:.+}', function ($request, $response, $args){
+    return $response;
+});
+
 $app->add(function ($req, $res, $next) {
     $response = $next($req, $res);
     return $response
@@ -1235,11 +1239,14 @@ $app->post('/app/cliente/update', function(Request $request, Response $response,
     $usuario->setId($auth['token']->data->user_id);
     $usuario->setNome($data["nome"]);
     $usuario->setCpf($data["cpf"]);
-    $usuario->setEmail($data["email"]);
-    $usuario->setSenha($data["senha"]);
     $usuario->setTelefone($data["telefone"]);
     $usuario->setData($data["dataNasc"]);
-    //$usuario->setFotoPerfil($data["foto"]);
+    $usuario->setEmail($data["email"]);
+    $usuario->setSenha($data["senha"]);
+    $usuario->setCep($data["53441-090"]);
+    $usuario->setEnderecoNumero("123");
+    $usuario->setEnderecoComplemento("Complemento de teste.");
+    $usuario->setFotoPerfil($data["foto"]);
 
 
     $usuarioControle = new UsuarioController();
@@ -1319,6 +1326,7 @@ $app->post('/app/cartao/insert', function(Request $request, Response $response, 
     $cartao->setAno($data["ano"]);
     $cartao->setMes($data["mes"]);
     $cartao->setBrand($data["brand"]);
+    $cartao->setCvc($data["cvc"]);
     $cartao->setStatus(true);
     $cartao->setUserId($auth['token']->data->user_id);
 
@@ -1680,6 +1688,10 @@ $app->post('/app/checkout/status', function(Request $request, Response $response
 
 });
 
+$app->map(['GET', 'POST', 'PUT', 'DELETE', 'PATCH'], '/{routes:.+}', function($req, $res) {
+    $handler = $this->notFoundHandler; // handle using the default Slim page not found handler
+    return $handler($req, $res);
+});
 
 function setToken($obj){
     //Gerar TOKEN

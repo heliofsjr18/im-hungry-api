@@ -150,10 +150,6 @@ class UsuarioController
             return array('status' => 500, 'message' => "ERROR", 'result' => 'Email não informado!');
             die;
         }
-        if (empty($usuario->getCep())) {
-            return array('status' => 500, 'message' => "ERROR", 'result' => 'Cep não informado!');
-            die;
-        }
         if (empty($usuario->getEnderecoNumero())) {
             return array('status' => 500, 'message' => "ERROR", 'result' => 'Número do endereço não informado!');
             die;
