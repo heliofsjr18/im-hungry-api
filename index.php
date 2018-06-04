@@ -1199,6 +1199,8 @@ $app->post('/app/cliente/insert', function(Request $request, Response $response,
     $usuario->setEmail($data["email"]);
     $usuario->setSenha($data["senha"]);
     $usuario->setFotoPerfil($data["fot64"]);
+    $usuario->setEnderecoNumero("123");
+    $usuario->setCep("53441-090");
     $usuario->setStatus(1);
     $usuario->setTipoId(3);
 

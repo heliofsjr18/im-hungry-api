@@ -242,13 +242,9 @@ class UsuarioDAO
                 $aux++;
             }
             $stmt->bindValue($aux,$usuario->getId());
-
             $stmt->execute();
 
-            return array(
-                'status'    => 200,
-                'message'   => "SUCCESS"
-            );
+            return $this->getUser($usuario->getId());
 
         } catch (PDOException $ex) {
             return array(
