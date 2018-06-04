@@ -1175,7 +1175,20 @@ $app->post('/app/cliente/login', function(Request $request, Response $response, 
         return $response->withJson($retorno, $retorno[status]);
         die;
     }else{
-        $jwt = setToken($retorno[0]);
+        $newObj = array(
+            'user_id' => $retorno[0]['user_id'],
+            'user_nome' => $retorno[0]['user_nome'],
+            'user_cpf' => $retorno[0]['user_cpf'],
+            'user_email' => $retorno[0]['user_email'],
+            'user_telefone' => $retorno[0]['user_telefone'],
+            'user_data' => $retorno[0]['user_data'],
+            'user_cadastro' => $retorno[0]['user_cadastro'],
+            'user_status' => $retorno[0]['user_status'],
+            'tipo_id' => $retorno[0]['tipo_id'],
+            'filial_id' => $retorno[0]['filial_id'],
+        );
+
+        $jwt = setToken($newObj);
         $res = array(
             'status' 		=> 200,
             'message' 		=> "SUCCESS",
@@ -1211,7 +1224,21 @@ $app->post('/app/cliente/insert', function(Request $request, Response $response,
         return $response->withJson($retorno, $retorno[status]);
         die;
     }else{
-        $jwt = setToken($retorno[0]);
+        $newObj = array(
+            'user_id' => $retorno[0]['user_id'],
+            'user_nome' => $retorno[0]['user_nome'],
+            'user_cpf' => $retorno[0]['user_cpf'],
+            'user_email' => $retorno[0]['user_email'],
+            'user_telefone' => $retorno[0]['user_telefone'],
+            'user_data' => $retorno[0]['user_data'],
+            'user_cadastro' => $retorno[0]['user_cadastro'],
+            'user_status' => $retorno[0]['user_status'],
+            'tipo_id' => $retorno[0]['tipo_id'],
+            'filial_id' => $retorno[0]['filial_id'],
+        );
+
+        $jwt = setToken($newObj);
+
         $res = array(
             'status'        => 200,
             'message'       => "SUCCESS",
@@ -1259,7 +1286,20 @@ $app->post('/app/cliente/update', function(Request $request, Response $response,
         die;
     }else{
 
-        $jwt = setToken($retorno[0]);
+        $newObj = array(
+            'user_id' => $retorno[0]['user_id'],
+            'user_nome' => $retorno[0]['user_nome'],
+            'user_cpf' => $retorno[0]['user_cpf'],
+            'user_email' => $retorno[0]['user_email'],
+            'user_telefone' => $retorno[0]['user_telefone'],
+            'user_data' => $retorno[0]['user_data'],
+            'user_cadastro' => $retorno[0]['user_cadastro'],
+            'user_status' => $retorno[0]['user_status'],
+            'tipo_id' => $retorno[0]['tipo_id'],
+            'filial_id' => $retorno[0]['filial_id'],
+        );
+
+        $jwt = setToken($newObj);
         $res = array(
             'status' 		=> 200,
             'message' 		=> "SUCCESS",
@@ -1297,7 +1337,7 @@ $app->get('/app/cartao/list', function(Request $request, Response $response, $ar
         return $response->withJson($retorno, $retorno[status]);
         die;
     }else{
-        $jwt = setToken($retorno[0]);
+        $jwt = setToken($auth['token']->data);
         $res = array(
             'status' 		=> 200,
             'message' 		=> "SUCCESS",
@@ -1339,7 +1379,7 @@ $app->post('/app/cartao/insert', function(Request $request, Response $response, 
         return $response->withJson($retorno, $retorno[status]);
         die;
     }else{
-        $jwt = setToken($retorno[0]);
+        $jwt = setToken($auth['token']->data);
         $res = array(
             'status' 		=> 200,
             'message' 		=> "SUCCESS",
@@ -1376,7 +1416,7 @@ $app->post('/app/cartao/enabled', function(Request $request, Response $response,
         return $response->withJson($retorno, $retorno[status]);
         die;
     }else{
-        $jwt = setToken($retorno[0]);
+        $jwt = setToken($auth['token']->data);
         $res = array(
             'status' 		=> 200,
             'message' 		=> "SUCCESS",
@@ -1388,6 +1428,26 @@ $app->post('/app/cartao/enabled', function(Request $request, Response $response,
         return $response->withJson($res, $res[status]);
 
     }
+});
+
+$app->get('/app/fidelidade/list', function(Request $request, Response $response, $args) {
+
+    $res = array(
+        'status' 		=> 200,
+        'message' 		=> "SUCCESS",
+        'result' 	    => "Toma ai Hélio!",
+        'historico' 	    => array(
+            'filial_id' 	        => "Bobs",
+            'filial_nome' 	        => "1",
+            'cartao_fid_qtd' 	    => "12",
+            'cartao_fid_valor' 	    => "17.5",
+            'cartao_fid_beneficio' 	=> "X-Box One 1Tb + 5 Jogos.",
+            'cartao_fid_cliente' 	=> "7",
+        )
+    );
+
+    return $response->withJson($res, $res[status]);
+
 });
 
 $app->post('/app/filial/list', function(Request $request, Response $response, $args) {
@@ -1561,7 +1621,7 @@ $app->get('/app/checkout', function(Request $request, Response $response, $args)
         return $response->withJson($retorno, $retorno[status]);
         die;
     }else{
-        $jwt = setToken($retorno[0]);
+        $jwt = setToken($auth['token']->data);
         $res = array(
             'status' 		=> 200,
             'message' 		=> "SUCCESS",
