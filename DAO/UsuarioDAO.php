@@ -26,7 +26,7 @@ class UsuarioDAO
             $stmt->bindValue(1,$user_id);
             $stmt->execute();
             $countLogin = $stmt->rowCount();
-            $resultUsuario = $stmt->fetchAll(PDO::FETCH_OBJ);
+            $resultUsuario = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             if ($countLogin != 1) {
                 return false;

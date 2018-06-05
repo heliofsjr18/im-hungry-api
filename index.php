@@ -1257,7 +1257,7 @@ $app->post('/app/cliente/update', function(Request $request, Response $response,
     $data = $request->getParsedBody();
     $auth = auth($request);
 
-    if($auth[status] != 200){
+    if($auth['status'] != 200){
         return $response->withJson($auth, $auth[status]);
         die;
     }
@@ -1272,7 +1272,7 @@ $app->post('/app/cliente/update', function(Request $request, Response $response,
     $usuario->setData($data["dataNasc"]);
     $usuario->setEmail($data["email"]);
     $usuario->setSenha($data["senha"]);
-    $usuario->setCep($data["53441-090"]);
+    $usuario->setCep("53441-090");
     $usuario->setEnderecoNumero("123");
     $usuario->setEnderecoComplemento("Complemento de teste.");
     $usuario->setFotoPerfil($data["foto"]);
