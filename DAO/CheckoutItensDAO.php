@@ -597,27 +597,35 @@ class CheckoutItensDAO
                 case 2:
                     $notification->setTitle("Acabou a espera!");
                     $notification->setBody("Olá ".$nome[0]."! Seu pedido #".$ref." já está pronto! Por favor, retire no balcão.");
+                    $notification->setIcon("notification_icon");
+                    $notification->setSound('default');
 
                     $array = array(
                         'title' => 'Acabou a espera!',
                         'body'  => "Olá ".$nome[0]."! Seu pedido #".$ref." já está pronto! Por favor, retire no balcão.",
                         'key'   => 2,
-                        'ref'   => $ref
+                        'ref'   => $ref,
+                        'icon'  => 'notification_icon',
+                        'sound' => 'default'
                     );
-
                     break;
+
                 case 3:
                     $notification->setTitle("Agradecemos sua visita!");
                     $notification->setBody($nome[0].", muito obrigado por utilizar o I`m Hungry!");
+                    $notification->setIcon("notification_icon");
+                    $notification->setSound('default');
 
                     $array = array(
                         'title' => "Agradecemos sua visita!",
                         'body'  => $nome[0].", muito obrigado por utilizar o I`m Hungry!",
                         'key'   => 3,
-                        'ref'   => $ref
+                        'ref'   => $ref,
+                        'icon'  => 'notification_icon',
+                        'sound' => 'default'
                     );
-
                     break;
+
             }
 
             $message = new Message();
