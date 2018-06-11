@@ -41,8 +41,8 @@ $app->post('/cep', function(Request $request, Response $response, $args) {
     $data = $request->getParsedBody();
     $auth = auth($request);
 
-    if($auth[status] != 200){
-        return $response->withJson($auth, $auth[status]);
+    if($auth['status'] != 200){
+        return $response->withJson($auth, $auth['status']);
         die;
     }
     require_once 'Basics/Enderecos.php';
@@ -60,7 +60,7 @@ $app->post('/cep', function(Request $request, Response $response, $args) {
     $retorno = $enderecoController->listCep($endereco);
 
     if ($retorno['status'] == 500){
-        return $response->withJson($retorno, $retorno[status]);
+        return $response->withJson($retorno, $retorno['status']);
         die;
     }else{
 
@@ -73,7 +73,7 @@ $app->post('/cep', function(Request $request, Response $response, $args) {
             'token'			=> $jwt
         );
 
-        return $response->withJson($res, $res[status]);
+        return $response->withJson($res, $res['status']);
 
     }
 
@@ -95,7 +95,7 @@ $app->post('/web/usuario/login', function(Request $request, Response $response, 
     $retorno = $usuarioController->loginWeb($usuario);
 
     if ($retorno['status'] == 500){
-        return $response->withJson($retorno, $retorno[status]);
+        return $response->withJson($retorno, $retorno['status']);
         die;
     }else{
         $jwt = setToken($retorno[0]);
@@ -106,7 +106,7 @@ $app->post('/web/usuario/login', function(Request $request, Response $response, 
             'token'         => $jwt
         );
 
-        return $response->withJson($res, $res[status]);
+        return $response->withJson($res, $res['status']);
 
     }
 
@@ -122,7 +122,7 @@ $app->post('/web/teste', function(Request $request, Response $response, $args) {
         'Header'        => $authorization
     );
 
-    return $response->withJson($res, $res[status]);
+    return $response->withJson($res, $res['status']);
 
 
 });
@@ -131,8 +131,8 @@ $app->post('/web/usuario/listAll', function(Request $request, Response $response
     $data = $request->getParsedBody();
     $auth = auth($request);
 
-    if($auth[status] != 200){
-        return $response->withJson($auth, $auth[status]);
+    if($auth['status'] != 200){
+        return $response->withJson($auth, $auth['status']);
         die;
     }
     require_once 'Basics/Usuario.php';
@@ -148,7 +148,7 @@ $app->post('/web/usuario/listAll', function(Request $request, Response $response
     $retorno = $usuarioController->listAll($usuario);
 
     if ($retorno['status'] == 500){
-        return $response->withJson($retorno, $retorno[status]);
+        return $response->withJson($retorno, $retorno['status']);
         die;
     }else{
 
@@ -163,7 +163,7 @@ $app->post('/web/usuario/listAll', function(Request $request, Response $response
             'token'			=> $jwt
         );
 
-        return $response->withJson($res, $res[status]);
+        return $response->withJson($res, $res['status']);
 
     }
 
@@ -174,8 +174,8 @@ $app->post('/web/usuario/perfil', function(Request $request, Response $response,
     $data = $request->getParsedBody();
     $auth = auth($request);
 
-    if($auth[status] != 200){
-        return $response->withJson($auth, $auth[status]);
+    if($auth['status'] != 200){
+        return $response->withJson($auth, $auth['status']);
         die;
     }
     require_once 'Basics/Usuario.php';
@@ -189,7 +189,7 @@ $app->post('/web/usuario/perfil', function(Request $request, Response $response,
     $retorno = $usuarioController->perfil($usuario);
 
     if ($retorno['status'] == 500){
-        return $response->withJson($retorno, $retorno[status]);
+        return $response->withJson($retorno, $retorno['status']);
         die;
     }else{
 
@@ -202,7 +202,7 @@ $app->post('/web/usuario/perfil', function(Request $request, Response $response,
             'token'			=> $jwt
         );
 
-        return $response->withJson($res, $res[status]);
+        return $response->withJson($res, $res['status']);
 
     }
 
@@ -213,8 +213,8 @@ $app->post('/web/usuario/insert', function(Request $request, Response $response,
     $data = $request->getParsedBody();
     $auth = auth($request);
 
-    if($auth[status] != 200){
-        return $response->withJson($auth, $auth[status]);
+    if($auth['status'] != 200){
+        return $response->withJson($auth, $auth['status']);
         die;
     }
     require_once 'Basics/Usuario.php';
@@ -239,7 +239,7 @@ $app->post('/web/usuario/insert', function(Request $request, Response $response,
     $retorno = $usuarioController->insert($usuario);
 
     if ($retorno['status'] == 500){
-        return $response->withJson($retorno, $retorno[status]);
+        return $response->withJson($retorno, $retorno['status']);
         die;
     }else{
 
@@ -251,7 +251,7 @@ $app->post('/web/usuario/insert', function(Request $request, Response $response,
             'token'			=> $jwt
         );
 
-        return $response->withJson($res, $res[status]);
+        return $response->withJson($res, $res['status']);
 
     }
 
@@ -275,7 +275,7 @@ $app->post('/web/adm/insert', function(Request $request, Response $response, $ar
     $retorno = $usuarioController->insert($usuario);
 
     if ($retorno['status'] == 500){
-        return $response->withJson($retorno, $retorno[status]);
+        return $response->withJson($retorno, $retorno['status']);
         die;
     }else{
         $jwt = setToken($retorno[0]);
@@ -287,7 +287,7 @@ $app->post('/web/adm/insert', function(Request $request, Response $response, $ar
             'token'         => $jwt
         );
 
-        return $response->withJson($res, $res[status]);
+        return $response->withJson($res, $res['status']);
 
     }
 
@@ -297,8 +297,8 @@ $app->post('/web/usuario/update', function(Request $request, Response $response,
     $data = $request->getParsedBody();
     $auth = auth($request);
 
-    if($auth[status] != 200){
-        return $response->withJson($auth, $auth[status]);
+    if($auth['status'] != 200){
+        return $response->withJson($auth, $auth['status']);
         die;
     }
     require_once 'Basics/Usuario.php';
@@ -320,7 +320,7 @@ $app->post('/web/usuario/update', function(Request $request, Response $response,
     $retorno = $usuarioController->update($usuario);
 
     if ($retorno['status'] == 500){
-        return $response->withJson($retorno, $retorno[status]);
+        return $response->withJson($retorno, $retorno['status']);
         die;
     }else{
 
@@ -332,7 +332,7 @@ $app->post('/web/usuario/update', function(Request $request, Response $response,
             'token'          => $jwt
         );
 
-        return $response->withJson($res, $res[status]);
+        return $response->withJson($res, $res['status']);
 
     }
 
@@ -342,8 +342,8 @@ $app->post('/web/usuario/enabled', function(Request $request, Response $response
     $data = $request->getParsedBody();
     $auth = auth($request);
 
-    if($auth[status] != 200){
-        return $response->withJson($auth, $auth[status]);
+    if($auth['status'] != 200){
+        return $response->withJson($auth, $auth['status']);
         die;
     }
     require_once 'Basics/Usuario.php';
@@ -357,7 +357,7 @@ $app->post('/web/usuario/enabled', function(Request $request, Response $response
     $retorno = $usuarioController->enabled($usuario);
 
     if ($retorno['status'] == 500){
-        return $response->withJson($retorno, $retorno[status]);
+        return $response->withJson($retorno, $retorno['status']);
         die;
     }else{
 
@@ -369,7 +369,7 @@ $app->post('/web/usuario/enabled', function(Request $request, Response $response
             'token'			=> $jwt
         );
 
-        return $response->withJson($res, $res[status]);
+        return $response->withJson($res, $res['status']);
     }
 });
 
@@ -377,8 +377,8 @@ $app->post('/web/empresa/listAll', function(Request $request, Response $response
     $data = $request->getParsedBody();
     $auth = auth($request);
 
-    if($auth[status] != 200){
-        return $response->withJson($auth, $auth[status]);
+    if($auth['status'] != 200){
+        return $response->withJson($auth, $auth['status']);
         die;
     }
     require_once 'Basics/Empresa.php';
@@ -393,7 +393,7 @@ $app->post('/web/empresa/listAll', function(Request $request, Response $response
     $retorno = $empresaController->listAll($empresa);
 
     if ($retorno['status'] == 500){
-        return $response->withJson($retorno, $retorno[status]);
+        return $response->withJson($retorno, $retorno['status']);
         die;
     }else{
 
@@ -408,7 +408,7 @@ $app->post('/web/empresa/listAll', function(Request $request, Response $response
             'token'			=> $jwt
         );
 
-        return $response->withJson($res, $res[status]);
+        return $response->withJson($res, $res['status']);
 
     }
 
@@ -419,8 +419,8 @@ $app->post('/web/empresa/insert', function(Request $request, Response $response,
     $data = $request->getParsedBody();
     $auth = auth($request);
 
-    if($auth[status] != 200){
-        return $response->withJson($auth, $auth[status]);
+    if($auth['status'] != 200){
+        return $response->withJson($auth, $auth['status']);
         die;
     }
     require_once 'Basics/Empresa.php';
@@ -456,7 +456,7 @@ $app->post('/web/empresa/insert', function(Request $request, Response $response,
     $retorno = $empresaController->insert($empresa);
 
     if ($retorno['status'] == 500){
-        return $response->withJson($retorno, $retorno[status]);
+        return $response->withJson($retorno, $retorno['status']);
         die;
     }else{
 
@@ -470,7 +470,7 @@ $app->post('/web/empresa/insert', function(Request $request, Response $response,
             'token'			=> $jwt
         );
 
-        return $response->withJson($res, $res[status]);
+        return $response->withJson($res, $res['status']);
 
     }
 
@@ -481,8 +481,8 @@ $app->post('/web/empresa/update', function(Request $request, Response $response,
     $data = $request->getParsedBody();
     $auth = auth($request);
 
-    if($auth[status] != 200){
-        return $response->withJson($auth, $auth[status]);
+    if($auth['status'] != 200){
+        return $response->withJson($auth, $auth['status']);
         die;
     }
     require_once 'Basics/Empresa.php';
@@ -513,7 +513,7 @@ $app->post('/web/empresa/update', function(Request $request, Response $response,
     $retorno = $empresaController->update($empresa);
 
     if ($retorno['status'] == 500){
-        return $response->withJson($retorno, $retorno[status]);
+        return $response->withJson($retorno, $retorno['status']);
         die;
     }else{
 
@@ -525,7 +525,7 @@ $app->post('/web/empresa/update', function(Request $request, Response $response,
             'token'			=> $jwt
         );
 
-        return $response->withJson($res, $res[status]);
+        return $response->withJson($res, $res['status']);
 
     }
 
@@ -536,8 +536,8 @@ $app->post('/web/empresa/enabled', function(Request $request, Response $response
     $data = $request->getParsedBody();
     $auth = auth($request);
 
-    if($auth[status] != 200){
-        return $response->withJson($auth, $auth[status]);
+    if($auth['status'] != 200){
+        return $response->withJson($auth, $auth['status']);
         die;
     }
     require_once 'Basics/Empresa.php';
@@ -551,7 +551,7 @@ $app->post('/web/empresa/enabled', function(Request $request, Response $response
     $retorno = $empresaController->enabled($empresa);
 
     if ($retorno['status'] == 500){
-        return $response->withJson($retorno, $retorno[status]);
+        return $response->withJson($retorno, $retorno['status']);
         die;
     }else{
 
@@ -563,7 +563,7 @@ $app->post('/web/empresa/enabled', function(Request $request, Response $response
             'token'			=> $jwt
         );
 
-        return $response->withJson($res, $res[status]);
+        return $response->withJson($res, $res['status']);
 
     }
 
@@ -574,8 +574,8 @@ $app->post('/web/filial/listAll', function(Request $request, Response $response,
     $data = $request->getParsedBody();
     $auth = auth($request);
 
-    if($auth[status] != 200){
-        return $response->withJson($auth, $auth[status]);
+    if($auth['status'] != 200){
+        return $response->withJson($auth, $auth['status']);
         die;
     }
 
@@ -588,7 +588,7 @@ $app->post('/web/filial/listAll', function(Request $request, Response $response,
     $retorno = $empresaController->listAll($user_id, $status);
 
     if ($retorno['status'] == 500){
-        return $response->withJson($retorno, $retorno[status]);
+        return $response->withJson($retorno, $retorno['status']);
         die;
     }else{
 
@@ -602,7 +602,7 @@ $app->post('/web/filial/listAll', function(Request $request, Response $response,
             'token'			=> $jwt
         );
 
-        return $response->withJson($res, $res[status]);
+        return $response->withJson($res, $res['status']);
 
     }
 
@@ -613,8 +613,8 @@ $app->post('/web/filial/insert', function(Request $request, Response $response, 
     $data = $request->getParsedBody();
     $auth = auth($request);
 
-    if($auth[status] != 200){
-        return $response->withJson($auth, $auth[status]);
+    if($auth['status'] != 200){
+        return $response->withJson($auth, $auth['status']);
         die;
     }
     require_once 'Basics/EmpresaFilial.php';
@@ -635,7 +635,7 @@ $app->post('/web/filial/insert', function(Request $request, Response $response, 
     $retorno = $empresaController->insert($empresa);
 
     if ($retorno['status'] == 500){
-        return $response->withJson($retorno, $retorno[status]);
+        return $response->withJson($retorno, $retorno['status']);
         die;
     }else{
 
@@ -647,7 +647,7 @@ $app->post('/web/filial/insert', function(Request $request, Response $response, 
             'token'			=> $jwt
         );
 
-        return $response->withJson($res, $res[status]);
+        return $response->withJson($res, $res['status']);
 
     }
 
@@ -658,8 +658,8 @@ $app->post('/web/filial/update', function(Request $request, Response $response, 
     $data = $request->getParsedBody();
     $auth = auth($request);
 
-    if($auth[status] != 200){
-        return $response->withJson($auth, $auth[status]);
+    if($auth['status'] != 200){
+        return $response->withJson($auth, $auth['status']);
         die;
     }
     require_once 'Basics/EmpresaFilial.php';
@@ -681,7 +681,7 @@ $app->post('/web/filial/update', function(Request $request, Response $response, 
     $retorno = $empresaController->update($empresa);
 
     if ($retorno['status'] == 500){
-        return $response->withJson($retorno, $retorno[status]);
+        return $response->withJson($retorno, $retorno['status']);
         die;
     }else{
 
@@ -693,7 +693,7 @@ $app->post('/web/filial/update', function(Request $request, Response $response, 
             'token'			=> $jwt
         );
 
-        return $response->withJson($res, $res[status]);
+        return $response->withJson($res, $res['status']);
 
     }
 
@@ -704,8 +704,8 @@ $app->post('/web/filial/enabled', function(Request $request, Response $response,
     $data = $request->getParsedBody();
     $auth = auth($request);
 
-    if($auth[status] != 200){
-        return $response->withJson($auth, $auth[status]);
+    if($auth['status'] != 200){
+        return $response->withJson($auth, $auth['status']);
         die;
     }
     require_once 'Basics/EmpresaFilial.php';
@@ -719,7 +719,7 @@ $app->post('/web/filial/enabled', function(Request $request, Response $response,
     $retorno = $empresaController->enabled($empresa);
 
     if ($retorno['status'] == 500){
-        return $response->withJson($retorno, $retorno[status]);
+        return $response->withJson($retorno, $retorno['status']);
         die;
     }else{
 
@@ -731,7 +731,7 @@ $app->post('/web/filial/enabled', function(Request $request, Response $response,
             'token'			=> $jwt
         );
 
-        return $response->withJson($res, $res[status]);
+        return $response->withJson($res, $res['status']);
 
     }
 
@@ -741,8 +741,8 @@ $app->post('/web/filial/status', function(Request $request, Response $response, 
     $data = $request->getParsedBody();
     $auth = auth($request);
 
-    if($auth[status] != 200){
-        return $response->withJson($auth, $auth[status]);
+    if($auth['status'] != 200){
+        return $response->withJson($auth, $auth['status']);
         die;
     }
     require_once 'Basics/EmpresaFilial.php';
@@ -756,7 +756,7 @@ $app->post('/web/filial/status', function(Request $request, Response $response, 
     $retorno = $empresaController->status($empresa);
 
     if ($retorno['status'] == 500){
-        return $response->withJson($retorno, $retorno[status]);
+        return $response->withJson($retorno, $retorno['status']);
         die;
     }else{
 
@@ -768,7 +768,7 @@ $app->post('/web/filial/status', function(Request $request, Response $response, 
             'token'			=> $jwt
         );
 
-        return $response->withJson($res, $res[status]);
+        return $response->withJson($res, $res['status']);
 
     }
 
@@ -778,8 +778,8 @@ $app->post('/web/menu/listAll', function(Request $request, Response $response, $
     $data = $request->getParsedBody();
     $auth = auth($request);
 
-    if($auth[status] != 200){
-        return $response->withJson($auth, $auth[status]);
+    if($auth['status'] != 200){
+        return $response->withJson($auth, $auth['status']);
         die;
     }
     require_once 'Basics/MenuFilialItens.php';
@@ -793,7 +793,7 @@ $app->post('/web/menu/listAll', function(Request $request, Response $response, $
     $retorno = $menuController->listAll($menu);
 
     if ($retorno['status'] == 500){
-        return $response->withJson($retorno, $retorno[status]);
+        return $response->withJson($retorno, $retorno['status']);
         die;
     }else{
 
@@ -806,7 +806,7 @@ $app->post('/web/menu/listAll', function(Request $request, Response $response, $
             'token'			=> $jwt
         );
 
-        return $response->withJson($res, $res[status]);
+        return $response->withJson($res, $res['status']);
 
     }
 
@@ -817,8 +817,8 @@ $app->post('/web/menu/insert', function(Request $request, Response $response, $a
     $data = $request->getParsedBody();
     $auth = auth($request);
 
-    if($auth[status] != 200){
-        return $response->withJson($auth, $auth[status]);
+    if($auth['status'] != 200){
+        return $response->withJson($auth, $auth['status']);
         die;
     }
     require_once 'Basics/MenuFilialItens.php';
@@ -839,7 +839,7 @@ $app->post('/web/menu/insert', function(Request $request, Response $response, $a
     $retorno = $menuController->insert($itens, $data["fotos"]);
 
     if ($retorno['status'] == 500){
-        return $response->withJson($retorno, $retorno[status]);
+        return $response->withJson($retorno, $retorno['status']);
         die;
     }else{
 
@@ -851,7 +851,7 @@ $app->post('/web/menu/insert', function(Request $request, Response $response, $a
             'token'			=> $jwt
         );
 
-        return $response->withJson($res, $res[status]);
+        return $response->withJson($res, $res['status']);
 
     }
 
@@ -862,8 +862,8 @@ $app->post('/web/menu/update', function(Request $request, Response $response, $a
     $data = $request->getParsedBody();
     $auth = auth($request);
 
-    if($auth[status] != 200){
-        return $response->withJson($auth, $auth[status]);
+    if($auth['status'] != 200){
+        return $response->withJson($auth, $auth['status']);
         die;
     }
     require_once 'Basics/MenuFilialItens.php';
@@ -884,7 +884,7 @@ $app->post('/web/menu/update', function(Request $request, Response $response, $a
     $retorno = $menuController->update($itens);
 
     if ($retorno['status'] == 500){
-        return $response->withJson($retorno, $retorno[status]);
+        return $response->withJson($retorno, $retorno['status']);
         die;
     }else{
 
@@ -896,7 +896,7 @@ $app->post('/web/menu/update', function(Request $request, Response $response, $a
             'token'			=> $jwt
         );
 
-        return $response->withJson($res, $res[status]);
+        return $response->withJson($res, $res['status']);
 
     }
 
@@ -907,8 +907,8 @@ $app->post('/web/menu/enabled', function(Request $request, Response $response, $
     $data = $request->getParsedBody();
     $auth = auth($request);
 
-    if($auth[status] != 200){
-        return $response->withJson($auth, $auth[status]);
+    if($auth['status'] != 200){
+        return $response->withJson($auth, $auth['status']);
         die;
     }
     require_once 'Basics/MenuFilialItens.php';
@@ -922,7 +922,7 @@ $app->post('/web/menu/enabled', function(Request $request, Response $response, $
     $retorno = $menuController->enabled($itens);
 
     if ($retorno['status'] == 500){
-        return $response->withJson($retorno, $retorno[status]);
+        return $response->withJson($retorno, $retorno['status']);
         die;
     }else{
 
@@ -934,7 +934,7 @@ $app->post('/web/menu/enabled', function(Request $request, Response $response, $
             'token'			=> $jwt
         );
 
-        return $response->withJson($res, $res[status]);
+        return $response->withJson($res, $res['status']);
 
     }
 
@@ -944,8 +944,8 @@ $app->post('/web/item/foto', function(Request $request, Response $response, $arg
     $data = $request->getParsedBody();
     $auth = auth($request);
 
-    if($auth[status] != 200){
-        return $response->withJson($auth, $auth[status]);
+    if($auth['status'] != 200){
+        return $response->withJson($auth, $auth['status']);
         die;
     }
     require_once 'Basics/ItensFotos.php';
@@ -959,7 +959,7 @@ $app->post('/web/item/foto', function(Request $request, Response $response, $arg
     $retorno = $menuController->addImage($item);
 
     if ($retorno['status'] == 500){
-        return $response->withJson($retorno, $retorno[status]);
+        return $response->withJson($retorno, $retorno['status']);
         die;
     }else{
 
@@ -971,7 +971,7 @@ $app->post('/web/item/foto', function(Request $request, Response $response, $arg
             'token'			=> $jwt
         );
 
-        return $response->withJson($res, $res[status]);
+        return $response->withJson($res, $res['status']);
 
     }
 
@@ -982,8 +982,8 @@ $app->post('/web/item/foto/del', function(Request $request, Response $response, 
     $data = $request->getParsedBody();
     $auth = auth($request);
 
-    if($auth[status] != 200){
-        return $response->withJson($auth, $auth[status]);
+    if($auth['status'] != 200){
+        return $response->withJson($auth, $auth['status']);
         die;
     }
     require_once 'Basics/ItensFotos.php';
@@ -997,7 +997,7 @@ $app->post('/web/item/foto/del', function(Request $request, Response $response, 
     $retorno = $menuController->delImage($item);
 
     if ($retorno['status'] == 500){
-        return $response->withJson($retorno, $retorno[status]);
+        return $response->withJson($retorno, $retorno['status']);
         die;
     }else{
 
@@ -1009,7 +1009,7 @@ $app->post('/web/item/foto/del', function(Request $request, Response $response, 
             'token'			=> $jwt
         );
 
-        return $response->withJson($res, $res[status]);
+        return $response->withJson($res, $res['status']);
 
     }
 
@@ -1020,8 +1020,8 @@ $app->post('/web/checkout/changeFlag', function(Request $request, Response $resp
     $data = $request->getParsedBody();
     $auth = auth($request);
 
-    if($auth[status] != 200){
-        return $response->withJson($auth, $auth[status]);
+    if($auth['status'] != 200){
+        return $response->withJson($auth, $auth['status']);
         die;
     }
 
@@ -1034,7 +1034,7 @@ $app->post('/web/checkout/changeFlag', function(Request $request, Response $resp
     $retorno = $checkout->changeFlag($status, $idChange);
 
     if ($retorno['status'] == 500){
-        return $response->withJson($retorno, $retorno[status]);
+        return $response->withJson($retorno, $retorno['status']);
         die;
     }else{
 
@@ -1046,7 +1046,7 @@ $app->post('/web/checkout/changeFlag', function(Request $request, Response $resp
             'token'			=> $jwt
         );
 
-        return $response->withJson($res, $res[status]);
+        return $response->withJson($res, $res['status']);
 
     }
 
@@ -1056,8 +1056,8 @@ $app->post('/web/pedidos', function(Request $request, Response $response, $args)
     $data = $request->getParsedBody();
     $auth = auth($request);
 
-    if($auth[status] != 200){
-        return $response->withJson($auth, $auth[status]);
+    if($auth['status'] != 200){
+        return $response->withJson($auth, $auth['status']);
         die;
     }
 
@@ -1071,7 +1071,7 @@ $app->post('/web/pedidos', function(Request $request, Response $response, $args)
     $retorno = $checkout->listAll($user_id, $filial_id, $status);
 
     if ($retorno['status'] == 500){
-        return $response->withJson($retorno, $retorno[status]);
+        return $response->withJson($retorno, $retorno['status']);
         die;
     }else{
 
@@ -1083,7 +1083,7 @@ $app->post('/web/pedidos', function(Request $request, Response $response, $args)
             'token'			=> $jwt
         );
 
-        return $response->withJson($res, $res[status]);
+        return $response->withJson($res, $res['status']);
 
     }
 
@@ -1094,8 +1094,8 @@ $app->post('/web/fidelidade/insert', function(Request $request, Response $respon
     $data = $request->getParsedBody();
     $auth = auth($request);
 
-    if($auth[status] != 200){
-        return $response->withJson($auth, $auth[status]);
+    if($auth['status'] != 200){
+        return $response->withJson($auth, $auth['status']);
         die;
     }
     require_once 'Basics/FidelidadeFilial.php';
@@ -1111,7 +1111,7 @@ $app->post('/web/fidelidade/insert', function(Request $request, Response $respon
     $retorno = $fidelidadeFilialController->insert($fidelidade);
 
     if ($retorno['status'] == 500){
-        return $response->withJson($retorno, $retorno[status]);
+        return $response->withJson($retorno, $retorno['status']);
         die;
     }else{
 
@@ -1123,7 +1123,7 @@ $app->post('/web/fidelidade/insert', function(Request $request, Response $respon
             'token'         => $jwt
         );
 
-        return $response->withJson($res, $res[status]);
+        return $response->withJson($res, $res['status']);
 
     }
 
@@ -1134,8 +1134,8 @@ $app->post('/web/fidelidade/remove', function(Request $request, Response $respon
     $data = $request->getParsedBody();
     $auth = auth($request);
 
-    if($auth[status] != 200){
-        return $response->withJson($auth, $auth[status]);
+    if($auth['status'] != 200){
+        return $response->withJson($auth, $auth['status']);
         die;
     }
     require_once 'Basics/FidelidadeFilial.php';
@@ -1152,7 +1152,7 @@ $app->post('/web/fidelidade/remove', function(Request $request, Response $respon
     $retorno = $fidelidadeFilialController->remove($fidelidade);
 
     if ($retorno['status'] == 500){
-        return $response->withJson($retorno, $retorno[status]);
+        return $response->withJson($retorno, $retorno['status']);
         die;
     }else{
 
@@ -1164,7 +1164,7 @@ $app->post('/web/fidelidade/remove', function(Request $request, Response $respon
             'token'         => $jwt
         );
 
-        return $response->withJson($res, $res[status]);
+        return $response->withJson($res, $res['status']);
 
     }
 
@@ -1187,7 +1187,7 @@ $app->post('/app/cliente/login', function(Request $request, Response $response, 
     $retorno = $usuarioController->loginApp($usuario);
 
     if ($retorno['status'] == 500){
-        return $response->withJson($retorno, $retorno[status]);
+        return $response->withJson($retorno, $retorno['status']);
         die;
     }else{
         $newObj = array(
@@ -1211,7 +1211,7 @@ $app->post('/app/cliente/login', function(Request $request, Response $response, 
             'token'			=> $jwt
         );
 
-        return $response->withJson($res, $res[status]);
+        return $response->withJson($res, $res['status']);
 
     }
 
@@ -1241,7 +1241,7 @@ $app->post('/app/cliente/insert', function(Request $request, Response $response,
     $retorno = $usuarioController->insert($usuario, $flagCadastro);
 
     if ($retorno['status'] == 500){
-        return $response->withJson($retorno, $retorno[status]);
+        return $response->withJson($retorno, $retorno['status']);
         die;
     }else{
         $newObj = array(
@@ -1264,7 +1264,7 @@ $app->post('/app/cliente/insert', function(Request $request, Response $response,
             'usuario'       => $retorno[0],
             'token'         => $jwt
         );
-        return $response->withJson($res, $res[status]);
+        return $response->withJson($res, $res['status']);
 
     }
 
@@ -1275,7 +1275,7 @@ $app->post('/app/cliente/update', function(Request $request, Response $response,
     $auth = auth($request);
 
     if($auth['status'] != 200){
-        return $response->withJson($auth, $auth[status]);
+        return $response->withJson($auth, $auth['status']);
         die;
     }
     require_once 'Basics/Usuario.php';
@@ -1299,7 +1299,7 @@ $app->post('/app/cliente/update', function(Request $request, Response $response,
     $retorno = $usuarioControle->update($usuario);
 
     if ($retorno['status'] == 500){
-        return $response->withJson($retorno, $retorno[status]);
+        return $response->withJson($retorno, $retorno['status']);
         die;
     }else{
 
@@ -1325,7 +1325,7 @@ $app->post('/app/cliente/update', function(Request $request, Response $response,
             'token'			=> $jwt
         );
 
-        return $response->withJson($res, $res[status]);
+        return $response->withJson($res, $res['status']);
 
     }
 
@@ -1336,8 +1336,8 @@ $app->get('/app/cartao/list', function(Request $request, Response $response, $ar
     $data = $request->getParsedBody();
     $auth = auth($request);
 
-    if($auth[status] != 200){
-        return $response->withJson($auth, $auth[status]);
+    if($auth['status'] != 200){
+        return $response->withJson($auth, $auth['status']);
         die;
     }
 
@@ -1351,7 +1351,7 @@ $app->get('/app/cartao/list', function(Request $request, Response $response, $ar
     $retorno = $cartaoController->listAll($cartao);
 
     if ($retorno['status'] == 500){
-        return $response->withJson($retorno, $retorno[status]);
+        return $response->withJson($retorno, $retorno['status']);
         die;
     }else{
         $jwt = setToken($auth['token']->data);
@@ -1363,7 +1363,7 @@ $app->get('/app/cartao/list', function(Request $request, Response $response, $ar
             'token'			=> $jwt
         );
 
-        return $response->withJson($res, $res[status]);
+        return $response->withJson($res, $res['status']);
 
     }
 });
@@ -1372,8 +1372,8 @@ $app->post('/app/cartao/insert', function(Request $request, Response $response, 
     $data = $request->getParsedBody();
     $auth = auth($request);
 
-    if($auth[status] != 200){
-        return $response->withJson($auth, $auth[status]);
+    if($auth['status'] != 200){
+        return $response->withJson($auth, $auth['status']);
         die;
     }
 
@@ -1393,7 +1393,7 @@ $app->post('/app/cartao/insert', function(Request $request, Response $response, 
     $retorno = $cartaoController->insert($cartao);
 
     if ($retorno['status'] == 500){
-        return $response->withJson($retorno, $retorno[status]);
+        return $response->withJson($retorno, $retorno['status']);
         die;
     }else{
         $jwt = setToken($auth['token']->data);
@@ -1405,7 +1405,7 @@ $app->post('/app/cartao/insert', function(Request $request, Response $response, 
             'token'			=> $jwt
         );
 
-        return $response->withJson($res, $res[status]);
+        return $response->withJson($res, $res['status']);
 
     }
 });
@@ -1414,8 +1414,8 @@ $app->post('/app/cartao/enabled', function(Request $request, Response $response,
     $data = $request->getParsedBody();
     $auth = auth($request);
 
-    if($auth[status] != 200){
-        return $response->withJson($auth, $auth[status]);
+    if($auth['status'] != 200){
+        return $response->withJson($auth, $auth['status']);
         die;
     }
 
@@ -1430,7 +1430,7 @@ $app->post('/app/cartao/enabled', function(Request $request, Response $response,
     $retorno = $cartaoController->enabled($cartao);
 
     if ($retorno['status'] == 500){
-        return $response->withJson($retorno, $retorno[status]);
+        return $response->withJson($retorno, $retorno['status']);
         die;
     }else{
         $jwt = setToken($auth['token']->data);
@@ -1442,7 +1442,7 @@ $app->post('/app/cartao/enabled', function(Request $request, Response $response,
             'token'			=> $jwt
         );
 
-        return $response->withJson($res, $res[status]);
+        return $response->withJson($res, $res['status']);
 
     }
 });
@@ -1463,7 +1463,7 @@ $app->get('/app/fidelidade/list', function(Request $request, Response $response,
         )
     );
 
-    return $response->withJson($res, $res[status]);
+    return $response->withJson($res, $res['status']);
 
 });
 
@@ -1471,8 +1471,8 @@ $app->post('/app/filial/list', function(Request $request, Response $response, $a
     $data = $request->getParsedBody();
     $auth = auth($request);
 
-    if($auth[status] != 200){
-        return $response->withJson($auth, $auth[status]);
+    if($auth['status'] != 200){
+        return $response->withJson($auth, $auth['status']);
         die;
     }
     require_once 'Controller/EmpresaFilialController.php';
@@ -1486,7 +1486,7 @@ $app->post('/app/filial/list', function(Request $request, Response $response, $a
     $retorno = $empresaController->listApp($lat, $long, $search, $fidelidade);
 
     if ($retorno['status'] == 500){
-        return $response->withJson($retorno, $retorno[status]);
+        return $response->withJson($retorno, $retorno['status']);
         die;
     }else{
 
@@ -1500,7 +1500,7 @@ $app->post('/app/filial/list', function(Request $request, Response $response, $a
             'token'			=> $jwt
         );
 
-        return $response->withJson($res, $res[status]);
+        return $response->withJson($res, $res['status']);
 
     }
 
@@ -1511,8 +1511,8 @@ $app->post('/app/menu/list', function(Request $request, Response $response, $arg
     $data = $request->getParsedBody();
     $auth = auth($request);
 
-    if($auth[status] != 200){
-        return $response->withJson($auth, $auth[status]);
+    if($auth['status'] != 200){
+        return $response->withJson($auth, $auth['status']);
         die;
     }
     require_once 'Basics/MenuFilialItens.php';
@@ -1527,7 +1527,7 @@ $app->post('/app/menu/list', function(Request $request, Response $response, $arg
     $retorno = $menuController->listAll($menu);
 
     if ($retorno['status'] == 500){
-        return $response->withJson($retorno, $retorno[status]);
+        return $response->withJson($retorno, $retorno['status']);
         die;
     }else{
 
@@ -1540,7 +1540,7 @@ $app->post('/app/menu/list', function(Request $request, Response $response, $arg
             'token'			=> $jwt
         );
 
-        return $response->withJson($res, $res[status]);
+        return $response->withJson($res, $res['status']);
 
     }
 
@@ -1577,8 +1577,8 @@ $app->post('/app/checkout', function(Request $request, Response $response, $args
     $data = $request->getParsedBody();
     $auth = auth($request);
 
-    if($auth[status] != 200){
-        return $response->withJson($auth, $auth[status]);
+    if($auth['status'] != 200){
+        return $response->withJson($auth, $auth['status']);
         die;
     }
 
@@ -1596,7 +1596,7 @@ $app->post('/app/checkout', function(Request $request, Response $response, $args
     $retorno = $checkoutController->generate($array_itens, $array_qtd, $token, $hash, $user_id, $cartao_id);
 
     if ($retorno['status'] == 500){
-        return $response->withJson($retorno, $retorno[status]);
+        return $response->withJson($retorno, $retorno['status']);
         die;
     }else{
 
@@ -1610,7 +1610,7 @@ $app->post('/app/checkout', function(Request $request, Response $response, $args
             'token'			=> $jwt
         );
 
-        return $response->withJson($res, $res[status]);
+        return $response->withJson($res, $res['status']);
 
     }
 
@@ -1621,8 +1621,8 @@ $app->get('/app/checkout', function(Request $request, Response $response, $args)
     $data = $request->getParsedBody();
     $auth = auth($request);
 
-    if($auth[status] != 200){
-        return $response->withJson($auth, $auth[status]);
+    if($auth['status'] != 200){
+        return $response->withJson($auth, $auth['status']);
         die;
     }
 
@@ -1635,7 +1635,7 @@ $app->get('/app/checkout', function(Request $request, Response $response, $args)
     $retorno = $checkoutController->appListAll($user_id);
 
     if ($retorno['status'] == 500){
-        return $response->withJson($retorno, $retorno[status]);
+        return $response->withJson($retorno, $retorno['status']);
         die;
     }else{
         $jwt = setToken($auth['token']->data);
@@ -1646,7 +1646,7 @@ $app->get('/app/checkout', function(Request $request, Response $response, $args)
             'token'			=> $jwt
         );
 
-        return $response->withJson($res, $res[status]);
+        return $response->withJson($res, $res['status']);
 
     }
 
@@ -1699,7 +1699,7 @@ $app->post('/app/notification', function(Request $request, Response $response, $
         $retorno = $checkoutController->notification($code, $status, $referencia, $disponivel, $lastEventDate);
 
         if ($retorno['status'] == 500){
-            return $response->withJson($retorno, $retorno[status]);
+            return $response->withJson($retorno, $retorno['status']);
             die;
         }else{
 
@@ -1712,7 +1712,7 @@ $app->post('/app/notification', function(Request $request, Response $response, $
                 'code'        	=> $code
             );
 
-            return $response->withJson($res, $res[status]);
+            return $response->withJson($res, $res['status']);
 
         }
 
@@ -1726,8 +1726,8 @@ $app->post('/app/checkout/status', function(Request $request, Response $response
     $data = $request->getParsedBody();
     $auth = auth($request);
 
-    if($auth[status] != 200){
-        return $response->withJson($auth, $auth[status]);
+    if($auth['status'] != 200){
+        return $response->withJson($auth, $auth['status']);
         die;
     }
 
@@ -1741,7 +1741,7 @@ $app->post('/app/checkout/status', function(Request $request, Response $response
     $retorno = $checkoutController->consult($ref, $user_id);
 
     if ($retorno['status'] == 500){
-        return $response->withJson($retorno, $retorno[status]);
+        return $response->withJson($retorno, $retorno['status']);
         die;
     }else{
 
@@ -1760,7 +1760,7 @@ $app->post('/app/checkout/status', function(Request $request, Response $response
             'token'			=> $jwt
         );
 
-        return $response->withJson($res, $res[status]);
+        return $response->withJson($res, $res['status']);
 
     }
 
