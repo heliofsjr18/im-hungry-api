@@ -49,11 +49,10 @@ class UsuarioController
 
     }
 
-    public function insert(Usuario $usuario)
+    public function insert(Usuario $usuario, $flagCadastro)
     {
-
         //2 = funcionario, para salvar da web, caso não vai pro else(como tava)
-        if ($usuario->getTipoId() == "2") {
+        if ($flagCadastro) {
             if (empty($usuario->getNome())) {
                 return array('status' => 500, 'message' => "ERROR", 'result' => 'Nome do usuário não informado!');
                 die;
@@ -62,19 +61,20 @@ class UsuarioController
                 return array('status' => 500, 'message' => "ERROR", 'result' => 'CPF não informado!');
                 die;
             }
+            if (empty($usuario->getEmail())) {
+                return array('status' => 500, 'message' => "ERROR", 'result' => 'Email não informado!');
+                die;
+            }
+            if (empty($usuario->getSenha())) {
+                return array('status' => 500, 'message' => "ERROR", 'result' => 'Senha não informada!');
+                die;
+            }
             if (empty($usuario->getTelefone())) {
                 return array('status' => 500, 'message' => "ERROR", 'result' => 'Telefone não informado!');
                 die;
             }
             if (empty($usuario->getData())) {
                 return array('status' => 500, 'message' => "ERROR", 'result' => 'Data de Nascimento não informada!');
-                die;
-            }if (empty($usuario->getEmail())) {
-                return array('status' => 500, 'message' => "ERROR", 'result' => 'Email não informado!');
-                die;
-            }
-            if (empty($usuario->getSenha())) {
-                return array('status' => 500, 'message' => "ERROR", 'result' => 'Senha não informada!');
                 die;
             }
             if (empty($usuario->getCep())) {
@@ -91,14 +91,6 @@ class UsuarioController
             }
             if (empty($usuario->getStatus())) {
                 return array('status' => 500, 'message' => "ERROR", 'result' => 'Status não informado!');
-                die;
-            }
-            if (empty($usuario->getFilialId())) {
-                return array('status' => 500, 'message' => "ERROR", 'result' => 'Id da filial não informado!');
-                die;
-            }
-            if (empty($usuario->getFotoPerfil())) {
-                return array('status' => 500, 'message' => "ERROR", 'result' => 'Foto do perfil não informado!');
                 die;
             }
         } else {
@@ -121,7 +113,7 @@ class UsuarioController
         }
 
         $usuarioDAO = new UsuarioDAO();
-        return $usuarioDAO->insert($usuario);
+        return $usuarioDAO->insert($usuario, $flagCadastro);
     }
 
     public function update(Usuario $usuario)

@@ -147,11 +147,10 @@ class UsuarioDAO
         }
     }
 
-    public function insert(Usuario $usuario){
+    public function insert(Usuario $usuario, $flagCadastro){
         $conn = \Database::conexao();
 
-        //2 = funcionario, para salvar da web, caso não vai pro else(como tava)
-        if($usuario->getTipoId()== "2"){
+        if($flagCadastro){
             $sql = "INSERT INTO usuarios (user_nome, user_cpf, user_telefone, user_data, user_email, 
                                 user_senha, user_cep, user_endereco_numero, user_endereco_complemento, 
                                 user_status, tipo_id, filial_id, user_foto_perfil, user_cadastro)
@@ -167,8 +166,8 @@ class UsuarioDAO
         $enabled = ($usuario->getStatus() == 'true')? true : false;
 
         try {
-            //2 = funcionario, para salvar da web, caso não vai pro else(como tava)
-            if($usuario->getTipoId()== "2"){
+
+            if($flagCadastro){
                 $stmt->bindValue(1,$usuario->getNome());
                 $stmt->bindValue(2,$usuario->getCpf());
                 $stmt->bindValue(3,$usuario->getTelefone());

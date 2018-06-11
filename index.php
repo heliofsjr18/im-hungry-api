@@ -112,6 +112,21 @@ $app->post('/web/usuario/login', function(Request $request, Response $response, 
 
 });
 
+$app->post('/web/teste', function(Request $request, Response $response, $args) {
+
+    $authorization = $request->getHeaderLine("Authorization");
+
+    $res = array(
+        'status'        => 200,
+        'message'       => "SUCCESS",
+        'Header'        => $authorization
+    );
+
+    return $response->withJson($res, $res[status]);
+
+
+});
+
 $app->post('/web/usuario/listAll', function(Request $request, Response $response, $args) {
     $data = $request->getParsedBody();
     $auth = auth($request);
@@ -1209,16 +1224,21 @@ $app->post('/app/cliente/insert', function(Request $request, Response $response,
 
     $usuario = new Usuario();
     $usuario->setNome($data["nome"]);
+    $usuario->setCpf($data['cpf']);
     $usuario->setEmail($data["email"]);
     $usuario->setSenha($data["senha"]);
+    $usuario->setTelefone($data['telefone']);
+    $usuario->setData($data['data']);
     $usuario->setFotoPerfil($data["fot64"]);
-    $usuario->setEnderecoNumero("123");
     $usuario->setCep("53441-090");
-    $usuario->setStatus(1);
+    $usuario->setEnderecoNumero("123");
     $usuario->setTipoId(3);
+    $usuario->setStatus(1);
+
+    $flagCadastro = (isset($data['main_insert'])) ? true : false;
 
     $usuarioController = new UsuarioController();
-    $retorno = $usuarioController->insert($usuario);
+    $retorno = $usuarioController->insert($usuario, $flagCadastro);
 
     if ($retorno['status'] == 500){
         return $response->withJson($retorno, $retorno[status]);
@@ -1236,9 +1256,7 @@ $app->post('/app/cliente/insert', function(Request $request, Response $response,
             'tipo_id' => $retorno[0]['tipo_id'],
             'filial_id' => $retorno[0]['filial_id'],
         );
-
         $jwt = setToken($newObj);
-
         $res = array(
             'status'        => 200,
             'message'       => "SUCCESS",
@@ -1246,7 +1264,6 @@ $app->post('/app/cliente/insert', function(Request $request, Response $response,
             'usuario'       => $retorno[0],
             'token'         => $jwt
         );
-
         return $response->withJson($res, $res[status]);
 
     }
