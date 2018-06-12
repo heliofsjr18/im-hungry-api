@@ -55,6 +55,37 @@ class FidelidadeFilialController
 
     }
 
+    public function update(FidelidadeFilial $fidelidadeFilial){
+        if ( empty($fidelidadeFilial->getId()) ){
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'ID não informado!');
+            die;
+        }
+        if ( empty($fidelidadeFilial->getNome()) ){
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'Nome não informado!');
+            die;
+        }
+        if ( empty($fidelidadeFilial->getQtd()) ){
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'Quantidade não informado!');
+            die;
+        }
+        if ( empty($fidelidadeFilial->getValor()) ){
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'Valor não informado!');
+            die;
+        }
+        if ( empty($fidelidadeFilial->getData()) ){
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'Data não informada!');
+            die;
+        }
+        if ( empty($fidelidadeFilial->getBeneficio()) ){
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'Beneficio não informado!');
+            die;
+        }
+
+        $fidelidadeFilialDAO = new FidelidadeFilialDAO();
+        return $fidelidadeFilialDAO->update($fidelidadeFilial);
+
+    }
+
     public function enabled(FidelidadeFilial $fidelidadeFilial){
         if ( empty($fidelidadeFilial->getId()) ){
             return array('status' => 500, 'message' => "ERROR", 'result' => 'Id da Fidelidade não informado!');

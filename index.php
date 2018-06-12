@@ -1215,6 +1215,51 @@ $app->post('/web/fidelidade/insert', function(Request $request, Response $respon
 
 });
 
+$app->post('/web/fidelidade/update', function(Request $request, Response $response, $args) {
+    $data = $request->getParsedBody();
+    $auth = auth($request);
+
+    if($auth['status'] != 200){
+        return $response->withJson($auth, $auth['status']);
+        die;
+    }
+    require_once 'Basics/FidelidadeFilial.php';
+    require_once 'Controller/FidelidadeFilialController.php';
+
+    $data['valor'] = str_replace('R$ ', '' , $data['valor']);
+    $data['valor'] = str_replace('.', '' , $data['valor']);
+    $data['valor'] = str_replace(',', '.' , $data['valor']);
+
+    $fidelidade = new FidelidadeFilial();
+    $fidelidade->setId($data["idAt"]);
+    $fidelidade->setNome($data["nome"]);
+    $fidelidade->setQtd($data["quantidade"]);
+    $fidelidade->setValor($data["valor"]);
+    $fidelidade->setData($data["validade"]);
+    $fidelidade->setBeneficio($data["beneficio"]);
+
+    $fidelidadeFilialController = new FidelidadeFilialController();
+    $retorno = $fidelidadeFilialController->update($fidelidade);
+
+    if ($retorno['status'] == 500){
+        return $response->withJson($retorno, $retorno['status']);
+        die;
+    }else{
+
+        $jwt = setToken($auth['token']->data);
+        $res = array(
+            'status'        => 200,
+            'message'       => "SUCCESS",
+            'result'        => "Fidelidade atualizada!",
+            'token'         => $jwt
+        );
+
+        return $response->withJson($res, $res['status']);
+
+    }
+
+});
+
 $app->post('/web/fidelidade/remove', function(Request $request, Response $response, $args) {
     $data = $request->getParsedBody();
     $auth = auth($request);
