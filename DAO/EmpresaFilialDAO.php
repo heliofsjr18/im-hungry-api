@@ -114,9 +114,11 @@ class EmpresaFilialDAO
                  AND F.filial_nome LIKE '%".$search."%'";
         $stmt1 = $conn->prepare($sql1);
 
-        $sql2 = "SELECT cartao_fid_id, cartao_fid_qtd, cartao_fid_valor, cartao_fid_beneficio, filial_id
+        $sql2 = "SELECT cartao_fid_id, cartao_fid_nome, cartao_fid_qtd, cartao_fid_valor, 
+                        cartao_fid_date, cartao_fid_beneficio, filial_id, DATE_FORMAT(cartao_fid_date, '%d/%m/%Y') as data_format 
                  FROM empresa_cartao_fid
                  WHERE filial_id = ? 
+                 AND cartao_fid_status = 2
                  LIMIT 1;";
         $stmt2 = $conn->prepare($sql2);
 
