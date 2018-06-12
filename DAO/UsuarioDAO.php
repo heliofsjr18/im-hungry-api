@@ -180,6 +180,46 @@ class UsuarioDAO
         }
     }
 
+    public function insertApp(Usuario $usuario){
+        $conn = \Database::conexao();
+
+        $sql = "INSERT INTO usuarios (user_nome, user_cpf, user_email, user_senha, user_telefone,
+                                      user_data, user_cadastro, user_foto_perfil, user_cep, 
+                                      user_endereco_numero, user_status, tipo_id)
+                    VALUES ( ?, ?, ?, SHA1(?), ?, ?, NOW(), ?, ?, ?, ?, ?);";
+        $stmt = $conn->prepare($sql);
+
+        try {
+
+            $stmt->bindValue(1,$usuario->getNome());
+            $stmt->bindValue(2,$usuario->getCpf());
+            $stmt->bindValue(3,$usuario->getEmail());
+            $stmt->bindValue(4,$usuario->getSenha());
+            $stmt->bindValue(5,$usuario->getTelefone());
+            $stmt->bindValue(6,$usuario->getData());
+
+            $stmt->bindValue(7,$usuario->getFotoPerfil());
+            $stmt->bindValue(8,$usuario->getCep());
+            $stmt->bindValue(9,$usuario->getEnderecoNumero());
+            $stmt->bindValue(10,$usuario->getStatus());
+            $stmt->bindValue(11,$usuario->getTipoId());
+            $stmt->execute();
+
+            $last_id = $conn->lastInsertId();
+
+            return $this->getUser($last_id);
+
+        } catch (PDOException $ex) {
+            return array(
+                'status'    => 500,
+                'message'   => "ERROR",
+                'result'    => 'Erro na execução da instrução!',
+                'CODE'      => $ex->getCode(),
+                'Exception' => $ex->getMessage(),
+            );
+        }
+    }
+
     public function update(Usuario $usuario){
         //Cria conexao
         $conn = \Database::conexao();

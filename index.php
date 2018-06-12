@@ -1221,17 +1221,15 @@ $app->post('/app/cliente/insert', function(Request $request, Response $response,
     $usuario->setEmail($data["email"]);
     $usuario->setSenha($data["senha"]);
     $usuario->setTelefone($data['telefone']);
-    $usuario->setData($data['data']);
+    $usuario->setData($data['nascimento']);
     $usuario->setFotoPerfil($data["fot64"]);
     $usuario->setCep("53441-090");
     $usuario->setEnderecoNumero("123");
     $usuario->setTipoId(3);
     $usuario->setStatus(1);
 
-    $flagCadastro = (isset($data['main_insert'])) ? true : false;
-
     $usuarioController = new UsuarioController();
-    $retorno = $usuarioController->insert($usuario, $flagCadastro);
+    $retorno = $usuarioController->insertApp($usuario);
 
     if ($retorno['status'] == 500){
         return $response->withJson($retorno, $retorno['status']);
@@ -1260,6 +1258,11 @@ $app->post('/app/cliente/insert', function(Request $request, Response $response,
         return $response->withJson($res, $res['status']);
 
     }
+
+});
+
+$app->post('/app/cliente/insert/social', function(Request $request, Response $response, $args) {
+
 
 });
 
