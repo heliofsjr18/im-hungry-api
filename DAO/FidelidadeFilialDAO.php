@@ -139,7 +139,7 @@ class FidelidadeFilialDAO
         $sql = "SELECT  cartao_fid_id  
 			      FROM empresa_cartao_fid
 			      WHERE filial_id = ? 
-			      AND cartao_fid_status = ?;";
+			      AND cartao_fid_status = 2;";
         $stmt = $conn->prepare($sql);
 
         $sql1 = "UPDATE empresa_cartao_fid 
@@ -147,15 +147,22 @@ class FidelidadeFilialDAO
                 WHERE cartao_fid_id = ?";
         $stmt1 = $conn->prepare($sql1);
 
-
         try {
 
             $stmt->bindValue(1,$fidelidadeFilial->getFilialId(), PDO::PARAM_INT);
-            $stmt->bindValue(2,$fidelidadeFilial->getStatus(), PDO::PARAM_INT);
             $stmt->execute();
             $countLogin = $stmt->rowCount();
 
-            if ($countLogin != 0) {
+            if ($countLogin !== 0) {
+
+                return array(
+                    'status'    => 500,
+                    'message'   => "INFO",
+                    'result'    => 'Você já possui um programa de fidelidade ativo!'
+                );
+
+
+            }else{
 
                 $stmt1->bindValue(1,$fidelidadeFilial->getStatus(), PDO::PARAM_INT);
                 $stmt1->bindValue(2,$fidelidadeFilial->getId(), PDO::PARAM_INT);
@@ -166,13 +173,6 @@ class FidelidadeFilialDAO
                     'message'   => "SUCCESS"
                 );
 
-            }else{
-                return array(
-                    'status'    => 500,
-                    'message'   => "INFO",
-                    'qtd'       => 0,
-                    'result'    => 'Você já possui um programa de fidelidade ativo!'
-                );
             }
 
 
