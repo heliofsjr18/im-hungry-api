@@ -331,6 +331,53 @@ $app->post('/web/usuario/enabled', function(Request $request, Response $response
     }
 });
 
+$app->post('/web/funcionario/insert', function(Request $request, Response $response, $args) {
+    $data = $request->getParsedBody();
+    $auth = auth($request);
+
+    if($auth['status'] != 200){
+        return $response->withJson($auth, $auth['status']);
+        die;
+    }
+    require_once 'Basics/Usuario.php';
+    require_once 'Controller/FuncionarioController.php';
+
+    $usuario = new Usuario();
+    $usuario->setNome($data["nome"]);
+    $usuario->setCpf($data['cpf']);
+    $usuario->setEmail($data["email"]);
+    $usuario->setSenha('123');
+    $usuario->setData($data['data']);
+    $usuario->setCep($data['cep']);
+    $usuario->setTelefone($data['telefone']);
+    $usuario->setFotoPerfil($data["foto_perfil"]);
+    $usuario->setEnderecoNumero($data["numero_end"]);
+    $usuario->setEnderecoComplemento($data["complemento"]);
+    $usuario->setTipoId(2);
+    $usuario->setStatus(1);
+    $usuario->setFilialId($data["filial_id"]);
+
+    $funcionarioController = new FuncionarioController();
+    $retorno = $funcionarioController->insert($usuario);
+
+    if ($retorno['status'] == 500){
+        return $response->withJson($retorno, $retorno['status']);
+        die;
+    }else{
+
+        $jwt = setToken($auth['token']->data->user_id);
+        $res = array(
+            'status'        => 200,
+            'message'       => "SUCCESS",
+            'result'        => "Funcionário cadastrado!",
+            'token'         => $jwt
+        );
+        return $response->withJson($res, $res['status']);
+
+    }
+
+});
+
 $app->post('/web/adm/insert', function(Request $request, Response $response, $args) {
     $data = $request->getParsedBody();
     require_once 'Basics/Usuario.php';
