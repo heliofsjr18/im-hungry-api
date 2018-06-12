@@ -1179,12 +1179,19 @@ $app->post('/web/fidelidade/insert', function(Request $request, Response $respon
     require_once 'Basics/FidelidadeFilial.php';
     require_once 'Controller/FidelidadeFilialController.php';
 
+    $data['valor'] = str_replace('R$ ', '' , $data['valor']);
+    $data['valor'] = str_replace('.', '' , $data['valor']);
+    $data['valor'] = str_replace(',', '.' , $data['valor']);
+
     $fidelidade = new FidelidadeFilial();
-    $fidelidade->setQtd($data["qtd"]);
+    $fidelidade->setNome($data["nome"]);
+    $fidelidade->setQtd($data["quantidade"]);
     $fidelidade->setValor($data["valor"]);
+    $fidelidade->setData($data["validade"]);
     $fidelidade->setBeneficio($data["beneficio"]);
     $fidelidade->setFilialId($data["filial_id"]);
-    
+    $fidelidade->setStatus(1);
+
     $fidelidadeFilialController = new FidelidadeFilialController();
     $retorno = $fidelidadeFilialController->insert($fidelidade);
 

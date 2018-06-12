@@ -145,9 +145,15 @@ class EmpresaFilialDAO
             }else{
 
                 foreach ($result as $key => $value){
+
                     $stmt2->bindValue(1,$value['filial_id'], PDO::PARAM_INT);
                     $stmt2->execute();
                     $obj = $stmt2->fetchAll(PDO::FETCH_ASSOC);
+
+                    foreach ($obj as $key2 => $value2) {
+                        $obj[$key2]->cartao_fid_valor = number_format($obj[$key2]->cartao_fid_valor, 2, '.', '');
+                    }
+
                     $result[$key]['fidelidade_desc'] = $obj[0];
                     $result[$key]['filial_fidelidade'] = ($value['filial_fidelidade'] == 1) ? true : false;
                 }

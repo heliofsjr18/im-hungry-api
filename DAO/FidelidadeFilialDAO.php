@@ -30,6 +30,10 @@ class FidelidadeFilialDAO
             $countLogin = $stmt->rowCount();
             $resultFidelidade = $stmt->fetchAll(PDO::FETCH_OBJ);
 
+            foreach ($resultFidelidade as $key => $value) {
+                $resultFidelidade[$key]->cartao_fid_valor = number_format($resultFidelidade[$key]->cartao_fid_valor, 2, '.', '');
+            }
+
             if ($countLogin != 0) {
                 return $resultFidelidade;
             }else{
