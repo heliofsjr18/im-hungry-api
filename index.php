@@ -1260,7 +1260,7 @@ $app->post('/web/fidelidade/update', function(Request $request, Response $respon
 
 });
 
-$app->post('/web/fidelidade/remove', function(Request $request, Response $response, $args) {
+$app->post('/web/fidelidade/enabled', function(Request $request, Response $response, $args) {
     $data = $request->getParsedBody();
     $auth = auth($request);
 
@@ -1272,14 +1272,12 @@ $app->post('/web/fidelidade/remove', function(Request $request, Response $respon
     require_once 'Controller/FidelidadeFilialController.php';
 
     $fidelidade = new FidelidadeFilial();
-    $fidelidade->setId($data["cartao_fid_id"]);
-    $fidelidade->setQtd($data["qtd"]);
-    $fidelidade->setValor($data["valor"]);
-    $fidelidade->setBeneficio($data["beneficio"]);
+    $fidelidade->setId($data["idChange"]);
+    $fidelidade->setStatus($data["status"]);
     $fidelidade->setFilialId($data["filial_id"]);
 
     $fidelidadeFilialController = new FidelidadeFilialController();
-    $retorno = $fidelidadeFilialController->remove($fidelidade);
+    $retorno = $fidelidadeFilialController->enabled($fidelidade);
 
     if ($retorno['status'] == 500){
         return $response->withJson($retorno, $retorno['status']);
@@ -1290,7 +1288,7 @@ $app->post('/web/fidelidade/remove', function(Request $request, Response $respon
         $res = array(
             'status'        => 200,
             'message'       => "SUCCESS",
-            'result'        => "Fidelidade Removida!",
+            'result'        => "Fidelidade Ativada!",
             'token'         => $jwt
         );
 

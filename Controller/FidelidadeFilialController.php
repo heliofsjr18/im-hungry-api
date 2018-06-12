@@ -95,6 +95,10 @@ class FidelidadeFilialController
             return array('status' => 500, 'message' => "ERROR", 'result' => 'Status não informado!');
             die;
         }
+        if ( empty($fidelidadeFilial->getFilialId()) ){
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'ID da filial não informado!');
+            die;
+        }
 
         $fidelidadeFilialDAO = new FidelidadeFilialDAO();
         return $fidelidadeFilialDAO->enabled($fidelidadeFilial);

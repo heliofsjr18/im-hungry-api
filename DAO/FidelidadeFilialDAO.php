@@ -136,20 +136,47 @@ class FidelidadeFilialDAO
         //Cria conexao
         $conn = \Database::conexao();
 
-        $sql = "UPDATE empresa_cartao_fid 
-                SET   cartao_fid_status = ?  
-                WHERE cartao_fid_id = ?";
+        $sql = "SELECT  cartao_fid_id  
+			      FROM empresa_cartao_fid
+			      WHERE filial_id = ? 
+			      AND cartao_fid_status = ?;";
         $stmt = $conn->prepare($sql);
 
-        try {
-            $stmt->bindValue(1,$fidelidadeFilial->getStatus(), PDO::PARAM_INT);
-            $stmt->bindValue(2,$fidelidadeFilial->getId(), PDO::PARAM_INT);
-            $stmt->execute();
+        $sql1 = "UPDATE empresa_cartao_fid 
+                SET   cartao_fid_status = ?  
+                WHERE cartao_fid_id = ?";
+        $stmt1 = $conn->prepare($sql1);
 
-            return array(
-                'status'    => 200,
-                'message'   => "SUCCESS"
-            );
+
+        try {
+
+            $stmt->bindValue(1,$fidelidadeFilial->getFilialId(), PDO::PARAM_INT);
+            $stmt->bindValue(2,$fidelidadeFilial->getStatus(), PDO::PARAM_INT);
+            $stmt->execute();
+            $countLogin = $stmt->rowCount();
+
+            if ($countLogin != 0) {
+
+                $stmt1->bindValue(1,$fidelidadeFilial->getStatus(), PDO::PARAM_INT);
+                $stmt1->bindValue(2,$fidelidadeFilial->getId(), PDO::PARAM_INT);
+                $stmt1->execute();
+
+                return array(
+                    'status'    => 200,
+                    'message'   => "SUCCESS"
+                );
+
+            }else{
+                return array(
+                    'status'    => 500,
+                    'message'   => "INFO",
+                    'qtd'       => 0,
+                    'result'    => 'Você já possui um programa de fidelidade ativo!'
+                );
+            }
+
+
+
 
         } catch (PDOException $ex) {
             return array(
