@@ -170,6 +170,48 @@ $app->post('/web/usuario/listAll', function(Request $request, Response $response
 
 });
 
+$app->post('/web/usuario/insert', function(Request $request, Response $response, $args) {
+    $data = $request->getParsedBody();
+    $auth = auth($request);
+
+    if($auth['status'] != 200){
+        return $response->withJson($auth, $auth['status']);
+        die;
+    }
+    require_once 'Basics/Usuario.php';
+    require_once 'Controller/UsuarioController.php';
+
+    $usuario = new Usuario();
+    $usuario->setNome($data["nome"]);
+    $usuario->setEmail($data["email"]);
+    $usuario->setSenha($data["senha"]);
+    $usuario->setStatus(1);
+    $usuario->setTipoId(1);
+    $usuario->setFilialId(null);
+
+    $usuarioController = new UsuarioController();
+    $retorno = $usuarioController->insert($usuario);
+
+    if ($retorno['status'] == 500){
+        return $response->withJson($retorno, $retorno['status']);
+        die;
+    }else{
+
+        $jwt = setToken($auth['token']->data);
+        $res = array(
+            'status' 		=> 200,
+            'message' 		=> "SUCCESS",
+            'result' 		=> "Usuário Cadastrado!",
+            'token'			=> $jwt
+        );
+
+        return $response->withJson($res, $res['status']);
+
+    }
+
+
+});
+
 $app->post('/web/usuario/perfil', function(Request $request, Response $response, $args) {
     $data = $request->getParsedBody();
     $auth = auth($request);
@@ -206,90 +248,6 @@ $app->post('/web/usuario/perfil', function(Request $request, Response $response,
 
     }
 
-
-});
-
-$app->post('/web/usuario/insert', function(Request $request, Response $response, $args) {
-    $data = $request->getParsedBody();
-    $auth = auth($request);
-
-    if($auth['status'] != 200){
-        return $response->withJson($auth, $auth['status']);
-        die;
-    }
-    require_once 'Basics/Usuario.php';
-    require_once 'Controller/UsuarioController.php';
-
-    $usuario = new Usuario();
-    $usuario->setNome($data["nome"]);
-    $usuario->setCpf($data["cpf"]);
-    $usuario->setTelefone($data["telefone"]);
-    $usuario->setData($data["data"]);
-    $usuario->setEmail($data["email"]);
-    $usuario->setSenha("123");
-    $usuario->setCep($data["cep"]);
-    $usuario->setEnderecoNumero($data["numero_end"]);
-    $usuario->setEnderecoComplemento($data["complemento"]);
-    $usuario->setStatus($data["enabled"]);
-    $usuario->setTipoId($data["tipo_usuario"]);
-    $usuario->setFilialId($data["filial_id"]);
-    $usuario->setFotoPerfil($data["foto_perfil"]);
-
-    $usuarioController = new UsuarioController();
-    $retorno = $usuarioController->insert($usuario);
-
-    if ($retorno['status'] == 500){
-        return $response->withJson($retorno, $retorno['status']);
-        die;
-    }else{
-
-        $jwt = setToken($auth['token']->data);
-        $res = array(
-            'status' 		=> 200,
-            'message' 		=> "SUCCESS",
-            'result' 		=> "Usuário Cadastrado!",
-            'token'			=> $jwt
-        );
-
-        return $response->withJson($res, $res['status']);
-
-    }
-
-
-});
-
-$app->post('/web/adm/insert', function(Request $request, Response $response, $args) {
-    $data = $request->getParsedBody();
-    require_once 'Basics/Usuario.php';
-    require_once 'Controller/UsuarioController.php';
-
-    $usuario = new Usuario();
-    $usuario->setNome($data["nome"]);
-    $usuario->setEmail($data["email"]);
-    $usuario->setSenha($data["senha"]);
-    $usuario->setFotoPerfil($data["fot64"]);
-    $usuario->setStatus(1);
-    $usuario->setTipoId(1);
-
-    $usuarioController = new UsuarioController();
-    $retorno = $usuarioController->insert($usuario);
-
-    if ($retorno['status'] == 500){
-        return $response->withJson($retorno, $retorno['status']);
-        die;
-    }else{
-        $jwt = setToken($retorno[0]);
-        $res = array(
-            'status'        => 200,
-            'message'       => "SUCCESS",
-            'result'        => "Usuário cadastrado e o login foi realizado!",
-            'usuario'       => $retorno[0],
-            'token'         => $jwt
-        );
-
-        return $response->withJson($res, $res['status']);
-
-    }
 
 });
 
@@ -371,6 +329,41 @@ $app->post('/web/usuario/enabled', function(Request $request, Response $response
 
         return $response->withJson($res, $res['status']);
     }
+});
+
+$app->post('/web/adm/insert', function(Request $request, Response $response, $args) {
+    $data = $request->getParsedBody();
+    require_once 'Basics/Usuario.php';
+    require_once 'Controller/UsuarioController.php';
+
+    $usuario = new Usuario();
+    $usuario->setNome($data["nome"]);
+    $usuario->setEmail($data["email"]);
+    $usuario->setSenha($data["senha"]);
+    $usuario->setFotoPerfil($data["fot64"]);
+    $usuario->setStatus(1);
+    $usuario->setTipoId(1);
+
+    $usuarioController = new UsuarioController();
+    $retorno = $usuarioController->insert($usuario);
+
+    if ($retorno['status'] == 500){
+        return $response->withJson($retorno, $retorno['status']);
+        die;
+    }else{
+        $jwt = setToken($retorno[0]);
+        $res = array(
+            'status'        => 200,
+            'message'       => "SUCCESS",
+            'result'        => "Usuário cadastrado e o login foi realizado!",
+            'usuario'       => $retorno[0],
+            'token'         => $jwt
+        );
+
+        return $response->withJson($res, $res['status']);
+
+    }
+
 });
 
 $app->post('/web/empresa/listAll', function(Request $request, Response $response, $args) {

@@ -62,10 +62,7 @@ class EmpresaFilialController
             return array('status' => 500, 'message' => "ERROR", 'result' => 'Número do endereço não informado!');
             die;
         }
-        if ( empty($empresaFilial->getComplementoEndereco()) ){
-            return array('status' => 500, 'message' => "ERROR", 'result' => 'Complemento não informado!');
-            die;
-        }if ( empty($empresaFilial->getEmpresaId()) ){
+        if ( empty($empresaFilial->getEmpresaId()) ){
             return array('status' => 500, 'message' => "ERROR", 'result' => 'ID da Empresa não informado!');
             die;
         }
@@ -99,10 +96,7 @@ class EmpresaFilialController
             return array('status' => 500, 'message' => "ERROR", 'result' => 'Número do endereço não informado!');
             die;
         }
-        if ( empty($empresaFilial->getComplementoEndereco()) ){
-            return array('status' => 500, 'message' => "ERROR", 'result' => 'Complemento não informado!');
-            die;
-        }if ( empty($empresaFilial->getEmpresaId()) ){
+        if ( empty($empresaFilial->getEmpresaId()) ){
             return array('status' => 500, 'message' => "ERROR", 'result' => 'Id da empresa não informado!');
             die;
         }
