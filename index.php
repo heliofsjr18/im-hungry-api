@@ -1397,8 +1397,43 @@ $app->post('/app/cliente/insert', function(Request $request, Response $response,
 });
 
 $app->post('/app/cliente/insert/social', function(Request $request, Response $response, $args) {
+    $data = $request->getParsedBody();
+    require_once 'Basics/Usuario.php';
+    require_once 'Controller/UsuarioController.php';
 
+    $usuario = new Usuario();
+    $usuario->setNome($data["nome"]);
+    $usuario->setEmail($data["email"]);
+    $usuario->setSenha($data["senha"]);
+    $usuario->setFotoPerfil($data["fot64"]);
+    $usuario->setTipoId(3);
+    $usuario->setStatus(1);
 
+    $usuarioController = new UsuarioController();
+    $retorno = $usuarioController->insertSocialApp($usuario);
+
+    if ($retorno['status'] == 500){
+        return $response->withJson($retorno, $retorno['status']);
+        die;
+    }else{
+        $newObj = array(
+            'user_id' => $retorno[0]['user_id'],
+            'user_nome' => $retorno[0]['user_nome'],
+            'user_email' => $retorno[0]['user_email'],
+            'user_cadastro' => $retorno[0]['user_cadastro'],
+            'user_status' => $retorno[0]['user_status'],
+            'tipo_id' => $retorno[0]['tipo_id'],
+        );
+        $jwt = setToken($newObj);
+        $res = array(
+            'status'        => 200,
+            'message'       => "SUCCESS",
+            'result'        => "Usuário cadastrado e o login foi realizado!",
+            'usuario'       => $retorno[0],
+            'token'         => $jwt
+        );
+        return $response->withJson($res, $res['status']);
+    }
 });
 
 $app->post('/app/cliente/update', function(Request $request, Response $response, $args) {

@@ -220,6 +220,44 @@ class UsuarioDAO
         }
     }
 
+    public function inserSocialtApp(Usuario $usuario){
+        $conn = \Database::conexao();
+
+        $sql = "INSERT INTO usuarios (user_nome, user_email, user_senha, user_cadastro, user_foto_perfil, user_status, tipo_id)
+                    VALUES ( ?, ?, SHA1(?), NOW(), ?, ?, ?);";
+        $stmt = $conn->prepare($sql);
+
+        try {
+
+            $stmt->bindValue(1,$usuario->getNome());
+            $stmt->bindValue(2,$usuario->getEmail());
+            $stmt->bindValue(3,$usuario->getSenha());
+
+            $stmt->bindValue(4,$usuario->getFotoPerfil());
+            $stmt->bindValue(5,$usuario->getStatus());
+            $stmt->bindValue(6,$usuario->getTipoId());
+            $stmt->execute();
+
+            $last_id = $conn->lastInsertId();
+
+            $u = new Usuario();
+            $u->setId($last_id);
+            $u->setEmail($usuario->getEmail());
+            $u->setSenha($usuario->getSenha());
+            $u->setTipoId($usuario->getTipoId());
+            return $this->loginApp($u);
+
+        } catch (PDOException $ex) {
+            return array(
+                'status'    => 500,
+                'message'   => "ERROR",
+                'result'    => 'Erro na execução da instrução!',
+                'CODE'      => $ex->getCode(),
+                'Exception' => $ex->getMessage(),
+            );
+        }
+    }
+
     public function update(Usuario $usuario){
         //Cria conexao
         $conn = \Database::conexao();
