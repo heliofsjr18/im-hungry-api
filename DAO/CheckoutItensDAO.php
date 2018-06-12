@@ -233,6 +233,28 @@ class CheckoutItensDAO
 
                 }
 
+                //Alimentar Cartão fidelidade do cliente(Quando houver)
+                $sql = "SELECT  cartao_fid_id, cartao_fid_valor FROM empresa_cartao_fid
+                        WHERE filial_id = ? AND cartao_fid_status = 2;";
+                $stmt = $conn->prepare($sql);
+                $stmt->bindValue(1,$filial_id, PDO::PARAM_INT);
+                $stmt->execute();
+                $countLogin = $stmt->rowCount();
+                $resultFidelidade = $stmt->fetchAll(PDO::FETCH_OBJ);
+
+                if ($countLogin !== 0 && $bruto > $resultFidelidade[0]->cartao_fid_valor) {
+
+                    $sql = "INSERT INTO clientes_pontos_fid (cliente_ponto, user_id, checkout_id, cartao_fid_id), 
+                            VALUES ( ?, ?, ?);";
+                    $stmt = $conn->prepare($sql);
+
+                    $stmt->bindValue(1,$user_id, PDO::PARAM_STR);
+                    $stmt->bindValue(2,$last_id, PDO::PARAM_STR);
+                    $stmt->bindValue(3,$resultFidelidade[0]->cartao_fid_id, PDO::PARAM_STR);
+                    $stmt->execute();
+
+                }
+
                 return array(
                     'status'    => 200,
                     'message'   => "SUCCESS",

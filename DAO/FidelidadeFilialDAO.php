@@ -147,6 +147,10 @@ class FidelidadeFilialDAO
                 WHERE cartao_fid_id = ?";
         $stmt1 = $conn->prepare($sql1);
 
+        $sql2 = "UPDATE empresa_filial set filial_fidelidade = 1 where filial_id = ?";
+        $stmt2 = $conn->prepare($sql2);
+
+
         try {
 
             $stmt->bindValue(1,$fidelidadeFilial->getFilialId(), PDO::PARAM_INT);
@@ -168,6 +172,9 @@ class FidelidadeFilialDAO
                 $stmt1->bindValue(2,$fidelidadeFilial->getId(), PDO::PARAM_INT);
                 $stmt1->execute();
 
+                $stmt2->bindValue(1,$fidelidadeFilial->getFilialId(), PDO::PARAM_INT);
+                $stmt2->execute();
+
                 return array(
                     'status'    => 200,
                     'message'   => "SUCCESS"
@@ -188,6 +195,5 @@ class FidelidadeFilialDAO
             );
         }
     }
-
 
 }
