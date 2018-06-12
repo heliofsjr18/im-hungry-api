@@ -182,9 +182,6 @@ class FidelidadeFilialDAO
 
             }
 
-
-
-
         } catch (PDOException $ex) {
             return array(
                 'status'    => 500,

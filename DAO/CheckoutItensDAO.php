@@ -244,7 +244,7 @@ class CheckoutItensDAO
 
                 if ($countLogin !== 0 && $bruto > $resultFidelidade[0]->cartao_fid_valor) {
 
-                    $sql = "INSERT INTO clientes_pontos_fid (cliente_ponto, user_id, checkout_id, cartao_fid_id), 
+                    $sql = "INSERT INTO clientes_pontos_fid (user_id, checkout_id, cartao_fid_id) 
                             VALUES ( ?, ?, ?);";
                     $stmt = $conn->prepare($sql);
 
