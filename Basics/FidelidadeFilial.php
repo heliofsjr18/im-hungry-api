@@ -3,9 +3,12 @@
 class FidelidadeFilial
 {
     private $id;
+    private $nome;
     private $qtd;
     private $valor;
+    private $data;
     private $beneficio;
+    private $status;
     private $filial_id;
 
     /**
@@ -22,6 +25,22 @@ class FidelidadeFilial
     public function setId($id)
     {
         $this->id = $id;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getNome()
+    {
+        return $this->nome;
+    }
+
+    /**
+     * @param mixed $nome
+     */
+    public function setNome($nome)
+    {
+        $this->nome = $nome;
     }
 
     /**
@@ -59,6 +78,22 @@ class FidelidadeFilial
     /**
      * @return mixed
      */
+    public function getData()
+    {
+        return $this->data;
+    }
+
+    /**
+     * @param mixed $data
+     */
+    public function setData($data)
+    {
+        $this->data = $data;
+    }
+
+    /**
+     * @return mixed
+     */
     public function getBeneficio()
     {
         return $this->beneficio;
@@ -70,6 +105,22 @@ class FidelidadeFilial
     public function setBeneficio($beneficio)
     {
         $this->beneficio = $beneficio;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param mixed $status
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
     }
 
     /**
@@ -87,5 +138,7 @@ class FidelidadeFilial
     {
         $this->filial_id = $filial_id;
     }
+
+
 
 }
