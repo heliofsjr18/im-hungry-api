@@ -242,6 +242,8 @@ class CheckoutItensDAO
                 $countLogin = $stmt->rowCount();
                 $resultFidelidade = $stmt->fetchAll(PDO::FETCH_OBJ);
 
+                $isFidel = false;
+
                 if ($countLogin !== 0 && $bruto > $resultFidelidade[0]->cartao_fid_valor) {
 
                     $sql = "INSERT INTO clientes_pontos_fid (user_id, checkout_id, cartao_fid_id) 
@@ -253,13 +255,16 @@ class CheckoutItensDAO
                     $stmt->bindValue(3,$resultFidelidade[0]->cartao_fid_id, PDO::PARAM_STR);
                     $stmt->execute();
 
+                    $isFidel = true;
+
                 }
 
                 return array(
-                    'status'    => 200,
-                    'message'   => "SUCCESS",
-                    'code'      => $code,
-                    'reference' => $referencia
+                    'status'     => 200,
+                    'message'    => "SUCCESS",
+                    'code'       => $code,
+                    'reference'  => $referencia,
+                    'fidelidade' => $isFidel
                 );
 
 
@@ -608,6 +613,47 @@ class CheckoutItensDAO
             $ref = substr($result[0]["checkout_ref"], -6);
             $nome = explode(" ", $result[0]["user_nome"]);
 
+            $send = $this->sendNotification($status,$result, $ref, $nome);
+
+            if ($send->getStatusCode() === 200){
+
+                $return = json_decode($send->getBody()->getContents());
+                $idNotification = $return->message_id;
+
+                $stmt2->bindValue(1,$status);
+                $stmt2->bindValue(2,$idChange);
+                $stmt2->execute();
+
+                return array(
+                    'status'    => 200,
+                    'message'   => "SUCCESS"
+                );
+
+            }else{
+
+                return array(
+                    'status'    => 500,
+                    'message'   => "ERROR",
+                    'result'   => "Notificação não enviada! Tente novamente."
+                );
+            }
+
+
+        } catch (PDOException $ex) {
+            return array(
+                'status'    => 500,
+                'message'   => "ERROR",
+                'result'    => 'Erro na execução da instrução!',
+                'CODE'      => $ex->getCode(),
+                'Exception' => $ex->getMessage(),
+            );
+        }
+    }
+
+    public function sendNotification($status, $result, $ref, $nome){
+
+        try {
+
             $server_key = 'AAAAHTO1V3s:APA91bE-n76NJl5OfMx9D7i44xkbiswnKN1zzOv8iAFOidjimuD6uPu1opNnOrgPLti1_K-MCLJFPOvbDXmwOPYeezIDYxczwkgjEgW5HAEqzue5yLtvX_UFl_IGZEn8AzUFQN-Nzd2_';
             $client = new Client();
             $client->setApiKey($server_key);
@@ -616,6 +662,21 @@ class CheckoutItensDAO
             $notification = new Notification();
 
             switch ($status){
+                case 1:
+                    $notification->setTitle("Pedido realizado!");
+                    $notification->setBody("Olá ".$nome[0]."! Seu pedido #".$ref." encontra-se em andamento!");
+                    $notification->setIcon("notification_icon");
+                    $notification->setSound('default');
+
+                    $array = array(
+                        'title' => 'Acabou a espera!',
+                        'body'  => "Olá ".$nome[0]."! Seu pedido #".$ref." encontra-se em andamento!",
+                        'key'   => 1,
+                        'ref'   => $ref,
+                        'icon'  => 'notification_icon',
+                        'sound' => 'default'
+                    );
+                    break;
                 case 2:
                     $notification->setTitle("Acabou a espera!");
                     $notification->setBody("Olá ".$nome[0]."! Seu pedido #".$ref." já está pronto! Por favor, retire no balcão.");
@@ -660,31 +721,10 @@ class CheckoutItensDAO
 
             $response = $client->send($message);
 
-            if ($response->getStatusCode() === 200){
-
-                $return = json_decode($response->getBody()->getContents());
-                $idNotification = $return->message_id;
-
-                $stmt2->bindValue(1,$status);
-                $stmt2->bindValue(2,$idChange);
-                $stmt2->execute();
-
-                return array(
-                    'status'    => 200,
-                    'message'   => "SUCCESS"
-                );
-
-            }else{
-
-                return array(
-                    'status'    => 500,
-                    'message'   => "ERROR",
-                    'result'   => "Notificação não enviada! Tente novamente."
-                );
-            }
+            return $response;
 
 
-        } catch (PDOException $ex) {
+        } catch (Exception $ex) {
             return array(
                 'status'    => 500,
                 'message'   => "ERROR",
@@ -693,5 +733,6 @@ class CheckoutItensDAO
                 'Exception' => $ex->getMessage(),
             );
         }
+
     }
 }
