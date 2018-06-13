@@ -1615,21 +1615,36 @@ $app->post('/app/cartao/enabled', function(Request $request, Response $response,
 
 $app->get('/app/fidelidade/list', function(Request $request, Response $response, $args) {
 
-    $res = array(
-        'status' 		=> 200,
-        'message' 		=> "SUCCESS",
-        'result' 	    => "Toma ai Hélio!",
-        'historico' 	    => array(
-            'filial_id' 	        => "Bobs",
-            'filial_nome' 	        => "1",
-            'cartao_fid_qtd' 	    => "12",
-            'cartao_fid_valor' 	    => "17.5",
-            'cartao_fid_beneficio' 	=> "X-Box One 1Tb + 5 Jogos.",
-            'cartao_fid_cliente' 	=> "7",
-        )
-    );
+    $auth = auth($request);
+    if($auth["status"] != 200){
+        return $response->withJson($auth, $auth["status"]);
+        die;
+    }
 
-    return $response->withJson($res, $res['status']);
+    require_once 'Basics/FidelidadeFilial.php';
+    require_once 'Controller/FidelidadeFilialController.php';
+
+    $user_id = $auth['token']->data->user_id;
+    $fidelidadeFilialController = new FidelidadeFilialController();
+    $retorno = $fidelidadeFilialController->historico($user_id);
+
+    if ($retorno['status'] == 500){
+        return $response->withJson($retorno, $retorno['status']);
+        die;
+    }else{
+
+        $jwt = setToken($auth['token']->data);
+        $res = array(
+            'status'        => 200,
+            'message'       => "SUCCESS",
+            'result'        => "Cartões de Fidelidade encontrados!",
+            'fidelidade'    => $retorno,
+            'token'         => $jwt
+        );
+
+        return $response->withJson($res, $res['status']);
+
+    }
 
 });
 
@@ -1669,7 +1684,6 @@ $app->post('/app/filial/list', function(Request $request, Response $response, $a
         return $response->withJson($res, $res['status']);
 
     }
-
 
 });
 
@@ -1771,6 +1785,7 @@ $app->post('/app/checkout', function(Request $request, Response $response, $args
             'status' 		=> 200,
             'message' 		=> "SUCCESS",
             'result' 		=> "Compra realizada, verifique o status do pagamento!",
+            'fidelidade'   => $retorno['fidelidade'],
             'code'        	=> $retorno['code'],
             'reference'  	=> $retorno['reference'],
             'token'			=> $jwt

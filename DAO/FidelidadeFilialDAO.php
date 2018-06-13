@@ -193,4 +193,118 @@ class FidelidadeFilialDAO
         }
     }
 
+    public function historico($user_id){
+        //Cria conexao
+        $conn = \Database::conexao();
+
+        $sql = "SELECT  pot.cliente_ponto_id, 
+                        pot.user_id, 
+                       	
+                        chec.checkout_id, 
+                        chec.checkout_ref, 
+                        DATE_FORMAT( chec.checkout_date , '%d/%m/%Y às %H:%i:%s' ) AS checkout_date_format, 
+                        chec.checkout_date, 
+                        chec.checkout_valor_bruto, 
+						
+                        (SELECT COUNT(*) FROM clientes_pontos_fid WHERE cartao_fid_id = cart.cartao_fid_id ) AS total,
+                        cart.cartao_fid_id,
+                        cart.cartao_fid_nome,
+                        cart.cartao_fid_qtd,
+                        cart.cartao_fid_valor,
+                        cart.cartao_fid_date,
+                        DATE_FORMAT( cart.cartao_fid_date , '%d/%m/%Y às %H:%i:%s' ) AS fid_date_format, 
+                        cart.cartao_fid_beneficio,
+                        
+                        fili.filial_nome,
+                        emp.empresa_foto_marca
+                        
+			      FROM clientes_pontos_fid pot
+			      INNER JOIN checkout chec 
+			      ON chec.checkout_id = pot.checkout_id
+			      
+			      INNER JOIN empresa_cartao_fid cart
+			      ON cart.cartao_fid_id = pot.cartao_fid_id
+			      
+			      INNER JOIN empresa_filial fili
+			      ON fili.filial_id = cart.filial_id
+			      
+			      INNER JOIN empresa emp
+			      ON emp.empresa_id = fili.empresa_id
+			      
+			      WHERE pot.user_id = ?
+			      ORDER BY pot.cartao_fid_id ASC, pot.cliente_ponto_id ASC;";
+        $stmt = $conn->prepare($sql);
+
+        try {
+
+            $stmt->bindValue(1,$user_id, PDO::PARAM_INT);
+            $stmt->execute();
+            $countLogin = $stmt->rowCount();
+
+            if ($countLogin !== 0) {
+
+                $result = $stmt->fetchAll(PDO::FETCH_OBJ);
+
+                $group = array();
+                $fidelidade = array();
+
+                // GroupBy - cartao_fid_id
+                foreach ($result as $value) {
+                    $group[$value->cartao_fid_id] = $value;
+                }
+
+                foreach ($group as $key => $value) {
+
+                    $temp = array(
+                        'cartao_id' => $value->cartao_fid_id,
+                        'cartao_nome' => $value->cartao_fid_nome,
+                        'cartao_validade' => $value->fid_date_format,
+                        'cartao_beneficio' => $value->cartao_fid_beneficio,
+                        'pontos_conquistados' => $value->total,
+                        'pontos_necessarios' => $value->cartao_fid_qtd,
+                        'requisito_valor' => $value->cartao_fid_valor,
+                        'historico_pontos' => array()
+
+                    );
+
+                    array_push($fidelidade, $temp);
+
+                }
+
+                foreach ($fidelidade as $key => $value) {
+                    foreach ($result as $key2 => $value2) {
+                        if ($value['cartao_id'] == $value2->cartao_fid_id) {
+                            $historico = array(
+                                'checkout_ref' => $value2->checkout_ref,
+                                'checkout_data' => $value2->checkout_date_format,
+                                'checkout_valor' => $value2->checkout_valor_bruto
+                            );
+                            array_push($fidelidade[$key]['historico_pontos'], $historico);
+                        }
+                    }
+                }
+
+                return $fidelidade;
+
+            }else{
+
+                return array(
+                    'status'    => 500,
+                    'message'   => "INFO",
+                    'result'    => 'Você não possui nenhuma pontuação em programas de fidelidade!'
+                );
+
+            }
+
+        } catch (PDOException $ex) {
+            return array(
+                'status'    => 500,
+                'message'   => "ERROR",
+                'result'    => 'Erro na execução da instrução!',
+                'CODE'      => $ex->getCode(),
+                'Exception' => $ex->getMessage(),
+            );
+        }
+    }
+
 }

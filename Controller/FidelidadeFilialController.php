@@ -104,4 +104,15 @@ class FidelidadeFilialController
         return $fidelidadeFilialDAO->enabled($fidelidadeFilial);
 
     }
+
+    public function historico($user_id){
+        if ( empty($user_id) ){
+            return array('status' => 500, 'message' => "ERROR", 'result' => 'Id do usuário não informado!');
+            die;
+        }
+
+        $fidelidadeFilialDAO = new FidelidadeFilialDAO();
+        return $fidelidadeFilialDAO->historico($user_id);
+
+    }
 }
