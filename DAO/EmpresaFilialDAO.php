@@ -101,7 +101,7 @@ class EmpresaFilialDAO
 
         $conn = \Database::conexao();
 
-        $sql1 = "SELECT F.filial_id, F.filial_nome, F.filial_status, F.filial_numero_endereco, F.filial_fidelidade, E.logradouro, E.bairro, E.cidade, E.uf, EM.empresa_foto_marca, 4 as avaliacao,
+        $sql1 = "SELECT F.filial_id, F.filial_nome, F.filial_status, F.filial_numero_endereco, F.filial_fidelidade, E.logradouro, E.bairro, E.cidade, E.uf, E.latitude, E.longitude, EM.empresa_foto_marca, 4 as avaliacao,
                   ( SELECT 6371 * acos( cos( radians(?) ) * cos( radians( E.latitude ) ) * cos( radians( ? ) - radians(E.longitude) ) + sin( radians(?) ) * sin( radians( E.latitude ) ) )) as distancia
                  FROM empresa_filial F
 	             INNER JOIN enderecos E
