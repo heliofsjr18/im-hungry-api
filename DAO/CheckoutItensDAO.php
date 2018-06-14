@@ -398,7 +398,8 @@ class CheckoutItensDAO
                 ON ped.filial_id = fili.filial_id
                 INNER JOIN empresa empr
                 ON fili.empresa_id = empr.empresa_id
-                WHERE ped.user_id = ?;";
+                WHERE ped.user_id = ? 
+                ORDER BY ped.checkout_id DESC;";
         $stmt = $conn->prepare($sql);
 
         $sql2 = "SELECT 

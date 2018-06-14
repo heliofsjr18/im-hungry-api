@@ -21,7 +21,8 @@ class MenuFilialItensDAO
                 FROM menu_filial_itens 
                 WHERE item_status = ? 
                 AND filial_id = ? 
-                AND item_nome LIKE '%".$menu->getNome()."%';";
+                AND item_nome LIKE '%".$menu->getNome()."%' 
+                ORDER BY item_nome;";
         $stmt = $conn->prepare($sql);
 
         try {

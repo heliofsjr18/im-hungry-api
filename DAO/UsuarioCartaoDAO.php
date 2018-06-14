@@ -17,7 +17,8 @@ class UsuarioCartaoDAO
         $sql = "SELECT cartao_id, cartao_digitos, cartao_ano, cartao_mes, cartao_brand, cartao_status, cartao_cvc 
                 FROM clientes_cartao 
                 WHERE user_id = ? 
-                AND cartao_status = 1;";
+                AND cartao_status = 1 
+                ORDER BY cartao_id DESC;";
         $stmt = $conn->prepare($sql);
 
         try {

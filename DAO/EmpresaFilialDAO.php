@@ -111,7 +111,8 @@ class EmpresaFilialDAO
                  WHERE F.empresa_id IS NOT NULL 
                  AND (F.filial_fidelidade = ? or 2 = ?)
                  AND F.filial_enabled = 1
-                 AND F.filial_nome LIKE '%".$search."%'";
+                 AND F.filial_nome LIKE '%".$search."%' 
+                 ORDER BY distancia, F.filial_nome";
         $stmt1 = $conn->prepare($sql1);
 
         $sql2 = "SELECT cartao_fid_id, cartao_fid_nome, cartao_fid_qtd, cartao_fid_valor, 
