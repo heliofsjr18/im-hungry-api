@@ -611,7 +611,7 @@ class CheckoutItensDAO
             $stmt->execute();
             $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-            $ref = substr($result[0]["checkout_ref"], -6);
+            $ref = substr($result[0]["checkout_ref"], -5);
             $nome = explode(" ", $result[0]["user_nome"]);
 
             $send = $this->sendNotification($status,$result, $ref, $nome);
