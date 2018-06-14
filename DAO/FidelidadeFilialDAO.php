@@ -257,6 +257,8 @@ class FidelidadeFilialDAO
 
                     $temp = array(
                         'cartao_id' => $value->cartao_fid_id,
+                        'nome_filial' => $value->filial_nome,
+                        'foto_filial' => $value->empresa_foto_marca,
                         'cartao_nome' => $value->cartao_fid_nome,
                         'cartao_validade' => $value->fid_date_format,
                         'cartao_beneficio' => $value->cartao_fid_beneficio,
