@@ -216,10 +216,8 @@ class EmpresaFilialDAO
     public function insertCloneMenu(EmpresaFilial $empresaFilial){
 
         $conn = \Database::conexao();
-        $sql = "INSERT INTO empresa_filial (filial_nome, filial_telefone, filial_cnpj, filial_cep, filial_lat, filial_long,
-                                     filial_numero_endereco, filial_complemento_endereco, filial_status, empresa_id, filial_enabled)
-                VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, TRUE, ?, 0);";
-        $sql2 = "SELECT filial_id FROM empresa_filial ORDER BY filial_id DESC LIMIT 1;";
+        $sql = "INSERT INTO empresa_filial (filial_nome, filial_telefone, filial_cnpj, filial_cep, filial_lat, filial_long, filial_numero_endereco, filial_complemento_endereco, filial_status, empresa_id, filial_enabled) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, TRUE, ?, 0);";
+        //$sql2 = "SELECT filial_id FROM empresa_filial ORDER BY filial_id DESC LIMIT 1;";
         $stmt = $conn->prepare($sql);
         //$stmt2 = $conn->prepare($sql2);
 
@@ -235,7 +233,9 @@ class EmpresaFilialDAO
             $stmt->bindValue(9,$empresaFilial->getEmpresaId(), PDO::PARAM_STR);
             $stmt->execute();
             
-            $rs = $conn->prepare($sql2);
+            $filial_id = $conn->lastInsertId();
+
+            /*$rs = $conn->prepare($sql2);
             if($rs->execute()){
                 if($rs->rowCount() > 0){
                     while($row = $rs->fetch(PDO::FETCH_OBJ)){
@@ -247,17 +247,50 @@ class EmpresaFilialDAO
                         $sql3 = "INSERT INTO menu_filial_itens (filial_id, item_nome, item_valor, item_tempo_medio, item_status, item_promocao) SELECT item_nome, item_valor, item_tempo_medio, item_status, item_promocao FROM menu_filial_itens WHERE filial_id = ?;";
                         
                         $stmt3 = $con->prepare($sql3);
-                        $stmt3->bindParam(, $filial_id_copiar);
+                        $stmt3->bindParam(1, $filial_id_copiar);
                         $stmt3->execute();
 
-                        $sql4 = "UPDATE menu_filial_itens SET filial_id=? WHERE filial_id = 0";
+                        $sql4 = "INSERT INTO itens_fotos (fot_file) SELECT (fot_file) from itens_fotos where item_id = ? ;";
                         $stmt4 = $con->prepare($sql4);
-                        $stmt4->bindParam(1, $filial_id);
+                        $stmt4->bindParam(1, $filial_id_copiar);
                         $stmt4->execute();
+
+                        $sql5 = "UPDATE itens_fotos SET item_id=? WHERE item_id = 0";
+                        $stmt5 = $con->prepare($sql5);
+                        $stmt5->bindParam(1, $filial_id);
+                        $stmt5->execute();
+
+                        $sql6 = "UPDATE menu_filial_itens SET filial_id=? WHERE filial_id = 0";
+                        $stmt6 = $con->prepare($sql6);
+                        $stmt6->bindParam(1, $filial_id);
+                        $stmt6->execute();
                         
                     }
                 }
-            }
+            }*/
+
+            $filial_id_copiar = $empresaFilial->getFilialId();
+            
+            $sql3 = "INSERT INTO menu_filial_itens (item_nome, item_valor, item_tempo_medio, item_status, item_promocao) SELECT item_nome, item_valor, item_tempo_medio, item_status, item_promocao FROM menu_filial_itens WHERE filial_id = ?;";
+            
+            $stmt3 = $conn->prepare($sql3);
+            $stmt3->bindParam(1, $filial_id_copiar);
+            $stmt3->execute();
+
+            $sql4 = "INSERT INTO itens_fotos (fot_file) SELECT (fot_file) from itens_fotos where item_id = ? ;";
+            $stmt4 = $conn->prepare($sql4);
+            $stmt4->bindParam(1, $filial_id_copiar);
+            $stmt4->execute();
+
+            $sql5 = "UPDATE itens_fotos SET item_id=? WHERE item_id = 0;";
+            $stmt5 = $conn->prepare($sql5);
+            $stmt5->bindParam(1, $filial_id);
+            $stmt5->execute();
+
+            $sql6 = "UPDATE menu_filial_itens SET filial_id=? WHERE filial_id = 0;";
+            $stmt6 = $conn->prepare($sql6);
+            $stmt6->bindParam(1, $filial_id);
+            $stmt6->execute();
 
 
             return array(

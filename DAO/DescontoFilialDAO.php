@@ -10,13 +10,13 @@ class DescontoFilialDAO
 
         $sql = "SELECT  cupom_id, 
                         cupom_valor, 
-                        cupom_date,
-                        cupom_beneficio, 
+                        cupom_validade,
+                        cupom_desc, 
                         cupom_status, 
                         filial_id,  
-						DATE_FORMAT(cupom_date, '%d/%m/%Y') as data_format 
+						DATE_FORMAT(cupom_validade, '%d/%m/%Y') as data_format 
 						
-			      FROM empresa_cupom
+			      FROM cupom_desconto
 			      WHERE filial_id = ?
 			      AND cupom_status = ?;";
         $stmt = $conn->prepare($sql);
@@ -58,9 +58,7 @@ class DescontoFilialDAO
     public function insert(DescontoFilial $descontoFilial){
 
         $conn = \Database::conexao();
-        $sql = "INSERT INTO empresa_cupom (cupom_valor, cupom_date, 
-                                                cupom_beneficio, cupom_status, filial_id)
-                VALUES (?, ?, ?, ?, ?);";
+        $sql = "INSERT INTO cupom_desconto (cupom_valor, cupom_validade, cupom_desc, cupom_status, filial_id) VALUES (?, ?, ?, ?, ?);";
         $stmt = $conn->prepare($sql);
 
         //$sql1 = "update empresa_filial set filial_fidelidade = 1 where filial_id = ?";
@@ -93,10 +91,10 @@ class DescontoFilialDAO
     public function update(DescontoFilial $descontoFilial){
 
         $conn = \Database::conexao();
-        $sql = "UPDATE empresa_cupom 
+        $sql = "UPDATE cupom_desconto 
                 SET cupom_valor = ?,
-                    cupom_date = ?,
-                    cupom_beneficio = ?
+                    cupom_validade = ?,
+                    cupom_desc = ?
                 WHERE cupom_id = ?";
         $stmt = $conn->prepare($sql);
 
@@ -129,12 +127,12 @@ class DescontoFilialDAO
         $conn = \Database::conexao();
 
         $sql = "SELECT  cupom_id  
-			      FROM empresa_cupom
+			      FROM cupom_desconto
 			      WHERE filial_id = ? 
 			      AND cupom_status = 2;";
         $stmt = $conn->prepare($sql);
 
-        $sql1 = "UPDATE empresa_cupom 
+        $sql1 = "UPDATE cupom_desconto 
                 SET   cupom_status = ?  
                 WHERE cupom_id = ?";
         $stmt1 = $conn->prepare($sql1);
@@ -201,9 +199,9 @@ class DescontoFilialDAO
                         (SELECT COUNT(*) FROM clientes_pontos_fid WHERE cupom_id = cart.cupom_id ) AS total,
                         cart.cupom_id,
                         cart.cupom_valor,
-                        cart.cupom_date,
-                        DATE_FORMAT( cart.cupom_date , '%d/%m/%Y às %H:%i:%s' ) AS fid_date_format, 
-                        cart.cupom_beneficio,
+                        cart.cupom_validade,
+                        DATE_FORMAT( cart.cupom_validade , '%d/%m/%Y às %H:%i:%s' ) AS fid_date_format, 
+                        cart.cupom_desc,
                         
                         fili.filial_nome,
                         emp.empresa_foto_marca
@@ -212,7 +210,7 @@ class DescontoFilialDAO
 			      INNER JOIN checkout chec 
 			      ON chec.checkout_id = pot.checkout_id
 			      
-			      INNER JOIN empresa_cupom cart
+			      INNER JOIN cupom_desconto cart
 			      ON cart.cupom_id = pot.cupom_id
 			      
 			      INNER JOIN empresa_filial fili
@@ -251,7 +249,7 @@ class DescontoFilialDAO
                         'foto_filial' => $value->empresa_foto_marca,
                         'cupom_nome' => $value->cupom_nome,
                         'cupom_validade' => $value->fid_date_format,
-                        'cupom_beneficio' => $value->cupom_beneficio,
+                        'cupom_desc' => $value->cupom_desc,
                         'requisito_valor' => $value->cupom_valor,
                         'historico_pontos' => array()
 

@@ -68,7 +68,7 @@ class EmpresaFilialController
         }
 
         $empresaFilialDAO = new EmpresaFilialDAO();
-        if(empty($empresaFilial->getFilialId())){
+        if( empty($empresaFilial->getFilialId()) ){
             return $empresaFilialDAO->insert($empresaFilial);
         }else{
             return $empresaFilialDAO->insertCloneMenu($empresaFilial);
