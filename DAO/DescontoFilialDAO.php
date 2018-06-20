@@ -13,9 +13,7 @@ class DescontoFilialDAO
                         cupom_validade,
                         cupom_desc, 
                         cupom_status, 
-                        filial_id,  
-						DATE_FORMAT(cupom_validade, '%d/%m/%Y') as data_format 
-						
+                        filial_id
 			      FROM cupom_desconto
 			      WHERE filial_id = ?
 			      AND cupom_status = ?;";
@@ -64,11 +62,11 @@ class DescontoFilialDAO
         //$sql1 = "update empresa_filial set filial_fidelidade = 1 where filial_id = ?";
 
         try {
-            $stmt->bindValue(3,$descontoFilial->getValor(), PDO::PARAM_STR);
-            $stmt->bindValue(4,$descontoFilial->getData(), PDO::PARAM_STR);
-            $stmt->bindValue(5,$descontoFilial->getBeneficio(), PDO::PARAM_STR);
-            $stmt->bindValue(6,$descontoFilial->getStatus(), PDO::PARAM_INT);
-            $stmt->bindValue(7,$descontoFilial->getFilialId(), PDO::PARAM_INT);
+            $stmt->bindValue(1,$descontoFilial->getValor(), PDO::PARAM_STR);
+            $stmt->bindValue(2,$descontoFilial->getData(), PDO::PARAM_STR);
+            $stmt->bindValue(3,$descontoFilial->getBeneficio(), PDO::PARAM_STR);
+            $stmt->bindValue(4,$descontoFilial->getStatus(), PDO::PARAM_INT);
+            $stmt->bindValue(5,$descontoFilial->getFilialId(), PDO::PARAM_INT);
             $stmt->execute();
 
             return array(

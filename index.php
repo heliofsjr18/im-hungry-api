@@ -1350,9 +1350,9 @@ $app->post('/web/desconto/insert', function(Request $request, Response $response
     require_once 'Basics/DescontoFilial.php';
     require_once 'Controller/DescontoFilialController.php';
 
-    $data['valor'] = str_replace('R$ ', '' , $data['valor']);
-    $data['valor'] = str_replace('.', '' , $data['valor']);
-    $data['valor'] = str_replace(',', '.' , $data['valor']);
+    //$data['valor'] = str_replace('R$ ', '' , $data['valor']);
+    //$data['valor'] = str_replace('.', '' , $data['valor']);
+    //$data['valor'] = str_replace(',', '.' , $data['valor']);
 
     $desconto = new DescontoFilial();
     

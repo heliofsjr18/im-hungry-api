@@ -1,6 +1,6 @@
 <?php
 
-class FidelidadeFilial
+class DescontoFilial
 {
     private $id;
     private $valor;
