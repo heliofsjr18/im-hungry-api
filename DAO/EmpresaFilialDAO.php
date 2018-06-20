@@ -213,6 +213,70 @@ class EmpresaFilialDAO
 
     }
 
+    public function insertCloneMenu(EmpresaFilial $empresaFilial){
+
+        $conn = \Database::conexao();
+        $sql = "INSERT INTO empresa_filial (filial_nome, filial_telefone, filial_cnpj, filial_cep, filial_lat, filial_long,
+                                     filial_numero_endereco, filial_complemento_endereco, filial_status, empresa_id, filial_enabled)
+                VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, TRUE, ?, 0);";
+        $sql2 = "SELECT filial_id FROM empresa_filial ORDER BY filial_id DESC LIMIT 1;";
+        $stmt = $conn->prepare($sql);
+        //$stmt2 = $conn->prepare($sql2);
+
+        try {
+            $stmt->bindValue(1,$empresaFilial->getNome(), PDO::PARAM_STR);
+            $stmt->bindValue(2,$empresaFilial->getTelefone(), PDO::PARAM_STR);
+            $stmt->bindValue(3,$empresaFilial->getCnpj(), PDO::PARAM_STR);
+            $stmt->bindValue(4,$empresaFilial->getCep(), PDO::PARAM_STR);
+            $stmt->bindValue(5,$empresaFilial->getLatitude(), PDO::PARAM_STR);
+            $stmt->bindValue(6,$empresaFilial->getLongitude(), PDO::PARAM_STR);
+            $stmt->bindValue(7,$empresaFilial->getNumeroEndereco(), PDO::PARAM_INT);
+            $stmt->bindValue(8,$empresaFilial->getComplementoEndereco(), PDO::PARAM_STR);
+            $stmt->bindValue(9,$empresaFilial->getEmpresaId(), PDO::PARAM_STR);
+            $stmt->execute();
+            
+            $rs = $conn->prepare($sql2);
+            if($rs->execute()){
+                if($rs->rowCount() > 0){
+                    while($row = $rs->fetch(PDO::FETCH_OBJ)){
+                        
+                        $filial_id = $row->filial_id;
+                        $filial_id_copiar = $empresaFilial->getFilialId();
+                        //$sql3 = "INSERT INTO menu_filial_itens (filial_id, item_nome, item_valor, item_tempo_medio, item_status, item_promocao) (? ,
+                        //(SELECT item_nome, item_valor, item_tempo_medio, item_status, item_promocao FROM menu_filial_itens AS mi INNER JOIN empresa_filial AS ef ON mi.filial_id = ef.filial_id));";
+                        $sql3 = "INSERT INTO menu_filial_itens (filial_id, item_nome, item_valor, item_tempo_medio, item_status, item_promocao) SELECT item_nome, item_valor, item_tempo_medio, item_status, item_promocao FROM menu_filial_itens WHERE filial_id = ?;";
+                        
+                        $stmt3 = $con->prepare($sql3);
+                        $stmt3->bindParam(, $filial_id_copiar);
+                        $stmt3->execute();
+
+                        $sql4 = "UPDATE menu_filial_itens SET filial_id=? WHERE filial_id = 0";
+                        $stmt4 = $con->prepare($sql4);
+                        $stmt4->bindParam(1, $filial_id);
+                        $stmt4->execute();
+                        
+                    }
+                }
+            }
+
+
+            return array(
+                'status'    => 200,
+                'message'   => "SUCCESS"
+            );
+
+        } catch (PDOException $ex) {
+            return array(
+                'status'    => 500,
+                'message'   => "ERROR",
+                'result'    => 'Erro na execução da instrução!',
+                'CODE'      => $ex->getCode(),
+                'Exception' => $ex->getMessage(),
+            );
+        }
+
+    }
+
     public function update(EmpresaFilial $empresaFilial){
 
         $conn = \Database::conexao();

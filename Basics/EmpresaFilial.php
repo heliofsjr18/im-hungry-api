@@ -20,6 +20,7 @@ class EmpresaFilial
     private $status;
     private $empresa_id;
     private $enabled;
+    private $filial_id;
 
     /**
      * @return mixed
@@ -213,6 +214,21 @@ class EmpresaFilial
         $this->enabled = $enabled;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getFilialId()
+    {
+        return $this->filial_id;
+    }
+
+    /**
+     * @param mixed $filial_id
+     */
+    public function setFilialId($filial_id)
+    {
+        $this->filial_id = $filial_id;
+    }
 
 
 }

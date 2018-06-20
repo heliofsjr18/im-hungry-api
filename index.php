@@ -670,6 +670,7 @@ $app->post('/web/filial/insert', function(Request $request, Response $response, 
     $empresa->setNumeroEndereco($data["numero_end"]);
     $empresa->setComplementoEndereco($data["complemento_end"]);
     $empresa->setEmpresaId($data['empresa_id']);
+    $empresa->setFilialId($data['filial_id']);
 
     $empresaController = new EmpresaFilialController();
     $retorno = $empresaController->insert($empresa);

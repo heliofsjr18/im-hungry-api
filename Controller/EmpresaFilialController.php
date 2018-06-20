@@ -68,7 +68,11 @@ class EmpresaFilialController
         }
 
         $empresaFilialDAO = new EmpresaFilialDAO();
-        return $empresaFilialDAO->insert($empresaFilial);
+        if(empty($empresaFilial->getFilialId())){
+            return $empresaFilialDAO->insert($empresaFilial);
+        }else{
+            return $empresaFilialDAO->insertCloneMenu($empresaFilial);
+        }
     }
 
     public function update(EmpresaFilial $empresaFilial){
