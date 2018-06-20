@@ -1300,6 +1300,174 @@ $app->post('/web/fidelidade/enabled', function(Request $request, Response $respo
 
 });
 
+
+$app->post('/web/desconto/listAll', function(Request $request, Response $response, $args) {
+    $data = $request->getParsedBody();
+    $auth = auth($request);
+
+    if($auth['status'] != 200){
+        return $response->withJson($auth, $auth['status']);
+        die;
+    }
+    require_once 'Basics/DescontoFilial.php';
+    require_once 'Controller/DescontoFilialController.php';
+
+    $desconto = new DescontoFilial();
+    $desconto->setStatus($data["status"]);
+    $desconto->setFilialId($data["filial_id"]);
+
+    $descontoFilialController = new DescontoFilialController();
+    $retorno = $descontoFilialController->listAll($desconto);
+
+    if ($retorno['status'] == 500){
+        return $response->withJson($retorno, $retorno['status']);
+        die;
+    }else{
+
+        $jwt = setToken($auth['token']->data);
+        $res = array(
+            'status'        => 200,
+            'message'       => "SUCCESS",
+            'fidelidades'   => $retorno,
+            'token'         => $jwt
+        );
+
+        return $response->withJson($res, $res['status']);
+
+    }
+
+
+});
+
+$app->post('/web/desconto/insert', function(Request $request, Response $response, $args) {
+    $data = $request->getParsedBody();
+    $auth = auth($request);
+
+    if($auth['status'] != 200){
+        return $response->withJson($auth, $auth['status']);
+        die;
+    }
+    require_once 'Basics/DescontoFilial.php';
+    require_once 'Controller/DescontoFilialController.php';
+
+    $data['valor'] = str_replace('R$ ', '' , $data['valor']);
+    $data['valor'] = str_replace('.', '' , $data['valor']);
+    $data['valor'] = str_replace(',', '.' , $data['valor']);
+
+    $desconto = new DescontoFilial();
+    
+    
+    $desconto->setValor($data["valor"]);
+    $desconto->setData($data["validade"]);
+    $desconto->setBeneficio($data["beneficio"]);
+    $desconto->setFilialId($data["filial_id"]);
+    $desconto->setStatus(1);
+
+    $descontoFilialController = new DescontoFilialController();
+    $retorno = $descontoFilialController->insert($desconto);
+
+    if ($retorno['status'] == 500){
+        return $response->withJson($retorno, $retorno['status']);
+        die;
+    }else{
+
+        $jwt = setToken($auth['token']->data);
+        $res = array(
+            'status'        => 200,
+            'message'       => "SUCCESS",
+            'result'        => "Cupom de desconto Cadastrado!",
+            'token'         => $jwt
+        );
+
+        return $response->withJson($res, $res['status']);
+
+    }
+
+
+});
+
+$app->post('/web/desconto/update', function(Request $request, Response $response, $args) {
+    $data = $request->getParsedBody();
+    $auth = auth($request);
+
+    if($auth['status'] != 200){
+        return $response->withJson($auth, $auth['status']);
+        die;
+    }
+    require_once 'Basics/DescontoFilial.php';
+    require_once 'Controller/DescontoFilialController.php';
+
+    $data['valor'] = str_replace('R$ ', '' , $data['valor']);
+    $data['valor'] = str_replace('.', '' , $data['valor']);
+    $data['valor'] = str_replace(',', '.' , $data['valor']);
+
+    $desconto = new DescontoFilial();
+    $desconto->setId($data["idAt"]);
+    $desconto->setValor($data["valor"]);
+    $desconto->setData($data["validade"]);
+    $desconto->setBeneficio($data["beneficio"]);
+
+    $descontoFilialController = new DescontoFilialController();
+    $retorno = $descontoFilialController->update($desconto);
+
+    if ($retorno['status'] == 500){
+        return $response->withJson($retorno, $retorno['status']);
+        die;
+    }else{
+
+        $jwt = setToken($auth['token']->data);
+        $res = array(
+            'status'        => 200,
+            'message'       => "SUCCESS",
+            'result'        => "Cupom de desconto atualizado!",
+            'token'         => $jwt
+        );
+
+        return $response->withJson($res, $res['status']);
+
+    }
+
+});
+
+$app->post('/web/desconto/enabled', function(Request $request, Response $response, $args) {
+    $data = $request->getParsedBody();
+    $auth = auth($request);
+
+    if($auth['status'] != 200){
+        return $response->withJson($auth, $auth['status']);
+        die;
+    }
+    require_once 'Basics/DescontoFilial.php';
+    require_once 'Controller/DescontoFilialController.php';
+
+    $desconto = new DescontoFilial();
+    $desconto->setId($data["idChange"]);
+    $desconto->setStatus($data["status"]);
+    $desconto->setFilialId($data["filial_id"]);
+
+    $descontoFilialController = new DescontoFilialController();
+    $retorno = $descontoFilialController->enabled($desconto);
+
+    if ($retorno['status'] == 500){
+        return $response->withJson($retorno, $retorno['status']);
+        die;
+    }else{
+
+        $jwt = setToken($auth['token']->data);
+        $res = array(
+            'status'        => 200,
+            'message'       => "SUCCESS",
+            'result'        => "Cupom Ativado!",
+            'token'         => $jwt
+        );
+
+        return $response->withJson($res, $res['status']);
+
+    }
+
+
+});
+
 // Consumo do APP
 
 $app->post('/app/cliente/login', function(Request $request, Response $response, $args) {
